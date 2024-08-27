@@ -183,6 +183,7 @@ public class GameService {
 		session.setAttribute("isFinished", false);
 		session.setAttribute("usedCharacters", usedCharacters);
 		session.setAttribute("mode", mode);
+		session.setAttribute("gameStatus", "");
 		request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
 	}
 
@@ -262,5 +263,76 @@ public class GameService {
 	        }
 	    }
 	    return false; 
+	}
+	
+	public void prepareWordToBeDisplayed(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+			String wordToGuess, Category category) throws ServletException, IOException {
+		Game game = new Game();
+		game = game.createNewGame(wordToGuess, category);
+
+		String wordWithoutSpaces = new String(wordToReturn(wordToGuess));
+		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
+		char firstLetter = getFirstLetter(wordWithoutSpaces);
+		char lastLetter = getLastLetter(wordWithoutSpaces);
+		Set<Character> usedCharacters = new HashSet<Character>();
+		usedCharacters.add(firstLetter);
+		usedCharacters.add(lastLetter);
+		int triesLeft = 6;
+		String mode = "Multiplayer";
+
+		session.setAttribute("word", game);
+		session.setAttribute("category", category);
+		session.setAttribute("triesLeft", triesLeft);
+		session.setAttribute("currentState", wordToReturn);
+		session.setAttribute("isFinished", false);
+		session.setAttribute("usedCharacters", usedCharacters);
+		session.setAttribute("gameStatus", "");
+		session.setAttribute("mode", mode);
+		session.setAttribute("isWordValid", true);
+
+		request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+	}
+	
+	public void tryGuessMultiplayer(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+			throws IOException {
+		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
+		
+		Game wordToFind = (Game) session.getAttribute("word");
+		Category category = (Category) session.getAttribute("category");
+		int triesLeft = (int) session.getAttribute("triesLeft");
+		String currentStateAsStr = (String) session.getAttribute("currentState");
+		boolean isFinished = (boolean) session.getAttribute("isFinished");
+		String mode = (String) session.getAttribute("mode");
+		char guess = request.getParameter("guess").charAt(0);
+		char[] currentState = currentStateAsStr.toCharArray();
+		usedCharacters.add(guess);
+
+		if (contains(wordToFind, guess)) {
+			String wordToReturn = putLetterOnPlace(wordToFind, guess, currentState);
+			wordsRepository.getHistory().put(wordToFind,
+					new History(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
+
+			session.setAttribute("currentState", wordToReturn);
+			
+			if (isWordGuessed(wordToFind, wordToReturn)) {
+
+				wordsRepository.getHistory().get(wordToFind).setFinished(true);
+				session.setAttribute("isFinished", true);
+				session.setAttribute("gameStatus", "Congratulations! You Won!");
+			}
+			response.sendRedirect("/multiplayerStarted.jsp");
+		} else {
+			triesLeft--;
+			wordsRepository.getHistory().put(wordToFind,
+					new History(currentStateAsStr, triesLeft, category, usedCharacters, isFinished, mode));
+
+			session.setAttribute("triesLeft", triesLeft);
+			if (checkFailedTries(triesLeft)) {
+				wordsRepository.getHistory().get(wordToFind).setFinished(true);
+				session.setAttribute("isFinished", true);
+				session.setAttribute("gameStatus", "HAHAHA You lost! The word was " + wordToFind.getWord() + ".");
+			}
+			response.sendRedirect("/multiplayerStarted.jsp");
+		}
 	}
 }

@@ -56,7 +56,6 @@
 						<button type="submit" name="action" value="resume" 
 						<%= history.isFinished() ? "disabled" : "" %>>Resume Game</button>
 					</form>
-					<%System.out.println(game.getWord() + " -.-* " +history.getWordState()); %>
 				</td>
 			</tr>
 			<%

@@ -57,48 +57,9 @@ public class MultiPlayerGameStarted extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-		
-
-		
-		Game wordToFind = (Game) session.getAttribute("word");
-		Category category = (Category) session.getAttribute("category");
-		int triesLeft = (int) session.getAttribute("triesLeft");
-		String currentStateAsStr = (String) session.getAttribute("currentState");
-		boolean isFinished = (boolean) session.getAttribute("isFinished");
-		String mode = (String) session.getAttribute("mode");
-		char guess = request.getParameter("guess").charAt(0);
-		char[] currentState = currentStateAsStr.toCharArray();
-		usedCharacters.add(guess);
-
-
-		if (gameService.contains(wordToFind, guess)) {
-			String wordToReturn = gameService.putLetterOnPlace(wordToFind, guess, currentState);
-			history.put(wordToFind,
-					new History(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
-
-			session.setAttribute("currentState", wordToReturn);
-			
-			if (gameService.isWordGuessed(wordToFind, wordToReturn)) {
-
-				history.get(wordToFind).setFinished(true);
-				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "Congratulations! You Won!");
-			}
-			response.sendRedirect("/multiplayerStarted.jsp");
-		} else {
-			triesLeft--;
-			history.put(wordToFind,
-					new History(currentStateAsStr, triesLeft, category, usedCharacters, isFinished, mode));
-
-			session.setAttribute("triesLeft", triesLeft);
-			if (gameService.checkFailedTries(triesLeft)) {
-				history.get(wordToFind).setFinished(true);
-				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "HAHAHA You lost! The word was " + wordToFind.getWord() + ".");
-			}
-			response.sendRedirect("/multiplayerStarted.jsp");
-		}
+		gameService.tryGuessMultiplayer(request, response, session);
 	}
+
+	
 
 }
