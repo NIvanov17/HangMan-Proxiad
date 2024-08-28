@@ -15,6 +15,8 @@ import model.History;
 import repository.WordsRepository;
 
 public class GameService {
+	private static final String GAME_STATUS_LOSS = "HAHAHA You lost! The word was ";
+	private static final String CONGRATULATIONS_YOU_WON = "Congratulations! You Won!";
 	private static final int SMALL_Z = 122;
 	private static final int SMALL_A = 97;
 	private static GameService gameService;
@@ -86,7 +88,6 @@ public class GameService {
 			} else {
 				sb.append('_');
 			}
-			// System.out.println(sb.toString());
 		}
 
 		String currentWordWithSpaces = wordWithSpaces(sb.toString().trim());
@@ -113,8 +114,6 @@ public class GameService {
 		game = wordsRepository.getRandomGame();
 		usedCharacters.removeAll(usedCharacters);
 		String currentState = wordWithSpaces(new String(wordToReturn(game.getWord())));
-		System.out.println("New word after restart: " + game.getWord());
-		System.out.println("Restart method called and clean the used: " + usedCharacters);
 		if (wordsRepository.getHistory().containsKey(game)) {
 			game = wordsRepository.getRandomGame();
 		}
@@ -210,7 +209,7 @@ public class GameService {
 
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "Congratulations! You Won!");
+				session.setAttribute("gameStatus", CONGRATULATIONS_YOU_WON);
 			}
 			response.sendRedirect("/gameStarted.jsp");
 		} else {
@@ -222,7 +221,7 @@ public class GameService {
 			if (checkFailedTries(triesLeft)) {
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "HAHAHA You lost! The word was " + wordToFind.getWord() + ".");
+				session.setAttribute("gameStatus", GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
 			response.sendRedirect("/gameStarted.jsp");
 		}
