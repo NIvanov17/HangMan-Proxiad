@@ -1,99 +1,285 @@
 package service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import jakarta.servlet.http.HttpSession;
+import model.Game;
+import model.History;
+import repository.WordsRepository;
 
 class GameServiceTest {
 
-	@Test
-	void testGetGameService() {
-		fail("Not yet implemented");
+	private static final String TEST_WORD = "test";
+
+	private static final String TEST_WORD_REPEATING_FIRST_LETTER = "testing";
+
+	private static final String TEST_WORD_REPEATING_LAST_LETTER = "banana";
+
+	@Mock
+	private HttpSession session;
+	
+	@Mock
+	private WordsRepository wordsRepository;
+
+	@InjectMocks
+	private GameService gameService;
+
+	@BeforeEach
+	public void setUp() {
+		gameService = new GameService(wordsRepository);
 	}
 
 	@Test
-	void testWordWithSpacesGame() {
-		fail("Not yet implemented");
+	void testWordWithSpacesGameShouldReturnWord() {
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+
+		assertThat(gameService.wordWithSpaces(game)).isEqualTo("t e s t");
 	}
 
 	@Test
-	void testWordToReturn() {
-		fail("Not yet implemented");
+	void testWordWithSpacesGameShouldThrowNull() {
+		Game game = new Game();
+		game.setWord(null);
+
+		assertThatThrownBy(() -> gameService.wordWithSpaces(game)).isInstanceOf(NullPointerException.class);
 	}
 
 	@Test
-	void testContains() {
-		fail("Not yet implemented");
+	void testWordToReturnCorrect() {
+		assertThat(gameService.wordToReturn(TEST_WORD)).containsExactly('t', '_', '_', 't');
 	}
 
 	@Test
-	void testPutLetterOnPlace() {
-		fail("Not yet implemented");
+	void testWordToReturnWithRepeatingFirstLetter() {
+		assertThat(gameService.wordToReturn(TEST_WORD_REPEATING_FIRST_LETTER)).containsExactly('t', '_', '_', 't', '_',
+				'_', 'g');
+	}
+
+	@Test
+	void testWordToReturnWithRepeatingLastLetter() {
+		assertThat(gameService.wordToReturn(TEST_WORD_REPEATING_LAST_LETTER)).containsExactly('b', 'a', '_', 'a', '_',
+				'a');
+	}
+
+	@Test
+	void testContainsShouldReturnTrue() {
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+
+		assertThat(gameService.contains(game, 'e')).isTrue();
+	}
+
+	@Test
+	void testContainsShouldReturnFalse() {
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+
+		assertThat(gameService.contains(game, 'x')).isFalse();
+	}
+
+	@Test
+	void testPutLetterOnPlaceSingleLetter() {
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+		char guess = 'e';
+		char[] currentState = { 't', ' ', '_', ' ', '_', ' ', 't' };
+
+		String res = gameService.putLetterOnPlace(game, guess, currentState);
+
+		assertThat(res).isEqualTo("t e _ t");
+	}
+
+	@Test
+	void testPutLetterOnPlaceManyLetters() {
+		Game game = new Game();
+		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
+		char guess = 'e';
+		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
+
+		String res = gameService.putLetterOnPlace(game, guess, currentState);
+
+		assertThat(res).isEqualTo("t _ _ t _ _ g");
+	}
+
+	@Test
+	void testPutLetterOnPlaceDoesntMatch() {
+		Game game = new Game();
+		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
+		char guess = 'x';
+		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
+
+		String res = gameService.putLetterOnPlace(game, guess, currentState);
+
+		assertThat(res).isEqualTo("t _ _ t _ _ g");
+	}
+
+	@Test
+	void testPutLetterOnPlaceWithDigit() {
+		Game game = new Game();
+		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
+		char guess = '5';
+		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
+
+		String res = gameService.putLetterOnPlace(game, guess, currentState);
+
+		assertThat(res).isEqualTo("t _ _ t _ _ g");
 	}
 
 	@Test
 	void testCheckFailedTries() {
-		fail("Not yet implemented");
+		assertThat(gameService.checkFailedTries(0)).isTrue();
+	}
+
+	@Test
+	void testCheckFailedTriesFail() {
+		assertThat(gameService.checkFailedTries(1)).isFalse();
 	}
 
 	@Test
 	void testIsWordGuessed() {
-		fail("Not yet implemented");
+		Game game = new Game();
+		game.setWord("t e s t");
+		
+		assertThat(gameService.isWordGuessed(game, TEST_WORD))
+		.isTrue();
+	}
+	
+	@Test
+	void testIsWordGuessedFailed() {
+		Game game = new Game();
+		game.setWord("t _ s t");
+		
+		assertThat(gameService.isWordGuessed(game, TEST_WORD))
+		.isFalse();
 	}
 
 	@Test
 	void testGetFirstLetter() {
-		fail("Not yet implemented");
+		assertThat(gameService.getFirstLetter(TEST_WORD))
+		.isEqualTo('t');
 	}
 
 	@Test
 	void testGetLastLetter() {
-		fail("Not yet implemented");
+		assertThat(gameService.getLastLetter(TEST_WORD))
+		.isEqualTo('t');
 	}
+	
 
-	@Test
-	void testRestartGame() {
-		fail("Not yet implemented");
-	}
 
-	@Test
-	void testWordWithSpacesString() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	void testRestartGame() {
+//		Game game = new Game();
+//		game.setWord(TEST_WORD);
+//		Set<Character> usedCharacters = new HashSet<Character>();
+//		usedCharacters.add('a');
+//		
+//		when(wordsRepository.getRandomGame()).thenReturn(game);
+//		when(wordsRepository.getHistory()).thenReturn(new HashMap<>());
+//		
+//		verify(wordsRepository,times(1)).getRandomGame();
+//		verify(session).setAttribute(TEST_WORD, TEST_WORD);
+//		verify(session).setAttribute("currentState", gameService.wordWithSpaces(new String(gameService.wordToReturn(game.getWord()))));
+//		verify(session).setAttribute("triesLeft", 6);
+//		verify(session).setAttribute("gameStatus", "");
+//		verify(session).setAttribute("isFinished", false);
+//		assertTrue(usedCharacters.isEmpty());
+//	
+//	
+//	}
 
-	@Test
-	void testResumeGame() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testNewGameStarted() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testTryGuess() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testIsWordValid() {
-		fail("Not yet implemented");
+		assertThat(gameService.isWordValid(TEST_WORD))
+		.isTrue();
+	}
+	
+	@Test
+	void testIsWordValidFailed() {
+		assertThat(gameService.isWordValid("aaa"))
+		.isFalse();
+	}
+	
+	@Test
+	void testIsWordValidFailedWithTwoLetters() {
+		assertThat(gameService.isWordValid("aa"))
+		.isFalse();
 	}
 
 	@Test
 	void testHistoryContainsWord() {
-		fail("Not yet implemented");
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+		Map<Game,History> history = new HashMap<>();
+		history.put(game, null);
+		
+		assertThat(gameService.historyContainsWord(history, TEST_WORD))
+		.isTrue();
 	}
-
+	
 	@Test
-	void testPrepareWordToBeDisplayed() {
-		fail("Not yet implemented");
+	void testHistoryContainsWordFailed() {
+		Game game = new Game();
+		game.setWord(TEST_WORD);
+		Map<Game,History> history = new HashMap<>();
+		history.put(game, null);
+		
+		assertThat(gameService.historyContainsWord(history, TEST_WORD_REPEATING_FIRST_LETTER))
+		.isFalse();
 	}
-
+	
 	@Test
-	void testTryGuessMultiplayer() {
-		fail("Not yet implemented");
+	void testcontainsOtherLetters() {
+		
+		String word = TEST_WORD_REPEATING_FIRST_LETTER;
+		char firstLetter = gameService.getFirstLetter(word);
+		char lastLetter = gameService.getLastLetter(word);
+		
+		assertThat(gameService.containsOtherLetters(word,firstLetter,lastLetter))
+		.isTrue();
 	}
+	
+	@Test
+	void testcontainsOtherLettersTwoLetters() {
+		
+		String word = "aa";
+		char firstLetter = gameService.getFirstLetter(word);
+		char lastLetter = gameService.getLastLetter(word);
+		
+		assertThat(gameService.containsOtherLetters(word,firstLetter,lastLetter))
+		.isFalse();
+	}
+	
+	@Test
+	void testContainsOtherLettersThreeLettersFail() {
+		
+		String word = "aab";
+		char firstLetter = gameService.getFirstLetter(word);
+		char lastLetter = gameService.getLastLetter(word);
+		
+		assertThat(gameService.containsOtherLetters(word,firstLetter,lastLetter))
+		.isFalse();
+	}
+	
+	
+	
 
 }

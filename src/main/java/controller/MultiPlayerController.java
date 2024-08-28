@@ -63,6 +63,7 @@ public class MultiPlayerController extends HttpServlet {
 		boolean isValid = true;
 		String errorMessage = "";
 		String wordToGuess = (String) request.getParameter("wordToGuess");
+
 		if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);

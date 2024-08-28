@@ -61,8 +61,9 @@ select#category {
 		%>
 
 		<form action="/multiPlayer" method="post">
-			<label for="wordToGuess">Enter word:</label> <input type="text"
-				id="wordToGuess" name="wordToGuess" /> <label for="category">Select
+			<label for="wordToGuess">Enter word:</label> 
+			<input type="text" id="wordToGuess" name="wordToGuess" /> 
+			<label for="category">Select
 				Category:</label> <select id="category" name="category" required>
 				<%
 				for (Category category : Category.values()) {

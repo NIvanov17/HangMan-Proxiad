@@ -20,19 +20,13 @@ public class GameService {
 	private static final int SMALL_Z = 122;
 	private static final int SMALL_A = 97;
 	private static GameService gameService;
-	private static WordsRepository wordsRepository;
+	private WordsRepository wordsRepository;
 	private Game game;
 
-	private GameService(WordsRepository wordsRepository) {
+	public GameService(WordsRepository wordsRepository) {
 		this.wordsRepository = wordsRepository;
 	}
 
-	public static GameService getGameService() {
-		if (gameService == null) {
-			gameService = new GameService(wordsRepository);
-		}
-		return gameService;
-	}
 
 	public String wordWithSpaces(Game wordWithoutSpaces) {
 		StringBuilder sb = new StringBuilder();
@@ -117,7 +111,6 @@ public class GameService {
 		if (wordsRepository.getHistory().containsKey(game)) {
 			game = wordsRepository.getRandomGame();
 		}
-		String word = game.getWord();
 		session.setAttribute("word", game.getWord());
 		session.setAttribute("currentState", currentState);
 		session.setAttribute("triesLeft", 6);
@@ -227,19 +220,20 @@ public class GameService {
 		}
 	}
 
-	private boolean containsOtherLetters(String wordToGuess, char firstLetter, char lastLetter) {
+	public boolean containsOtherLetters(String wordToGuess, char firstLetter, char lastLetter) {
+		boolean isValid = false;
 		for (char letter : wordToGuess.toCharArray()) {
-			if (letter != firstLetter && letter != lastLetter) {
-				return true;
-			} else if (firstLetter != lastLetter) {
+			if (letter != firstLetter && letter != lastLetter && wordToGuess.length() > 3) {
+				isValid = true;
+			} else if (firstLetter != lastLetter  && wordToGuess.length() > 3) {
 				if (letter != firstLetter) {
-					return true;
-				} else if (letter != lastLetter) {
-					return true;
+					isValid = true;
+				} else if (letter != lastLetter  && wordToGuess.length() > 3) {
+					isValid = true;
 				}
 			}
 		}
-		return false;
+		return isValid;
 	}
 
 	public boolean isWordValid(String wordToGuess) {
@@ -317,7 +311,7 @@ public class GameService {
 
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "Congratulations! You Won!");
+				session.setAttribute("gameStatus", CONGRATULATIONS_YOU_WON);
 			}
 			response.sendRedirect("/multiplayerStarted.jsp");
 		} else {
@@ -329,7 +323,7 @@ public class GameService {
 			if (checkFailedTries(triesLeft)) {
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", "HAHAHA You lost! The word was " + wordToFind.getWord() + ".");
+				session.setAttribute("gameStatus", GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
 			response.sendRedirect("/multiplayerStarted.jsp");
 		}
