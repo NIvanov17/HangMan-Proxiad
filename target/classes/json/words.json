@@ -1,0 +1,107 @@
+[
+	{
+		"id": 1,
+		"word": "apple",
+		"category": "FRUITS"
+	},
+	{
+		"id": 2,
+		"word": "orange",
+		"category": "FRUITS"
+	},
+	{
+		"id": 3,
+		"word": "banana",
+		"category": "FRUITS"
+	},
+	{
+		"id": 4,
+		"word": "pineapple",
+		"category": "FRUITS"
+	},
+	{
+		"id": 5,
+		"word": "tomato",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 6,
+		"word": "cucumber",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 7,
+		"word": "lettuce",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 8,
+		"word": "carrot",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 9,
+		"word": "garlic",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 10,
+		"word": "pumpkin",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 11,
+		"word": "rabbit",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 12,
+		"word": "gorilla",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 13,
+		"word": "hippopotamus",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 14,
+		"word": "monkey",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 15,
+		"word": "desk",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 16,
+		"word": "table",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 17,
+		"word": "sofa",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 18,
+		"word": "headphones",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 19,
+		"word": "monitor",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 20,
+		"word": "keyboard",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 21,
+		"word": "screen",
+		"category": "TECHNOLOGY"
+	}
+]
