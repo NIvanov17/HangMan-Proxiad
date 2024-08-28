@@ -26,7 +26,6 @@ public class MultiPlayerController extends HttpServlet {
 
 	private Map<Game, History> history;
 
-//add history and check in the if statement is this game appears in the history.
 	public MultiPlayerController() {
 
 	}
@@ -81,30 +80,9 @@ public class MultiPlayerController extends HttpServlet {
 		String categoryParam = request.getParameter("category");
 		Category category = Category.valueOf(categoryParam);
 
-		Game game = new Game();
-		game = game.createNewGame(wordToGuess, category);
-
-		String wordWithoutSpaces = new String(gameService.wordToReturn(wordToGuess));
-		String wordToReturn = gameService.wordWithSpaces(wordWithoutSpaces);
-		char firstLetter = gameService.getFirstLetter(wordWithoutSpaces);
-		char lastLetter = gameService.getLastLetter(wordWithoutSpaces);
-		Set<Character> usedCharacters = new HashSet<Character>();
-		usedCharacters.add(firstLetter);
-		usedCharacters.add(lastLetter);
-		int triesLeft = 6;
-		String mode = "Multiplayer";
-
-		session.setAttribute("word", game);
-		session.setAttribute("category", category);
-		session.setAttribute("triesLeft", triesLeft);
-		session.setAttribute("currentState", wordToReturn);
-		session.setAttribute("isFinished", false);
-		session.setAttribute("usedCharacters", usedCharacters);
-		session.setAttribute("gameStatus", "");
-		session.setAttribute("mode", mode);
-		session.setAttribute("isWordValid", true);
-//		session.setAttribute("errorMessage", errorMessage);
-		request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+		gameService.prepareWordToBeDisplayed(request, response, session, wordToGuess, category);
 	}
+
+	
 
 }
