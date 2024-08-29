@@ -19,14 +19,12 @@ public class GameService {
 	private static final String CONGRATULATIONS_YOU_WON = "Congratulations! You Won!";
 	private static final int SMALL_Z = 122;
 	private static final int SMALL_A = 97;
-	private static GameService gameService;
 	private WordsRepository wordsRepository;
 	private Game game;
 
 	public GameService(WordsRepository wordsRepository) {
 		this.wordsRepository = wordsRepository;
 	}
-
 
 	public String wordWithSpaces(Game wordWithoutSpaces) {
 		StringBuilder sb = new StringBuilder();
@@ -146,9 +144,15 @@ public class GameService {
 		session.setAttribute("isFinished", gamesHistory.isFinished());
 		session.setAttribute("usedCharacters", gamesHistory.getUsedChars());
 		session.setAttribute("wordCategory", gamesHistory.getCategory());
+		session.setAttribute("mode", gamesHistory.getMode());
 		session.setAttribute("gameStatus", "");
 		// forward
-		request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
+		if (gamesHistory.getMode().equals("Single Player")) {
+			request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
+		} else {
+			request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+		}
+
 	}
 
 	public void newGameStarted(HttpServletRequest request, HttpServletResponse response, HttpSession session,
@@ -180,12 +184,13 @@ public class GameService {
 	}
 
 	public void tryGuess(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			Set<Character> usedCharacters, Map<Game, History> history) throws IOException {
+			Map<Game, History> history) throws IOException {
 		Game wordToFind = (Game) session.getAttribute("word");
 		int triesLeft = (int) session.getAttribute("triesLeft");
 		String currentStateAsStr = (String) session.getAttribute("currentState");
 		boolean isFinished = (boolean) session.getAttribute("isFinished");
 		Category wordCategory = (Category) session.getAttribute("wordCategory");
+		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
 		String mode = (String) session.getAttribute("mode");
 		char guess = request.getParameter("guess").charAt(0);
 		char[] currentState = currentStateAsStr.toCharArray();
@@ -225,10 +230,10 @@ public class GameService {
 		for (char letter : wordToGuess.toCharArray()) {
 			if (letter != firstLetter && letter != lastLetter && wordToGuess.length() > 3) {
 				isValid = true;
-			} else if (firstLetter != lastLetter  && wordToGuess.length() > 3) {
+			} else if (firstLetter != lastLetter && wordToGuess.length() > 3) {
 				if (letter != firstLetter) {
 					isValid = true;
-				} else if (letter != lastLetter  && wordToGuess.length() > 3) {
+				} else if (letter != lastLetter && wordToGuess.length() > 3) {
 					isValid = true;
 				}
 			}
@@ -251,13 +256,13 @@ public class GameService {
 
 	public boolean historyContainsWord(Map<Game, History> history, String wordToGuess) {
 		for (Map.Entry<Game, History> e : history.entrySet()) {
-	        if (e.getKey().getWord().equals(wordToGuess)) {
-	            return true; 
-	        }
-	    }
-	    return false; 
+			if (e.getKey().getWord().equals(wordToGuess)) {
+				return true;
+			}
+		}
+		return false;
 	}
-	
+
 	public void prepareWordToBeDisplayed(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			String wordToGuess, Category category) throws ServletException, IOException {
 		Game game = new Game();
@@ -285,11 +290,10 @@ public class GameService {
 
 		request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
 	}
-	
+
 	public void tryGuessMultiplayer(HttpServletRequest request, HttpServletResponse response, HttpSession session)
 			throws IOException {
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-		
 		Game wordToFind = (Game) session.getAttribute("word");
 		Category category = (Category) session.getAttribute("category");
 		int triesLeft = (int) session.getAttribute("triesLeft");
@@ -306,7 +310,7 @@ public class GameService {
 					new History(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
 
 			session.setAttribute("currentState", wordToReturn);
-			
+
 			if (isWordGuessed(wordToFind, wordToReturn)) {
 
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);

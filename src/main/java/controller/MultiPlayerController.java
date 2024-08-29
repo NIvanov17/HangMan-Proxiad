@@ -61,17 +61,26 @@ public class MultiPlayerController extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		boolean isValid = true;
-		String errorMessage = "";
 		String wordToGuess = (String) request.getParameter("wordToGuess");
 
-		if (!gameService.isWordValid(wordToGuess)) {
+		String action = request.getParameter("action");
+		if ("resume".equals(action)) {
+			gameService.resumeGame(request, response, session, history);
+
+		}
+		if(wordToGuess == "") {
+			isValid = false;
+			session.setAttribute("isWordValid", isValid);
+			session.setAttribute("errorMessage", "The word field can't be empty!");
+			response.sendRedirect("/multiPlayer");
+			return;
+		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", "The word should contains more than 3 different symbols!");
 			response.sendRedirect("/multiPlayer");
 			return;
-		}
-		if (gameService.historyContainsWord(history, wordToGuess)) {
+		}else if (gameService.historyContainsWord(history, wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", "This word is already in history. :(");
@@ -83,7 +92,5 @@ public class MultiPlayerController extends HttpServlet {
 
 		gameService.prepareWordToBeDisplayed(request, response, session, wordToGuess, category);
 	}
-
-	
 
 }

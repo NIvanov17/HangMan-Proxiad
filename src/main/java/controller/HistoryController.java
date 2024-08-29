@@ -36,7 +36,6 @@ public class HistoryController extends HttpServlet {
 	    public void init(ServletConfig config) throws ServletException {
 	        super.init(config);
 
-	        // If the setter injection did not work, initialize manually
 	        if (this.wordsRepository == null) {
 	            ApplicationContext context = (ApplicationContext) config.getServletContext().getAttribute("springContext");
 	            if (context != null) {
@@ -57,11 +56,6 @@ public class HistoryController extends HttpServlet {
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		doGet(request, response);
-	}
 
 
 

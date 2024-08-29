@@ -41,21 +41,38 @@
 			%>
 			<tr>
 				<td><%=game.getId()%></td>
-				<td><%=history.getMode() %></td>
-				<td><%= history.getTriesLeft()%></td>
-				<td><%=history.getCategory() %></td>
-				<td><%= history.isFinished() ? game.getWord() : history.getWordState()%></td>
-				<td><%=history.isFinished() %></td>
+				<td><%=history.getMode()%></td>
+				<td><%=history.getTriesLeft()%></td>
+				<td><%=history.getCategory()%></td>
+				<td><%=history.isFinished() ? game.getWord() : history.getWordState()%></td>
+				<td><%=history.isFinished()%></td>
 				<td>
+					<%
+					if (history.getMode().equals("Single Player")) {
+					%>
 					<form action="/hangMan" method="get">
-						<input type="hidden" name="currentWord" value="<%= game.getWord() %>" />
-    					<input type="hidden" name="currentWordState" value="<%= history.getWordState() %>" />
-    					<input type="hidden" name="triesLeft" value="<%= history.getTriesLeft() %>" />
-    					<input type="hidden" name="usedCharacters" value="<%= history.getUsedChars() %>"/>
-    					<input type="hidden" name="category" value="<%= history.getCategory()%>"/>
-						<button type="submit" name="action" value="resume" 
-						<%= history.isFinished() ? "disabled" : "" %>>Resume Game</button>
-					</form>
+						<input type="hidden" name="currentWord"
+							value="<%=game.getWord()%>" /> <input type="hidden"
+							name="currentWordState" value="<%=history.getWordState()%>" /> <input
+							type="hidden" name="triesLeft"
+							value="<%=history.getTriesLeft()%>" /> <input type="hidden"
+							name="usedCharacters" value="<%=history.getUsedChars()%>" /> <input
+							type="hidden" name="category" value="<%=history.getCategory()%>" />
+						<button type="submit" name="action" value="resume"
+							<%=history.isFinished() ? "disabled" : ""%>>Resume Game</button>
+					</form> 
+					<%
+ 						} else {
+ 					%>
+					<form action="/multiPlayer" method="post">
+						<input type="hidden" name="currentWord" value="<%=game.getWord()%>" /> 
+						<input type="hidden" name="currentWordState" value="<%=history.getWordState()%>" /> 
+						<input type="hidden" name="triesLeft" value="<%=history.getTriesLeft()%>" /> 
+						<input type="hidden" name="usedCharacters" value="<%=history.getUsedChars()%>" /> 
+						<input type="hidden" name="category" value="<%=history.getCategory()%>" />
+						<button type="submit" name="action" value="resume"<%=history.isFinished() ? "disabled" : ""%>>Resume Game</button>
+					</form> 
+					<%}%>
 				</td>
 			</tr>
 			<%

@@ -12,8 +12,6 @@ import jakarta.servlet.annotation.WebServlet;
 public class WelcomeController extends HttpServlet {
 
 	public WelcomeController() {
-		System.out.println("Welcome Servlet called!");
-		
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

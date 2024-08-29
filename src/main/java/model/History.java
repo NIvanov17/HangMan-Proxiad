@@ -29,7 +29,6 @@ public class History {
 		this.triesLeft = triesLeft;
 		this.category = category;
 		this.usedChars.clear();
-		this.usedChars.addAll(usedChars);
 		this.setFinished(false);
 	}
 

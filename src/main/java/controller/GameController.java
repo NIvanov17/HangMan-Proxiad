@@ -57,7 +57,12 @@ public class GameController extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		String action = request.getParameter("action");
-		if ("resume".equals(action)) {
+		if ("restart".equals(action)) {
+			Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
+			gameService.restartGame(session, usedCharacters);
+			response.sendRedirect("/hangMan");
+//			return;
+		} else if ("resume".equals(action)) {
 			gameService.resumeGame(request, response, session, history);
 
 		} else {
@@ -69,19 +74,8 @@ public class GameController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		String action = request.getParameter("action");
 		HttpSession session = request.getSession();
-		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-
-		if ("restart".equals(action)) {
-
-			gameService.restartGame(session, usedCharacters);
-			// redirect
-			response.sendRedirect("/hangMan");
-			return;
-		}
-		gameService.tryGuess(request, response, session, usedCharacters, history);
+		gameService.tryGuess(request, response, session, history);
 
 	}
 

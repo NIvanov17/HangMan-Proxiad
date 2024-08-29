@@ -16,7 +16,6 @@
 body {
 	background-color: #f4f4f4;
 }
-
 #homeButton {
 	background-color: orange;
 	background-color: orange;
@@ -42,15 +41,14 @@ body {
 	String currentState = (String) session.getAttribute("currentState");
 	String gameStatus = (String) session.getAttribute("gameStatus");
 	Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-	Category wordCategory = (Category) session.getAttribute("wordCategory");
-	String mode = (String) session.getAttribute("mode");
+	Category wordCategory = (Category)session.getAttribute("wordCategory");
+	String mode = (String)session.getAttribute("mode");
 	%>
 	<div class="container">
 
 		<h1>Word to Guess: ${currentState}</h1>
 		<h2>Tries left: ${triesLeft}</h2>
 		<h3>Category: ${wordCategory}</h3>
-		<h3>Mode: ${mode}</h3>
 		<h2>${gameStatus}</h2>
 		<div>
 			<%
@@ -73,26 +71,12 @@ body {
 		<%
 		if (isFinished) {
 		%>
-
-		<%
-		if (mode.equals("Single Player")) {
-		%>
-		<form action="/hangMan" method="get">
-			<button type="submit" name="action" value="restart">Restart
-				Single Player Game</button>
+		<form action="/hangMan" method="post">
+			<button type="submit" name="action" value="restart">Restart Single Player
+				Game</button>
 		</form>
 		<%
-		} else {
-		%>
-		<form action="/multiPlayer" method="get">
-			<button type="submit" name="action" value="restart">Restart
-				Multiplayer Game</button>
-		</form>
-		<%
-		}
-		%>
-		<%
-		}
+		} 
 		%>
 		<form action="/welcome" method="get">
 			<button id="homeButton" type="submit" name="toHomePage">Home
