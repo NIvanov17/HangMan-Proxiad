@@ -124,6 +124,44 @@ public class GameService {
 		}
 		return sb.toString().trim();
 	}
+	
+	public boolean containsOtherLetters(String wordToGuess, char firstLetter, char lastLetter) {
+		boolean isValid = false;
+		for (char letter : wordToGuess.toCharArray()) {
+			if (letter != firstLetter && letter != lastLetter && wordToGuess.length() > 3) {
+				isValid = true;
+			} else if (firstLetter != lastLetter && wordToGuess.length() > 3) {
+				if (letter != firstLetter) {
+					isValid = true;
+				} else if (letter != lastLetter && wordToGuess.length() > 3) {
+					isValid = true;
+				}
+			}
+		}
+		return isValid;
+	}
+
+	public boolean isWordValid(String wordToGuess) {
+		char firstLetter = getFirstLetter(wordToGuess);
+		char lastLetter = getLastLetter(wordToGuess);
+		if (wordToGuess.length() < 3) {
+			return false;
+		}
+		if (containsOtherLetters(wordToGuess, firstLetter, lastLetter)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean historyContainsWord(Map<Game, History> history, String wordToGuess) {
+		for (Map.Entry<Game, History> e : history.entrySet()) {
+			if (e.getKey().getWord().equals(wordToGuess)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void resumeGame(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			Map<Game, History> history) throws ServletException, IOException {
@@ -149,8 +187,10 @@ public class GameService {
 		// forward
 		if (gamesHistory.getMode().equals("Single Player")) {
 			request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
+
 		} else {
 			request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+
 		}
 
 	}
@@ -225,43 +265,7 @@ public class GameService {
 		}
 	}
 
-	public boolean containsOtherLetters(String wordToGuess, char firstLetter, char lastLetter) {
-		boolean isValid = false;
-		for (char letter : wordToGuess.toCharArray()) {
-			if (letter != firstLetter && letter != lastLetter && wordToGuess.length() > 3) {
-				isValid = true;
-			} else if (firstLetter != lastLetter && wordToGuess.length() > 3) {
-				if (letter != firstLetter) {
-					isValid = true;
-				} else if (letter != lastLetter && wordToGuess.length() > 3) {
-					isValid = true;
-				}
-			}
-		}
-		return isValid;
-	}
 
-	public boolean isWordValid(String wordToGuess) {
-		char firstLetter = getFirstLetter(wordToGuess);
-		char lastLetter = getLastLetter(wordToGuess);
-		if (wordToGuess.length() < 3) {
-			return false;
-		}
-		if (containsOtherLetters(wordToGuess, firstLetter, lastLetter)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean historyContainsWord(Map<Game, History> history, String wordToGuess) {
-		for (Map.Entry<Game, History> e : history.entrySet()) {
-			if (e.getKey().getWord().equals(wordToGuess)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	public void prepareWordToBeDisplayed(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			String wordToGuess, Category category) throws ServletException, IOException {

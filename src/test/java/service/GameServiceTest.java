@@ -2,9 +2,15 @@ package service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +42,7 @@ class GameServiceTest {
 	@BeforeEach
 	public void setUp() {
 		gameService = new GameService(wordsRepository);
+		wordsRepository = WordsRepository.getWordRepository();
 	}
 
 	@Test
@@ -124,7 +131,7 @@ class GameServiceTest {
 	}
 
 	@Test
-	void testPutLetterOnPlaceWithDigit() {
+	void testPutLetterOnPlaceWithLetter() {
 		Game game = new Game();
 		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
 		char guess = '5';

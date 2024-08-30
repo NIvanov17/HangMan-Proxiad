@@ -1,5 +1,7 @@
 package model;
 
+
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
@@ -67,5 +69,20 @@ class HistoryTest {
 		assertThat(history.getUsedChars()).containsExactlyInAnyOrderElementsOf(newUsedChars);
 		assertThat(history.isFinished()).isFalse();
 	}
+	
+	@Test
+	void testSetUsedChars() {
+		char toSet = 'e';
+		Set<Character> charToSet = new HashSet<>();
+		charToSet.add(toSet);
+		
+		History newHistory = new History(wordState, triesLeft, category, new HashSet<>(), isFinished, mode);
+		
+		newHistory.setUsedChars(charToSet);
+		
+		assertThat(newHistory.getUsedChars()).contains(toSet);
+	}
+	
+	
 
 }
