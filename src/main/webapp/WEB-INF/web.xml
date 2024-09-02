@@ -4,10 +4,15 @@
 
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
-	
+
 	<listener>
-        <listener-class>config.AppInit</listener-class>
-    </listener>
+		<listener-class>config.AppInit</listener-class>
+	</listener>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.jsp</location>
+	</error-page>
 
 	<servlet>
 		<servlet-name>WelcomeController</servlet-name>

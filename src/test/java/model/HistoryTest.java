@@ -1,7 +1,5 @@
 package model;
 
-
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
@@ -69,20 +67,52 @@ class HistoryTest {
 		assertThat(history.getUsedChars()).containsExactlyInAnyOrderElementsOf(newUsedChars);
 		assertThat(history.isFinished()).isFalse();
 	}
-	
+
 	@Test
 	void testSetUsedChars() {
 		char toSet = 'e';
 		Set<Character> charToSet = new HashSet<>();
 		charToSet.add(toSet);
-		
+
 		History newHistory = new History(wordState, triesLeft, category, new HashSet<>(), isFinished, mode);
-		
+
 		newHistory.setUsedChars(charToSet);
-		
+
 		assertThat(newHistory.getUsedChars()).contains(toSet);
 	}
+
+	@Test
+	void testSetWordState() {
+		String wordToSet = "p e _ _ h";
+		history.setWordState(wordToSet);
+
+		assertThat(history.getWordState()).isEqualTo(wordToSet);
+	}
 	
+	@Test
+	void testSetTriesLeft() {
+		int triesToSet = 3;
+		history.setTriesLeft(triesToSet);
+
+		assertThat(history.getTriesLeft()).isEqualTo(triesToSet);
+	}
 	
+	@Test
+	void testSetCategory() {
+		Category categoryToSet = Category.ANIMALS;
+		history.setCategory(categoryToSet);
+		
+
+		assertThat(history.getCategory()).isEqualTo(categoryToSet);
+	}
+	
+	@Test
+	void testSetMode() {
+		String modeToSet = "Single player";
+		history.setMode(modeToSet);
+		
+
+		assertThat(history.getMode()).isEqualTo(modeToSet);
+	}
 
 }

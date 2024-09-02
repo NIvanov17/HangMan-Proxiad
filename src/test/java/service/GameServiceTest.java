@@ -2,11 +2,13 @@ package service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,9 +16,15 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import enums.Category;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.History;
@@ -31,7 +39,16 @@ class GameServiceTest {
 	private static final String TEST_WORD_REPEATING_LAST_LETTER = "banana";
 
 	@Mock
+	private HttpServletRequest request;
+
+	@Mock
+	private HttpServletResponse response;
+
+	@Mock
 	private HttpSession session;
+
+	@Mock
+	private RequestDispatcher requestDispatcher;
 
 	@Mock
 	private WordsRepository wordsRepository;
@@ -41,8 +58,14 @@ class GameServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		gameService = new GameService(wordsRepository);
+
+		request = mock(HttpServletRequest.class);
+		response = mock(HttpServletResponse.class);
+		session = mock(HttpSession.class);
+		requestDispatcher = mock(RequestDispatcher.class);
 		wordsRepository = WordsRepository.getWordRepository();
+		gameService = new GameService(wordsRepository);
+
 	}
 
 	@Test
@@ -156,7 +179,7 @@ class GameServiceTest {
 	void testIsWordGuessed() {
 		Game game = new Game();
 		game.setWord("test");
-		
+
 		String toCompare = gameService.wordWithSpaces(TEST_WORD);
 
 		assertThat(gameService.isWordGuessed(game, toCompare)).isTrue();
@@ -166,7 +189,7 @@ class GameServiceTest {
 	void testIsWordGuessedFailed() {
 		Game game = new Game();
 		game.setWord("t _ s t");
-		
+
 		String toCompare = gameService.wordWithSpaces(TEST_WORD);
 
 		assertThat(gameService.isWordGuessed(game, toCompare)).isFalse();
@@ -181,27 +204,6 @@ class GameServiceTest {
 	void testGetLastLetter() {
 		assertThat(gameService.getLastLetter(TEST_WORD)).isEqualTo('t');
 	}
-
-//	@Test
-//	void testRestartGame() {
-//		Game game = new Game();
-//		game.setWord(TEST_WORD);
-//		Set<Character> usedCharacters = new HashSet<Character>();
-//		usedCharacters.add('a');
-//		
-//		when(wordsRepository.getRandomGame()).thenReturn(game);
-//		when(wordsRepository.getHistory()).thenReturn(new HashMap<>());
-//		
-//		verify(wordsRepository,times(1)).getRandomGame();
-//		verify(session).setAttribute(TEST_WORD, TEST_WORD);
-//		verify(session).setAttribute("currentState", gameService.wordWithSpaces(new String(gameService.wordToReturn(game.getWord()))));
-//		verify(session).setAttribute("triesLeft", 6);
-//		verify(session).setAttribute("gameStatus", "");
-//		verify(session).setAttribute("isFinished", false);
-//		assertTrue(usedCharacters.isEmpty());
-//	
-//	
-//	}
 
 	@Test
 	void testIsWordValid() {
@@ -266,6 +268,94 @@ class GameServiceTest {
 		char lastLetter = gameService.getLastLetter(word);
 
 		assertThat(gameService.containsOtherLetters(word, firstLetter, lastLetter)).isFalse();
+	}
+
+	@Test
+	void testResumeGameSinglePlayer() throws ServletException, IOException {
+		Map<Game, History> history = new HashMap<>();
+		Game game = new Game();
+		game.setWord("apple");
+		game.setCategory(Category.FRUITS);
+		game.setId(1);
+
+		History gameHitory = new History("a _ _ _ e", 6, Category.FRUITS, new HashSet<>(Set.of('a', 'e')), false,
+				"Single Player");
+
+		history.put(game, gameHitory);
+
+		when(request.getParameter("currentWord")).thenReturn("apple");
+		when(request.getRequestDispatcher("/gameStarted.jsp")).thenReturn(requestDispatcher);
+
+		gameService.resumeGame(request, response, session, history);
+
+		verify(session).setAttribute("word", game);
+		verify(session).setAttribute("currentState", gameHitory.getWordState());
+		verify(session).setAttribute("triesLeft", gameHitory.getTriesLeft());
+		verify(session).setAttribute("isFinished", false);
+		verify(session).setAttribute("usedCharacters", gameHitory.getUsedChars());
+		verify(session).setAttribute("wordCategory", gameHitory.getCategory());
+		verify(session).setAttribute("mode", "Single Player");
+		verify(session).setAttribute("gameStatus", "");
+		verify(requestDispatcher).forward(request, response);
+	}
+
+	@Test
+	void testResumeGameMultiPlayer() throws ServletException, IOException {
+		Map<Game, History> history = new HashMap<>();
+		Game game = new Game();
+		game.setWord("apple");
+		game.setCategory(Category.FRUITS);
+		game.setId(1);
+
+		History gameHitory = new History("a _ _ _ e", 6, Category.FRUITS, new HashSet<>(Set.of('a', 'e')), false,
+				"MultiPlayer");
+
+		history.put(game, gameHitory);
+
+		when(request.getParameter("currentWord")).thenReturn("apple");
+		when(request.getRequestDispatcher("/multiplayerStarted.jsp")).thenReturn(requestDispatcher);
+
+		gameService.resumeGame(request, response, session, history);
+
+		verify(session).setAttribute("word", game);
+		verify(session).setAttribute("currentState", gameHitory.getWordState());
+		verify(session).setAttribute("triesLeft", gameHitory.getTriesLeft());
+		verify(session).setAttribute("isFinished", false);
+		verify(session).setAttribute("usedCharacters", gameHitory.getUsedChars());
+		verify(session).setAttribute("wordCategory", gameHitory.getCategory());
+		verify(session).setAttribute("mode", "MultiPlayer");
+		verify(session).setAttribute("gameStatus", "");
+		verify(requestDispatcher).forward(request, response);
+	}
+
+	@Test
+	void testPrepareWordToBeDisplayed() throws ServletException, IOException {
+
+		String wordToGuess = "peach";
+		ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
+		Set<Character> usedCharacters = new HashSet<>();
+		usedCharacters.add('p');
+		usedCharacters.add('h');
+
+		when(request.getRequestDispatcher("/multiplayerStarted.jsp")).thenReturn(requestDispatcher);
+
+		gameService.prepareWordToBeDisplayed(request, response, session, wordToGuess, Category.FRUITS);
+
+		verify(session).setAttribute(eq("word"), gameCaptor.capture());
+		verify(session).setAttribute("category", Category.FRUITS);
+		verify(session).setAttribute("triesLeft", 6);
+		verify(session).setAttribute("currentState", "p _ _ _ h");
+		verify(session).setAttribute("isFinished", false);
+		verify(session).setAttribute("usedCharacters", usedCharacters);
+		verify(session).setAttribute("gameStatus", "");
+		verify(session).setAttribute("mode", "Multiplayer");
+		verify(session).setAttribute("isWordValid", true);
+
+		verify(requestDispatcher).forward(request, response);
+
+		Game capturedGame = gameCaptor.getValue();
+		assertThat(capturedGame.getWord()).isEqualTo(wordToGuess);
+		assertThat(capturedGame.getCategory()).isEqualTo(Category.FRUITS);
 	}
 
 }

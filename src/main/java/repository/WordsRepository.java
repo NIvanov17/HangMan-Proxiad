@@ -22,6 +22,7 @@ public class WordsRepository {
 		gamesList = new ArrayList<>();
 		history = new HashMap<>();
 	}
+	
 
 	public static WordsRepository getWordRepository() {
 		if (wordsRepository == null) {
