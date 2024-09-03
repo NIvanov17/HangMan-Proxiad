@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import enums.Category;
+import enums.Commands;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,10 +16,6 @@ import model.History;
 import repository.WordsRepository;
 
 public class GameService {
-	private static final String GAME_STATUS_LOSS = "HAHAHA You lost! The word was ";
-	private static final String CONGRATULATIONS_YOU_WON = "Congratulations! You Won!";
-	private static final int SMALL_Z = 122;
-	private static final int SMALL_A = 97;
 	private WordsRepository wordsRepository;
 	private Game game;
 
@@ -73,7 +70,7 @@ public class GameService {
 		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
 
 		for (int i = 0; i < wordToFind.getWord().length(); i++) {
-			if (currentstateWithoutSpaces.charAt(i) >= SMALL_A && currentstateWithoutSpaces.charAt(i) <= SMALL_Z) {
+			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A && currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
 				sb.append(currentstateWithoutSpaces.charAt(i));
 			} else if (wordToFind.getWord().charAt(i) == guess) {
 				sb.append(wordToFind.getWord().charAt(i));
@@ -247,7 +244,7 @@ public class GameService {
 
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", CONGRATULATIONS_YOU_WON);
+				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 			}
 			response.sendRedirect("/gameStarted.jsp");
 		} else {
@@ -259,7 +256,7 @@ public class GameService {
 			if (checkFailedTries(triesLeft)) {
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
 			response.sendRedirect("/gameStarted.jsp");
 		}
@@ -319,7 +316,7 @@ public class GameService {
 
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", CONGRATULATIONS_YOU_WON);
+				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 			}
 			response.sendRedirect("/multiplayerStarted.jsp");
 		} else {
@@ -331,7 +328,7 @@ public class GameService {
 			if (checkFailedTries(triesLeft)) {
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
 			response.sendRedirect("/multiplayerStarted.jsp");
 		}
