@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import enums.Category;
+import enums.Commands;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -71,19 +72,19 @@ public class MultiPlayerController extends HttpServlet {
 		if (wordToGuess == "") {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
-			session.setAttribute("errorMessage", "The word field can't be empty!");
+			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
 			response.sendRedirect("/multiPlayer");
 			return;
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
-			session.setAttribute("errorMessage", "The word should contains more than 3 different symbols!");
+			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
 			response.sendRedirect("/multiPlayer");
 			return;
 		} else if (gameService.historyContainsWord(history, wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
-			session.setAttribute("errorMessage", "This word is already in history. :(");
+			session.setAttribute("errorMessage", Commands.WORD_EXISTING_IN_HISTORY);
 			response.sendRedirect("/multiPlayer");
 			return;
 		}

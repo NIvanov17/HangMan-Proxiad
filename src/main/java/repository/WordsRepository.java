@@ -50,7 +50,6 @@ public class WordsRepository {
 		List<Game> list = new ArrayList<>();
 		ObjectMapper objectMapper = new ObjectMapper();
 		String file = "json/words.json";
-		//inputStream because of the objectMapper
 		InputStream inputStream = WordsRepository.class.getClassLoader().getResourceAsStream(file);
 		Game[] gameArray = objectMapper.readValue(inputStream, Game[].class);
 
