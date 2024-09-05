@@ -36,7 +36,7 @@ class GameServiceTest {
 
 	private static final String TEST_WORD = "test";
 
-	private static final String TEST_WORD_REPEATING_FIRST_LETTER = "testing";
+	private static final String TESTING = "testing";
 
 	private static final String TEST_WORD_REPEATING_LAST_LETTER = "banana";
 
@@ -86,7 +86,7 @@ class GameServiceTest {
 
 	@Test
 	void testWordToReturnWithRepeatingFirstLetter() {
-		assertThat(gameService.wordToReturn(TEST_WORD_REPEATING_FIRST_LETTER)).containsExactly('t', '_', '_', 't', '_',
+		assertThat(gameService.wordToReturn(TESTING)).containsExactly('t', '_', '_', 't', '_',
 				'_', 'g');
 	}
 
@@ -139,7 +139,7 @@ class GameServiceTest {
 	@Test
 	void testPutLetterOnPlaceDoesntMatch() {
 		Game game = new Game();
-		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
+		game.setWord(TESTING);
 		char guess = 'x';
 		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
 
@@ -151,7 +151,7 @@ class GameServiceTest {
 	@Test
 	void testPutLetterOnPlaceWithLetter() {
 		Game game = new Game();
-		game.setWord(TEST_WORD_REPEATING_FIRST_LETTER);
+		game.setWord(TESTING);
 		char guess = '5';
 		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
 
@@ -232,37 +232,51 @@ class GameServiceTest {
 		Map<Game, History> history = new HashMap<>();
 		history.put(game, null);
 
-		assertThat(gameService.historyContainsWord(history, TEST_WORD_REPEATING_FIRST_LETTER)).isFalse();
+		assertThat(gameService.historyContainsWord(history, TESTING)).isFalse();
 	}
 
 	@Test
 	void testcontainsOtherLetters() {
 
-		String word = TEST_WORD_REPEATING_FIRST_LETTER;
+		String word = TESTING;
 		char firstLetter = gameService.getFirstLetter(word);
 		char lastLetter = gameService.getLastLetter(word);
 
-		assertThat(gameService.containsOtherLetters(word, firstLetter, lastLetter)).isTrue();
+		assertThat(gameService.containsOtherLetters(word)).isTrue();
+	}
+	
+	@Test
+	void testcontainsOtherLetters2() {
+
+		String word = "ttts";
+		char firstLetter = gameService.getFirstLetter(word);
+		char lastLetter = gameService.getLastLetter(word);
+
+		assertThat(gameService.containsOtherLetters(word)).isFalse();
+	}
+	
+	@Test
+	void testcontainsOtherLetters3() {
+
+		String word = "tssss";
+		char firstLetter = gameService.getFirstLetter(word);
+		char lastLetter = gameService.getLastLetter(word);
+
+		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
 	@Test
 	void testcontainsOtherLettersTwoLetters() {
-
 		String word = "aa";
-		char firstLetter = gameService.getFirstLetter(word);
-		char lastLetter = gameService.getLastLetter(word);
 
-		assertThat(gameService.containsOtherLetters(word, firstLetter, lastLetter)).isFalse();
+		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
 	@Test
 	void testContainsOtherLettersThreeLettersFail() {
-
 		String word = "aab";
-		char firstLetter = gameService.getFirstLetter(word);
-		char lastLetter = gameService.getLastLetter(word);
 
-		assertThat(gameService.containsOtherLetters(word, firstLetter, lastLetter)).isFalse();
+		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
 	@Test

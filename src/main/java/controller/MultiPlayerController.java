@@ -23,6 +23,8 @@ import service.GameService;
 
 public class MultiPlayerController extends HttpServlet {
 
+	private static final long serialVersionUID = 1L;
+
 	private GameService gameService;
 
 	private Map<Game, History> history;

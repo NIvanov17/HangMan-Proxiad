@@ -25,6 +25,10 @@ import service.GameService;
 
 public class GameController extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private GameService gameService;
 	private Map<Game, History> history;
 

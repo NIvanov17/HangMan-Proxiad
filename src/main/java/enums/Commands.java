@@ -8,4 +8,5 @@ public class Commands {
 	public static final String WORD_EXISTING_IN_HISTORY = "This word is already in history. :(";
 	public static final int SMALL_Z = 122;
 	public static final int SMALL_A = 97;
+	public static final int MIN_LENGHT = 3;
 }

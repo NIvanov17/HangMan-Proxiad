@@ -2,6 +2,7 @@ package service;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,7 +71,8 @@ public class GameService {
 		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
 
 		for (int i = 0; i < wordToFind.getWord().length(); i++) {
-			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A && currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
+			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A
+					&& currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
 				sb.append(currentstateWithoutSpaces.charAt(i));
 			} else if (wordToFind.getWord().charAt(i) == guess) {
 				sb.append(wordToFind.getWord().charAt(i));
@@ -121,34 +123,36 @@ public class GameService {
 		}
 		return sb.toString().trim();
 	}
-	
-	public boolean containsOtherLetters(String wordToGuess, char firstLetter, char lastLetter) {
-		boolean isValid = false;
-		for (char letter : wordToGuess.toCharArray()) {
-			if (letter != firstLetter && letter != lastLetter && wordToGuess.length() > 3) {
-				isValid = true;
-			} else if (firstLetter != lastLetter && wordToGuess.length() > 3) {
-				if (letter != firstLetter) {
-					isValid = true;
-				} else if (letter != lastLetter && wordToGuess.length() > 3) {
-					isValid = true;
-				}
-			}
+
+	public boolean containsOtherLetters(String wordToGuess) {
+		String copy = String.valueOf(wordToGuess);
+		copy = copy.replaceAll(Character.toString(getFirstLetter(wordToGuess)), "");
+		copy = copy.replaceAll(Character.toString(getLastLetter(wordToGuess)), "");
+		if (copy.isEmpty()) {
+			return false;
 		}
-		return isValid;
+		return true;
 	}
 
 	public boolean isWordValid(String wordToGuess) {
-		char firstLetter = getFirstLetter(wordToGuess);
-		char lastLetter = getLastLetter(wordToGuess);
-		if (wordToGuess.length() < 3) {
+		if (wordToGuess.length() < Commands.MIN_LENGHT || !containsOnlyLetters(wordToGuess)) {
 			return false;
 		}
-		if (containsOtherLetters(wordToGuess, firstLetter, lastLetter)) {
+		if (containsOtherLetters(wordToGuess)) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
+	}
+
+	private boolean containsOnlyLetters(String wordToGuess) {
+		for (char symbol : wordToGuess.toCharArray()) {
+			if (Character.isLetter(symbol)) {
+				continue;
+			}else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean historyContainsWord(Map<Game, History> history, String wordToGuess) {
@@ -261,8 +265,6 @@ public class GameService {
 			response.sendRedirect("/gameStarted.jsp");
 		}
 	}
-
-
 
 	public void prepareWordToBeDisplayed(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			String wordToGuess, Category category) throws ServletException, IOException {

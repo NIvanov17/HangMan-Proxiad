@@ -19,6 +19,10 @@ import repository.WordsRepository;
 
 public class HistoryController extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private WordsRepository wordsRepository;
 
 	public HistoryController() {

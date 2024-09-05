@@ -11,6 +11,11 @@ import jakarta.servlet.annotation.WebServlet;
 
 public class WelcomeController extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public WelcomeController() {
 	}
 
