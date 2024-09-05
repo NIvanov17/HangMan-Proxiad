@@ -16,9 +16,11 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import enums.Category;
 import jakarta.servlet.RequestDispatcher;
@@ -29,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.History;
 import repository.WordsRepository;
-
+@ExtendWith(MockitoExtension.class)
 class GameServiceTest {
 
 	private static final String TEST_WORD = "test";
@@ -50,7 +52,7 @@ class GameServiceTest {
 	@Mock
 	private RequestDispatcher requestDispatcher;
 
-	@Mock
+	
 	private WordsRepository wordsRepository;
 
 	@InjectMocks
@@ -58,14 +60,7 @@ class GameServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-
-		request = mock(HttpServletRequest.class);
-		response = mock(HttpServletResponse.class);
-		session = mock(HttpSession.class);
-		requestDispatcher = mock(RequestDispatcher.class);
 		wordsRepository = WordsRepository.getWordRepository();
-		gameService = new GameService(wordsRepository);
-
 	}
 
 	@Test
