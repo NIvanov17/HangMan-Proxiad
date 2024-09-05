@@ -17,31 +17,22 @@ import model.Game;
 import model.History;
 import repository.WordsRepository;
 
-
 public class HistoryController extends HttpServlet {
 
 	private WordsRepository wordsRepository;
 
-
 	public HistoryController() {
-		
+
 	}
-	
-	
-	 @Override
-	    public void init(ServletConfig config) throws ServletException {
-	        super.init(config);
 
-	        if (this.wordsRepository == null) {
-	            ApplicationContext context = (ApplicationContext) config.getServletContext().getAttribute("springContext");
-	            if (context != null) {
-	                this.wordsRepository = context.getBean(WordsRepository.class);
-	            } else {
-	                throw new ServletException("Spring context is not initialized!");
-	            }
-	        }
-	    }
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 
+		ApplicationContext context = (ApplicationContext) config.getServletContext().getAttribute("springContext");
+
+		this.wordsRepository = context.getBean(WordsRepository.class);
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -51,8 +42,5 @@ public class HistoryController extends HttpServlet {
 		request.getRequestDispatcher("/history.jsp").forward(request, response);
 
 	}
-
-
-
 
 }
