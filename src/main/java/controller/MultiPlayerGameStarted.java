@@ -30,15 +30,6 @@ public class MultiPlayerGameStarted extends HttpServlet {
 
 	}
 
-	@Autowired
-	public void setGameService(GameService gameService) {
-		this.gameService = gameService;
-	}
-
-	@Autowired
-	public void setWordsRepository(WordsRepository wordsRepository) {
-		this.history = wordsRepository.getHistory();
-	}
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {

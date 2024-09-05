@@ -27,10 +27,6 @@ public class HistoryController extends HttpServlet {
 		
 	}
 	
-	@Autowired
-	public void setWordsRepository(WordsRepository wordsRepository) {
-		this.wordsRepository = wordsRepository;
-	}
 	
 	 @Override
 	    public void init(ServletConfig config) throws ServletException {
