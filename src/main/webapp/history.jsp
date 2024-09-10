@@ -51,13 +51,11 @@
 					if (history.getMode().equals("Single Player")) {
 					%>
 					<form action="/hangMan" method="get">
-						<input type="hidden" name="currentWord"
-							value="<%=game.getWord()%>" /> <input type="hidden"
-							name="currentWordState" value="<%=history.getWordState()%>" /> <input
-							type="hidden" name="triesLeft"
-							value="<%=history.getTriesLeft()%>" /> <input type="hidden"
-							name="usedCharacters" value="<%=history.getUsedChars()%>" /> <input
-							type="hidden" name="category" value="<%=history.getCategory()%>" />
+						<input type="hidden" name="currentWord"value="<%=game.getWord()%>" /> 
+						<input type="hidden" name="currentWordState" value="<%=history.getWordState()%>" /> 
+						<input type="hidden" name="triesLeft" value="<%=history.getTriesLeft()%>" />
+						<input type="hidden" name="usedCharacters" value="<%=history.getUsedChars()%>" /> 
+						<input type="hidden" name="category" value="<%=history.getCategory()%>" />
 						<button type="submit" name="action" value="resume"
 							<%=history.isFinished() ? "disabled" : ""%>>Resume Game</button>
 					</form> 

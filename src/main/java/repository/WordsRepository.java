@@ -8,28 +8,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.springframework.stereotype.Repository;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Game;
 import model.History;
 
+@Repository
 public class WordsRepository {
 	private static List<Game> gamesList;
 	private static Map<Game, History> history;
-	private static WordsRepository wordsRepository;
 
-	private WordsRepository() {
+	public WordsRepository() {
 		gamesList = new ArrayList<>();
 		history = new HashMap<>();
 	}
 	
-
-	public static WordsRepository getWordRepository() {
-		if (wordsRepository == null) {
-			 wordsRepository = new WordsRepository();
-		} 
-			return wordsRepository;
-	}
 
 	public Map<Game, History> getHistory() {
 		return history;

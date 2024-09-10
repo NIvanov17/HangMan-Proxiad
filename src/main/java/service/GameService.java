@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import enums.Category;
 import enums.Commands;
 import jakarta.servlet.ServletException;
@@ -16,10 +20,12 @@ import model.Game;
 import model.History;
 import repository.WordsRepository;
 
+@Service
 public class GameService {
 	private WordsRepository wordsRepository;
 	private Game game;
 
+	@Autowired
 	public GameService(WordsRepository wordsRepository) {
 		this.wordsRepository = wordsRepository;
 	}
@@ -148,7 +154,7 @@ public class GameService {
 		for (char symbol : wordToGuess.toCharArray()) {
 			if (Character.isLetter(symbol)) {
 				continue;
-			}else {
+			} else {
 				return false;
 			}
 		}
@@ -164,9 +170,8 @@ public class GameService {
 		return false;
 	}
 
-	public void resumeGame(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			Map<Game, History> history) throws ServletException, IOException {
-		String wordToSet = (String) request.getParameter("currentWord");
+	public String resumeGame(String wordToSet, HttpSession session, Map<Game, History> history)
+			throws ServletException, IOException {
 		Game selectedgame = null;
 
 		for (Game g : history.keySet()) {
@@ -187,17 +192,16 @@ public class GameService {
 		session.setAttribute("gameStatus", "");
 		// forward
 		if (gamesHistory.getMode().equals("Single Player")) {
-			request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
+			return "gameStarted";
 
 		} else {
-			request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+			return "multiplayerStarted";
 
 		}
 
 	}
 
-	public void newGameStarted(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			Map<Game, History> history) throws ServletException, IOException {
+	public String newGameStarted(HttpSession session, Map<Game, History> history) throws ServletException, IOException {
 		Game game = wordsRepository.getRandomGame();
 		if (history.containsKey(game)) {
 			game = wordsRepository.getRandomGame();
@@ -221,11 +225,10 @@ public class GameService {
 		session.setAttribute("usedCharacters", usedCharacters);
 		session.setAttribute("mode", mode);
 		session.setAttribute("gameStatus", "");
-		request.getRequestDispatcher("/gameStarted.jsp").forward(request, response);
+		return "gameStarted";
 	}
 
-	public void tryGuess(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			Map<Game, History> history) throws IOException {
+	public String tryGuess(char guess, HttpSession session, Map<Game, History> history) throws IOException {
 		Game wordToFind = (Game) session.getAttribute("word");
 		int triesLeft = (int) session.getAttribute("triesLeft");
 		String currentStateAsStr = (String) session.getAttribute("currentState");
@@ -233,7 +236,6 @@ public class GameService {
 		Category wordCategory = (Category) session.getAttribute("wordCategory");
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
 		String mode = (String) session.getAttribute("mode");
-		char guess = request.getParameter("guess").charAt(0);
 		char[] currentState = currentStateAsStr.toCharArray();
 		usedCharacters.add(guess);
 
@@ -250,7 +252,7 @@ public class GameService {
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 			}
-			response.sendRedirect("/gameStarted.jsp");
+			return "gameStarted";
 		} else {
 			triesLeft--;
 			history.put(wordToFind,
@@ -262,12 +264,12 @@ public class GameService {
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
-			response.sendRedirect("/gameStarted.jsp");
+			return "gameStarted";
 		}
 	}
 
-	public void prepareWordToBeDisplayed(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			String wordToGuess, Category category) throws ServletException, IOException {
+	public String prepareWordToBeDisplayed(HttpServletRequest request, HttpSession session, String wordToGuess,
+			Category category) throws ServletException, IOException {
 		Game game = new Game();
 		game = game.createNewGame(wordToGuess, category);
 
@@ -291,10 +293,10 @@ public class GameService {
 		session.setAttribute("mode", mode);
 		session.setAttribute("isWordValid", true);
 
-		request.getRequestDispatcher("/multiplayerStarted.jsp").forward(request, response);
+		return "multiplayerStarted";
 	}
 
-	public void tryGuessMultiplayer(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+	public String tryGuessMultiplayer(char guess, HttpSession session)
 			throws IOException {
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
 		Game wordToFind = (Game) session.getAttribute("word");
@@ -303,7 +305,6 @@ public class GameService {
 		String currentStateAsStr = (String) session.getAttribute("currentState");
 		boolean isFinished = (boolean) session.getAttribute("isFinished");
 		String mode = (String) session.getAttribute("mode");
-		char guess = request.getParameter("guess").charAt(0);
 		char[] currentState = currentStateAsStr.toCharArray();
 		usedCharacters.add(guess);
 
@@ -320,7 +321,7 @@ public class GameService {
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 			}
-			response.sendRedirect("/multiplayerStarted.jsp");
+			return "redirect:/multiplayerStarted";
 		} else {
 			triesLeft--;
 			wordsRepository.getHistory().put(wordToFind,
@@ -332,7 +333,7 @@ public class GameService {
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 			}
-			response.sendRedirect("/multiplayerStarted.jsp");
+			return "redirect:/multiplayerStarted";
 		}
 	}
 }

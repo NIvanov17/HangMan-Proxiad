@@ -1,33 +1,23 @@
 package controller;
 
-import java.io.IOException;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import repository.WordsRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-
-public class WelcomeController extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+@Controller
+public class WelcomeController {
 
 	public WelcomeController() {
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		getServletContext().getRequestDispatcher("/welcome.jsp").forward(request, response);
+	@GetMapping("/welcome")
+	public String welcome() {
+		return "welcome";
+	}
+	
+	@GetMapping("/")
+	public String index() {
+		return "welcome";
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		doGet(request, response);
-	}
 
 }

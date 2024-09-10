@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -17,33 +19,23 @@ import model.Game;
 import model.History;
 import repository.WordsRepository;
 
-public class HistoryController extends HttpServlet {
+@Controller
+public class HistoryController{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private WordsRepository wordsRepository;
 
-	public HistoryController() {
-
+	@Autowired
+	public HistoryController(WordsRepository wordsRepository) {
+		this.wordsRepository = wordsRepository;
 	}
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
 
-		ApplicationContext context = (ApplicationContext) config.getServletContext().getAttribute("springContext");
-
-		this.wordsRepository = context.getBean(WordsRepository.class);
-	}
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	@GetMapping("/history")
+	protected String getHistory(HttpSession session)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession();
 		Map<Game, History> history = wordsRepository.getHistory();
 		session.setAttribute("history", history);
-		request.getRequestDispatcher("/history.jsp").forward(request, response);
+		return "history";
 
 	}
 

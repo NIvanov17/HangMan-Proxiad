@@ -47,7 +47,7 @@ p {
 </head>
 <body>
 	<h1>Congratulations, you broke it! :D</h1>
-	<p>Sorry, the page you are looking for does not exist.</p>
+	<p>${errorMessage}</p>
 	<form action="/welcome" method="get">
 		<button id="homeButton" type="submit" name="toHomePage">Home
 			Page</button>
