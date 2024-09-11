@@ -17,8 +17,8 @@ import model.History;
 
 @Repository
 public class WordsRepository {
-	private static List<Game> gamesList;
-	private static Map<Game, History> history;
+	private  List<Game> gamesList;
+	private  Map<Game, History> history;
 
 	public WordsRepository() {
 		gamesList = new ArrayList<>();

@@ -42,7 +42,7 @@ public class MultiPlayerController {
 	@GetMapping("/multiPlayer")
 	public String multiPlayer() {
 
-		return "multiPlayer";
+		return "multiPlayerView";
 	}
 
 	@PostMapping("/multiPlayer")
@@ -60,19 +60,19 @@ public class MultiPlayerController {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
-			return "redirect:/multiPlayer";
+			return "redirect:/multiPlayerView";
 
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
-			return "redirect:/multiPlayer";
+			return "redirect:/multiPlayerView";
 
 		} else if (gameService.historyContainsWord(history, wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_EXISTING_IN_HISTORY);
-			return "redirect:/multiPlayer";
+			return "redirect:/multiPlayerView";
 		}
 		String categoryParam = request.getParameter("category");
 		Category category = Category.valueOf(categoryParam);

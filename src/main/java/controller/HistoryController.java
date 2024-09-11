@@ -31,7 +31,7 @@ public class HistoryController{
 
 
 	@GetMapping("/history")
-	protected String getHistory(HttpSession session)
+	public String getHistory(HttpSession session)
 			throws ServletException, IOException {
 		Map<Game, History> history = wordsRepository.getHistory();
 		session.setAttribute("history", history);

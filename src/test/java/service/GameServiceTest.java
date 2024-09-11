@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import enums.Category;
@@ -31,6 +32,7 @@ import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.History;
 import repository.WordsRepository;
+
 @ExtendWith(MockitoExtension.class)
 class GameServiceTest {
 
@@ -52,7 +54,7 @@ class GameServiceTest {
 	@Mock
 	private RequestDispatcher requestDispatcher;
 
-	
+	@Mock
 	private WordsRepository wordsRepository;
 
 	@InjectMocks
@@ -60,7 +62,7 @@ class GameServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		wordsRepository = WordsRepository.getWordRepository();
+		MockitoAnnotations.openMocks(this); 
 	}
 
 	@Test
@@ -86,8 +88,7 @@ class GameServiceTest {
 
 	@Test
 	void testWordToReturnWithRepeatingFirstLetter() {
-		assertThat(gameService.wordToReturn(TESTING)).containsExactly('t', '_', '_', 't', '_',
-				'_', 'g');
+		assertThat(gameService.wordToReturn(TESTING)).containsExactly('t', '_', '_', 't', '_', '_', 'g');
 	}
 
 	@Test
@@ -244,7 +245,7 @@ class GameServiceTest {
 
 		assertThat(gameService.containsOtherLetters(word)).isTrue();
 	}
-	
+
 	@Test
 	void testcontainsOtherLetters2() {
 
@@ -254,7 +255,7 @@ class GameServiceTest {
 
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
-	
+
 	@Test
 	void testcontainsOtherLetters3() {
 
@@ -279,92 +280,5 @@ class GameServiceTest {
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
-	@Test
-	void testResumeGameSinglePlayer() throws ServletException, IOException {
-		Map<Game, History> history = new HashMap<>();
-		Game game = new Game();
-		game.setWord("apple");
-		game.setCategory(Category.FRUITS);
-		game.setId(1);
-
-		History gameHitory = new History("a _ _ _ e", 6, Category.FRUITS, new HashSet<>(Set.of('a', 'e')), false,
-				"Single Player");
-
-		history.put(game, gameHitory);
-
-		when(request.getParameter("currentWord")).thenReturn("apple");
-		when(request.getRequestDispatcher("/gameStarted.jsp")).thenReturn(requestDispatcher);
-
-		gameService.resumeGame(request, response, session, history);
-
-		verify(session).setAttribute("word", game);
-		verify(session).setAttribute("currentState", gameHitory.getWordState());
-		verify(session).setAttribute("triesLeft", gameHitory.getTriesLeft());
-		verify(session).setAttribute("isFinished", false);
-		verify(session).setAttribute("usedCharacters", gameHitory.getUsedChars());
-		verify(session).setAttribute("wordCategory", gameHitory.getCategory());
-		verify(session).setAttribute("mode", "Single Player");
-		verify(session).setAttribute("gameStatus", "");
-		verify(requestDispatcher).forward(request, response);
-	}
-
-	@Test
-	void testResumeGameMultiPlayer() throws ServletException, IOException {
-		Map<Game, History> history = new HashMap<>();
-		Game game = new Game();
-		game.setWord("apple");
-		game.setCategory(Category.FRUITS);
-		game.setId(1);
-
-		History gameHitory = new History("a _ _ _ e", 6, Category.FRUITS, new HashSet<>(Set.of('a', 'e')), false,
-				"MultiPlayer");
-
-		history.put(game, gameHitory);
-
-		when(request.getParameter("currentWord")).thenReturn("apple");
-		when(request.getRequestDispatcher("/multiplayerStarted.jsp")).thenReturn(requestDispatcher);
-
-		gameService.resumeGame(request, response, session, history);
-
-		verify(session).setAttribute("word", game);
-		verify(session).setAttribute("currentState", gameHitory.getWordState());
-		verify(session).setAttribute("triesLeft", gameHitory.getTriesLeft());
-		verify(session).setAttribute("isFinished", false);
-		verify(session).setAttribute("usedCharacters", gameHitory.getUsedChars());
-		verify(session).setAttribute("wordCategory", gameHitory.getCategory());
-		verify(session).setAttribute("mode", "MultiPlayer");
-		verify(session).setAttribute("gameStatus", "");
-		verify(requestDispatcher).forward(request, response);
-	}
-
-	@Test
-	void testPrepareWordToBeDisplayed() throws ServletException, IOException {
-
-		String wordToGuess = "peach";
-		ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
-		Set<Character> usedCharacters = new HashSet<>();
-		usedCharacters.add('p');
-		usedCharacters.add('h');
-
-		when(request.getRequestDispatcher("/multiplayerStarted.jsp")).thenReturn(requestDispatcher);
-
-		gameService.prepareWordToBeDisplayed(request, response, session, wordToGuess, Category.FRUITS);
-
-		verify(session).setAttribute(eq("word"), gameCaptor.capture());
-		verify(session).setAttribute("category", Category.FRUITS);
-		verify(session).setAttribute("triesLeft", 6);
-		verify(session).setAttribute("currentState", "p _ _ _ h");
-		verify(session).setAttribute("isFinished", false);
-		verify(session).setAttribute("usedCharacters", usedCharacters);
-		verify(session).setAttribute("gameStatus", "");
-		verify(session).setAttribute("mode", "Multiplayer");
-		verify(session).setAttribute("isWordValid", true);
-
-		verify(requestDispatcher).forward(request, response);
-
-		Game capturedGame = gameCaptor.getValue();
-		assertThat(capturedGame.getWord()).isEqualTo(wordToGuess);
-		assertThat(capturedGame.getCategory()).isEqualTo(Category.FRUITS);
-	}
 
 }

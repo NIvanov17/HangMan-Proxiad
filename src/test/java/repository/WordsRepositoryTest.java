@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import model.Game;
 import model.History;
@@ -26,7 +28,7 @@ class WordsRepositoryTest {
 
 	@BeforeEach
 	public void setUp() {
-		wordsRepository = WordsRepository.getWordRepository();
+		wordsRepository = new WordsRepository();
 		gamesList = wordsRepository.getGameslist();
 		history = new HashMap<>();
 
@@ -41,16 +43,6 @@ class WordsRepositoryTest {
 		Game newGame3 = new Game();
 		newGame3.setWord("test3");
 		gamesList.add(newGame3);
-	}
-
-	@Test
-	void getWordsRepository() {
-
-		WordsRepository wordRepository = WordsRepository.getWordRepository();
-		WordsRepository wordRepository2 = WordsRepository.getWordRepository();
-
-		assertThat(wordRepository).isNotNull();
-		assertSame(wordRepository, wordRepository2);
 	}
 
 	@Test
@@ -84,12 +76,12 @@ class WordsRepositoryTest {
 		assertThat(getHistory).isEqualTo(history);
 
 	}
-	
+
 	@Test
 	void testInitializeWords() throws IOException {
-		
+
 		List<Game> initializeWords = wordsRepository.initializeWords();
-		
+
 		assertThat(initializeWords).isNotEmpty();
 		assertThat(initializeWords.get(0).getWord()).isEqualTo("apple");
 	}
