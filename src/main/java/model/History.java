@@ -24,7 +24,11 @@ public class History {
 		this.mode = mode;
 	}
 
-	public void reset(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,boolean isFinished) {
+	public History() {
+	}
+
+	public void reset(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,
+			boolean isFinished) {
 		this.wordState = wordState;
 		this.triesLeft = triesLeft;
 		this.category = category;

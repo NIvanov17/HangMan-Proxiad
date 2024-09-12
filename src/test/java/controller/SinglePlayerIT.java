@@ -39,9 +39,6 @@ public class SinglePlayerIT {
 	@Mock
 	private WordsRepository wordsRepository;
 
-	@Mock
-	private HttpSession session;
-
 	@InjectMocks
 	private SinglePlayerController controller;
 
@@ -49,7 +46,6 @@ public class SinglePlayerIT {
 
 	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.openMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 		mockHistory = new HashMap<>();
 	}

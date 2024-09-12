@@ -62,7 +62,7 @@ class GameServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		MockitoAnnotations.openMocks(this); 
+		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
@@ -280,5 +280,28 @@ class GameServiceTest {
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
+	@Test
+	void testContainsOnlyLettersWithSpaces() {
+		String word = "  apple";
+		assertThat(gameService.containsOnlyLetters(word)).isFalse();
+	}
+	
+	@Test
+	void testContainsOnlyLettersWithNumbers() {
+		String word = "4a0";
+		assertThat(gameService.containsOnlyLetters(word)).isFalse();
+	}
 
+	
+	@Test
+	void testIsWordValidWith2Symbols() {
+		String word = "ok";
+		assertThat(gameService.isWordValid(word)).isFalse();
+	}
+	
+	@Test
+	void testIsWordValidWith2SymbolsWithNumber() {
+		String word = "o4";
+		assertThat(gameService.isWordValid(word)).isFalse();
+	}
 }

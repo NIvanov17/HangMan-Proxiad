@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,30 +61,33 @@ public class MultiPlayerController {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
-			return "redirect:/multiPlayerView";
+
+			return "redirect:/multiPlayer";
 
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
-			return "redirect:/multiPlayerView";
+
+			return "redirect:/multiPlayer";
 
 		} else if (gameService.historyContainsWord(history, wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_EXISTING_IN_HISTORY);
-			return "redirect:/multiPlayerView";
+
+			return "redirect:/multiPlayer";
 		}
 		String categoryParam = request.getParameter("category");
 		Category category = Category.valueOf(categoryParam);
 
-		return gameService.prepareWordToBeDisplayed(request, session, wordToGuess, category);
+		return gameService.prepareWordToBeDisplayed(session, wordToGuess, category);
 	}
 	
 	@GetMapping("/multiplayerStarted")
 	protected String multiPLayerGameStarted(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		return "multiplayerStarted";
+		return "multiplayerStartedView";
 	}
 
 	

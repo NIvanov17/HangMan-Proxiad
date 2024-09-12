@@ -37,11 +37,15 @@ public class WelcomeControllerIT {
 
 	@Test
 	public void testWelcome() throws Exception {
-		mockMvc.perform(get("/welcome")).andExpect(status().isOk()).andExpect(view().name("welcome"));
+		mockMvc.perform(get("/welcome"))
+		.andExpect(status().isOk())
+		.andExpect(view().name("welcome"));
 	}
 
 	@Test
 	public void testIndex() throws Exception {
-		mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("welcome"));
+		mockMvc.perform(get("/"))
+		.andExpect(status().isOk())
+		.andExpect(view().name("welcome"));
 	}
 }

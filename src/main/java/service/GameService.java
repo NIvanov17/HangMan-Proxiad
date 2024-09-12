@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import enums.Category;
@@ -120,6 +121,7 @@ public class GameService {
 		session.setAttribute("gameStatus", "");
 		session.setAttribute("isFinished", false);
 		session.setAttribute("usedCharacters", usedCharacters);
+
 	}
 
 	public String wordWithSpaces(String word) {
@@ -150,7 +152,7 @@ public class GameService {
 		return false;
 	}
 
-	private boolean containsOnlyLetters(String wordToGuess) {
+	public boolean containsOnlyLetters(String wordToGuess) {
 		for (char symbol : wordToGuess.toCharArray()) {
 			if (Character.isLetter(symbol)) {
 				continue;
@@ -190,12 +192,12 @@ public class GameService {
 		session.setAttribute("wordCategory", gamesHistory.getCategory());
 		session.setAttribute("mode", gamesHistory.getMode());
 		session.setAttribute("gameStatus", "");
-		// forward
+
 		if (gamesHistory.getMode().equals("Single Player")) {
 			return "gameStarted";
 
 		} else {
-			return "multiplayerStarted";
+			return "multiplayerStartedView";
 
 		}
 
@@ -225,6 +227,7 @@ public class GameService {
 		session.setAttribute("usedCharacters", usedCharacters);
 		session.setAttribute("mode", mode);
 		session.setAttribute("gameStatus", "");
+
 		return "gameStarted";
 	}
 
@@ -236,6 +239,7 @@ public class GameService {
 		Category wordCategory = (Category) session.getAttribute("wordCategory");
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
 		String mode = (String) session.getAttribute("mode");
+
 		char[] currentState = currentStateAsStr.toCharArray();
 		usedCharacters.add(guess);
 
@@ -251,6 +255,7 @@ public class GameService {
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
+
 			}
 			return "gameStarted";
 		} else {
@@ -263,13 +268,14 @@ public class GameService {
 				history.get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+
 			}
 			return "gameStarted";
 		}
 	}
 
-	public String prepareWordToBeDisplayed(HttpServletRequest request, HttpSession session, String wordToGuess,
-			Category category) throws ServletException, IOException {
+	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, Category category)
+			throws ServletException, IOException {
 		Game game = new Game();
 		game = game.createNewGame(wordToGuess, category);
 
@@ -293,11 +299,11 @@ public class GameService {
 		session.setAttribute("mode", mode);
 		session.setAttribute("isWordValid", true);
 
-		return "multiplayerStarted";
+
+		return "multiplayerStartedView";
 	}
 
-	public String tryGuessMultiplayer(char guess, HttpSession session)
-			throws IOException {
+	public String tryGuessMultiplayer(char guess, HttpSession session) throws IOException {
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
 		Game wordToFind = (Game) session.getAttribute("word");
 		Category category = (Category) session.getAttribute("category");
@@ -305,6 +311,7 @@ public class GameService {
 		String currentStateAsStr = (String) session.getAttribute("currentState");
 		boolean isFinished = (boolean) session.getAttribute("isFinished");
 		String mode = (String) session.getAttribute("mode");
+
 		char[] currentState = currentStateAsStr.toCharArray();
 		usedCharacters.add(guess);
 
@@ -320,6 +327,7 @@ public class GameService {
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
+
 			}
 			return "redirect:/multiplayerStarted";
 		} else {
@@ -332,6 +340,7 @@ public class GameService {
 				wordsRepository.getHistory().get(wordToFind).setFinished(true);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+
 			}
 			return "redirect:/multiplayerStarted";
 		}
