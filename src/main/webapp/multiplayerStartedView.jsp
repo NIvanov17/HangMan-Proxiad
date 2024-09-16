@@ -47,7 +47,7 @@ body {
 	<div class="container">
 
 		<h1>Word to Guess: ${currentState}</h1>
-		<h2>Tries left: ${triesLeft}</h2>
+		<h2 id="tries-left">Tries left: ${triesLeft}</h2>
 		<h3>Category: ${category}</h3>
 		<h3>Mode: ${mode}</h3>
 		<h2>${gameStatus}</h2>

@@ -13,7 +13,7 @@
 </head>
 <body>
 
-	<h2>Hangman Games History</h2>
+	<h2 id="title">Hangman Games History</h2>
 	<form action="/welcome" method="get">
 		<button id="homeButton" type="submit" name="toHomePage">Home
 			Page</button>

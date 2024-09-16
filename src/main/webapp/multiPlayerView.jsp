@@ -53,7 +53,7 @@ select#category {
 		<%
 		if (isValid != null && !isValid) {
 		%>
-		<div style="color: red; font-weight: bold;">
+		<div class ="error-msg" style="color: red; font-weight: bold;">
 			<%=errorMessage%>
 		</div>
 		<%
@@ -73,7 +73,7 @@ select#category {
 				}
 				%>
 			</select><br> <br>
-			<button type="submit" class="styled-button" name="action"
+			<button id="submit-word" type="submit" class="styled-button" name="action"
 				value="newGame"  >Submit</button>
 		</form>
 

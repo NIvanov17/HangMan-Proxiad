@@ -34,15 +34,15 @@ button {
 	<div class="container">
 		<h2>Welcome, player!</h2>
 		<form action="/hangMan" method="get">
-			<button type="submit" class="styled-button" name="action"
+			<button id="single" type="submit" class="styled-button" name="action"
 				value="newGame">New Single Player Game</button>
 		</form>
 		<form action="/multiPlayer" method="get">
-			<button type="submit" class="styled-button" name="action"
+			<button id="multi" type="submit" class="styled-button" name="action"
 				value="newGame">New Multiplayer Game</button>
 		</form>
 		<form action="/history" method="get">
-			<button type="submit" class="styled-button" value="submit">Games
+			<button id="history" type="submit" class="styled-button" value="submit">Games
 				History</button>
 		</form>
 	</div>

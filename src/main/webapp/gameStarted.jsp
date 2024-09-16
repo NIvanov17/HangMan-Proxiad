@@ -48,7 +48,7 @@ body {
 	<div class="container">
 
 		<h1>Word to Guess: ${currentState}</h1>
-		<h2>Tries left: ${triesLeft}</h2>
+		<h2 id="tries-left">Tries left: ${triesLeft}</h2>
 		<h3>Category: ${wordCategory}</h3>
 		<h3>Mode: ${mode}</h3>
 		<h2>${gameStatus}</h2>
@@ -59,7 +59,7 @@ body {
 			%>
 			<form action="/hangMan" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
-				<button type="submit"
+				<button type="submit" name="guess-btn"
 					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
 	out.print("disabled");
