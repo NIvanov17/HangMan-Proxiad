@@ -66,4 +66,14 @@ public class MultiPlayerTest {
 		String expected = "The word field can't be empty!";
 		Assert.assertEquals(actual, expected);
 	}
+	
+	@Test
+	public void testBackToHome() throws InterruptedException {
+
+
+		multiPlayerPage.clickHomeButton();
+		String heading = webDriver.findElement(By.tagName("h2")).getText();
+		Assert.assertEquals(heading, "Welcome, player!");
+	}
+
 }

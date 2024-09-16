@@ -46,11 +46,11 @@ body {
 	%>
 	<div class="container">
 
-		<h1>Word to Guess: ${currentState}</h1>
+		<h1 id="currentState">Word to Guess: ${currentState}</h1>
 		<h2 id="tries-left">Tries left: ${triesLeft}</h2>
-		<h3>Category: ${category}</h3>
-		<h3>Mode: ${mode}</h3>
-		<h2>${gameStatus}</h2>
+		<h3 id="category">Category: ${category}</h3>
+		<h3 id="mode">Mode: ${mode}</h3>
+		<h2 id="status">${gameStatus}</h2>
 		<div>
 			<%
 			for (char letter = 'A'; letter <= 'Z'; letter++) {

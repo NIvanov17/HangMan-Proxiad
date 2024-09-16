@@ -2,24 +2,24 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2024-09-16T10:30:35 EEST" name="Default suite" finished-at="2024-09-16T10:30:39 EEST" duration-ms="3940">
+  <suite started-at="2024-09-16T15:19:24 EEST" name="Default suite" finished-at="2024-09-16T15:19:30 EEST" duration-ms="6600">
     <groups>
     </groups>
-    <test started-at="2024-09-16T10:30:35 EEST" name="Default test" finished-at="2024-09-16T10:30:39 EEST" duration-ms="3940">
-      <class name="selenium.MultiPlayerTest">
-        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerTest@23e84203]" started-at="2024-09-16T10:30:35 EEST" name="setUp" finished-at="2024-09-16T10:30:37 EEST" duration-ms="1468" status="PASS">
+    <test started-at="2024-09-16T15:19:24 EEST" name="Default test" finished-at="2024-09-16T15:19:30 EEST" duration-ms="6600">
+      <class name="selenium.MultiPlayerStartedTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerStartedTest@23e84203]" started-at="2024-09-16T15:19:24 EEST" name="setUp" finished-at="2024-09-16T15:19:26 EEST" duration-ms="1920" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="testSendWordAndCategoryFail()[pri:0, instance:selenium.MultiPlayerTest@23e84203]" started-at="2024-09-16T10:30:37 EEST" name="testSendWordAndCategoryFail" finished-at="2024-09-16T10:30:39 EEST" duration-ms="2272" status="PASS">
+        <test-method signature="testWordMakeTryFail()[pri:0, instance:selenium.MultiPlayerStartedTest@23e84203]" started-at="2024-09-16T15:19:26 EEST" name="testWordMakeTryFail" finished-at="2024-09-16T15:19:30 EEST" duration-ms="4468" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testSendWordAndCategoryFail -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerTest@23e84203]" started-at="2024-09-16T10:30:39 EEST" name="tearDown" finished-at="2024-09-16T10:30:39 EEST" duration-ms="158" status="PASS">
+        </test-method> <!-- testWordMakeTryFail -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerStartedTest@23e84203]" started-at="2024-09-16T15:19:30 EEST" name="tearDown" finished-at="2024-09-16T15:19:30 EEST" duration-ms="165" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-      </class> <!-- selenium.MultiPlayerTest -->
+      </class> <!-- selenium.MultiPlayerStartedTest -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
