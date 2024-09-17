@@ -3,13 +3,13 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="selenium.MultiPlayerStartedTest">
+      <class name="selenium.MultiPlayerTest">
         <methods>
-          <include name="testWordMakeTryFail"/>
-          <include name="tearDown"/>
           <include name="setUp"/>
+          <include name="testSendWordAndCategory"/>
+          <include name="tearDown"/>
         </methods>
-      </class> <!-- selenium.MultiPlayerStartedTest -->
+      </class> <!-- selenium.MultiPlayerTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

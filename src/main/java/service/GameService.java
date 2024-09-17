@@ -271,7 +271,7 @@ public class GameService {
 
 	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, Category category)
 			throws ServletException, IOException {
-		Game game = new Game();
+		game = new Game();
 		game = game.createNewGame(wordToGuess, category);
 
 		String wordWithoutSpaces = new String(wordToReturn(wordToGuess));

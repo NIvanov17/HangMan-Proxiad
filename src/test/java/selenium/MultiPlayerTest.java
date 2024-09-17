@@ -12,13 +12,13 @@ import enums.Category;
 import pages.MultiPlayerPage;
 
 
-public class MultiPlayerTest {
+ class MultiPlayerTest {
 	
 	WebDriver webDriver;
 	MultiPlayerPage multiPlayerPage;
 	
 	@BeforeMethod
-	public void setUp() {
+	 void setUp() {
 		webDriver = new ChromeDriver();
 		webDriver.get("http://www.localhost:8080/multiPlayer?action=newGame");
 		
@@ -26,14 +26,14 @@ public class MultiPlayerTest {
 	}
 	
 	@AfterMethod
-	public void tearDown() {
+	 void tearDown() {
 		if(webDriver != null) {
 			webDriver.quit();
 		}
 	}
 
 	@Test
-	public void testSendWordAndCategory() throws InterruptedException {
+	 void testSendWordAndCategory() throws InterruptedException {
 		String word = "peach";
 		multiPlayerPage.setWordToGuess(word);
 		multiPlayerPage.setCategory(Category.FRUITS);
@@ -45,7 +45,7 @@ public class MultiPlayerTest {
 	}
 	
 	@Test
-	public void testSendWordAndCategoryFail() throws InterruptedException {
+	 void testSendWordAndCategoryFail() throws InterruptedException {
 		String word = "peac4";
 		multiPlayerPage.setWordToGuess(word);
 		multiPlayerPage.setCategory(Category.FRUITS);
@@ -57,7 +57,7 @@ public class MultiPlayerTest {
 	}
 	
 	@Test
-	public void testSendWordAndCategoryEmpty() throws InterruptedException {
+	 void testSendWordAndCategoryEmpty() throws InterruptedException {
 		multiPlayerPage.setWordToGuess("");
 		multiPlayerPage.setCategory(Category.FRUITS);
 		Thread.sleep(3000);
@@ -68,7 +68,7 @@ public class MultiPlayerTest {
 	}
 	
 	@Test
-	public void testBackToHome() throws InterruptedException {
+	 void testBackToHome() throws InterruptedException {
 
 
 		multiPlayerPage.clickHomeButton();

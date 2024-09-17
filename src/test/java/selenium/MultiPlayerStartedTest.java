@@ -13,14 +13,14 @@ import enums.Category;
 import pages.MultiPlayerPage;
 import pages.MultiPlayerStartedPage;
 
-public class MultiPlayerStartedTest {
+ class MultiPlayerStartedTest {
 
 	WebDriver driver;
 	MultiPlayerStartedPage multiPlayerStartedPage;
 	private MultiPlayerPage multiPlayerPage;
 
 	@BeforeMethod
-	public void setUp() {
+	 void setUp() {
 		driver = new ChromeDriver();
 		driver.get("http://www.localhost:8080/multiPlayer");
 
@@ -29,14 +29,14 @@ public class MultiPlayerStartedTest {
 	}
 
 	@AfterMethod
-	public void tearDown() {
+	 void tearDown() {
 		if (driver != null) {
 			driver.quit();
 		}
 	}
 
 	@Test
-	public void testWordMakeTry() throws InterruptedException {
+	 void testWordMakeTry() throws InterruptedException {
 
 		multiPlayerPage.setWordToGuess("peaacheess");
 		multiPlayerPage.setCategory(Category.FRUITS);
@@ -55,7 +55,7 @@ public class MultiPlayerStartedTest {
 	}
 	
 	@Test
-	public void testWordMakeTryFail() throws InterruptedException {
+	 void testWordMakeTryFail() throws InterruptedException {
 
 		multiPlayerPage.setWordToGuess("roboooots");
 		multiPlayerPage.setCategory(Category.TECHNOLOGY);
@@ -74,7 +74,7 @@ public class MultiPlayerStartedTest {
 	}
 	
 	@Test
-	public void testWordDisplayedAndBackToHome() throws InterruptedException {
+	 void testWordDisplayedAndBackToHome() throws InterruptedException {
 
 		multiPlayerPage.setWordToGuess("home");
 		multiPlayerPage.setCategory(Category.TECHNOLOGY);

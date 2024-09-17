@@ -1,8 +1,11 @@
 package controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.io.ObjectInputFilter.Status;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +28,11 @@ import config.WebbInitialializer;
 import model.Game;
 import model.History;
 import repository.WordsRepository;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AppConfig.class, WebbInitialializer.class, RootConfig.class })
 @WebAppConfiguration
-public class HistoryControllerIT {
+ class HistoryControllerIT {
 
 	@Autowired
 	WebApplicationContext webApplicationContext;
@@ -45,13 +46,13 @@ public class HistoryControllerIT {
 	private HistoryController historyController;
 
 	@BeforeEach
-	public void setup() {
+	 void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
-	public void testGetHistory() throws Exception {
+	 void testGetHistory() throws Exception {
 		HashMap<Game, History> mockHistory = new HashMap<>();
 		when(wordsRepository.getHistory()).thenReturn(mockHistory);
 

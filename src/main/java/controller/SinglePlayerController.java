@@ -52,7 +52,7 @@ public class SinglePlayerController {
 
 	@PostMapping("/hangMan")
 	public String singlePlayerGameGuess(HttpSession session, HttpServletRequest request)
-			throws ServletException, IOException {
+			throws IOException {
 		char guess = request.getParameter("guess").charAt(0);
 		return gameService.tryGuess(guess, session, history);
 	}

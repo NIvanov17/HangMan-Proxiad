@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -30,7 +31,7 @@ import repository.WordsRepository;
 import service.GameService;
 
 @ExtendWith(MockitoExtension.class)
-public class MultiPlayerControllerIT {
+ class MultiPlayerControllerIT {
 
 	private MockMvc mockMvc;
 
@@ -46,20 +47,20 @@ public class MultiPlayerControllerIT {
 	private MultiPlayerController controller;
 
 	@BeforeEach
-	public void setup() {
+	 void setup() {
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 		mockHistory = wordsRepository.getHistory();
 	}
 
 	@Test
-	public void multiPlayerGetViewIT() throws Exception {
+	 void multiPlayerGetViewIT() throws Exception {
 		mockMvc.perform(get("/multiPlayer"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("multiPlayerView"));
 	}
 
 	@Test
-	public void multiPlayerSendWordEmptyStringIT() throws Exception {
+	 void multiPlayerSendWordEmptyStringIT() throws Exception {
 		String wordToGuess = "";
 		mockMvc.perform(post("/multiPlayer")
 		.param("wordToGuess", wordToGuess)
@@ -69,7 +70,7 @@ public class MultiPlayerControllerIT {
 	}
 	
 	@Test
-	public void multiPlayerSendInvalidWordIT() throws Exception {
+	 void multiPlayerSendInvalidWordIT() throws Exception {
 		String wordToGuess = "aab";
 		when(gameservice.isWordValid(wordToGuess)).thenReturn(false);
 		
@@ -81,7 +82,7 @@ public class MultiPlayerControllerIT {
 	}
 	
 	@Test
-	public void multiPlayerSendWordfromHistoryIT() throws Exception {
+	 void multiPlayerSendWordfromHistoryIT() throws Exception {
 		String wordToGuess = "test";
 		Game game = new Game();
 		game.setWord("test");
@@ -105,7 +106,7 @@ public class MultiPlayerControllerIT {
 	}
 	
 	@Test
-	public void multiPlayerResumeIT() throws Exception {
+	 void multiPlayerResumeIT() throws Exception {
 		String wordToGuess = "test";
 		when(gameservice.resumeGame(eq(wordToGuess), any(HttpSession.class), eq(mockHistory)))
 		.thenReturn("multiplayerStartedView");
@@ -118,26 +119,28 @@ public class MultiPlayerControllerIT {
 	}
 	
 
-//	@Test
-//	public void multiPlayerDisplayWord() throws Exception {
-//		String wordToGuess = "testov";
-//		Category category = Category.TECHNOLOGY;
-//		when(gameservice.prepareWordToBeDisplayed(any(HttpSession.class),
-//				eq(wordToGuess), 
-//				any(Category.class)))
-//		.thenReturn("multiplayerStartedView");
-//	
-//		mockMvc.perform(post("/multiPlayer")
-//				.param("wordToGuess", wordToGuess)
-//				.param("category", "TECHNOLOGY")
-//				.param("action", ""))
-//				.andExpect(status().isOk())
-//				.andExpect(view().name("multiplayerStartedView"));
-//		//why is not passing: expected 200 but was 302
-//	}
+	@Test
+	 void multiPlayerDisplayWord() throws Exception {
+		String wordToGuess = "testov";
+		Category category = Category.TECHNOLOGY;
+
+		when(gameservice.prepareWordToBeDisplayed(any(HttpSession.class),
+				eq(wordToGuess), 
+				eq(category)))
+		.thenReturn("multiplayerStartedView");
+		
+		when(gameservice.isWordValid(eq(wordToGuess)))
+		.thenReturn(true);
+	
+		mockMvc.perform(post("/multiPlayer")
+				.param("wordToGuess", wordToGuess)
+				.param("category", category.name()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("multiplayerStartedView"));
+	}
 	
 	@Test 
-	public void multiPlayerGameStartedViewIT() throws Exception {
+	 void multiPlayerGameStartedViewIT() throws Exception {
 		mockMvc.perform(get("/multiplayerStarted"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("multiplayerStartedView"));
@@ -146,8 +149,8 @@ public class MultiPlayerControllerIT {
 	
 
 	@Test 
-	public void multiPlayerGameStartedTryWrongIT() throws Exception {
-		String wordToGuess = "test";
+	 void multiPlayerGameStartedTryWrongIT() throws Exception {
+
 		
 		when(gameservice.tryGuessMultiplayer(eq('a'), any(HttpSession.class)))
 		.thenReturn("redirect:/multiplayerStarted");
@@ -158,8 +161,8 @@ public class MultiPlayerControllerIT {
 	}
 	
 	@Test 
-	public void multiPlayerGameStartedTryCorrectIT() throws Exception {
-		String wordToGuess = "test";
+	 void multiPlayerGameStartedTryCorrectIT() throws Exception {
+
 		
 		when(gameservice.tryGuessMultiplayer(eq('e'), any(HttpSession.class)))
 		.thenReturn("redirect:/multiplayerStarted");

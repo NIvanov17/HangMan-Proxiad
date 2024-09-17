@@ -2,30 +2,19 @@ package service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import enums.Category;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -240,8 +229,6 @@ class GameServiceTest {
 	void testcontainsOtherLetters() {
 
 		String word = TESTING;
-		char firstLetter = gameService.getFirstLetter(word);
-		char lastLetter = gameService.getLastLetter(word);
 
 		assertThat(gameService.containsOtherLetters(word)).isTrue();
 	}
@@ -250,8 +237,6 @@ class GameServiceTest {
 	void testcontainsOtherLetters2() {
 
 		String word = "ttts";
-		char firstLetter = gameService.getFirstLetter(word);
-		char lastLetter = gameService.getLastLetter(word);
 
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
@@ -260,8 +245,6 @@ class GameServiceTest {
 	void testcontainsOtherLetters3() {
 
 		String word = "tssss";
-		char firstLetter = gameService.getFirstLetter(word);
-		char lastLetter = gameService.getLastLetter(word);
 
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
@@ -285,20 +268,19 @@ class GameServiceTest {
 		String word = "  apple";
 		assertThat(gameService.containsOnlyLetters(word)).isFalse();
 	}
-	
+
 	@Test
 	void testContainsOnlyLettersWithNumbers() {
 		String word = "4a0";
 		assertThat(gameService.containsOnlyLetters(word)).isFalse();
 	}
 
-	
 	@Test
 	void testIsWordValidWith2Symbols() {
 		String word = "ok";
 		assertThat(gameService.isWordValid(word)).isFalse();
 	}
-	
+
 	@Test
 	void testIsWordValidWith2SymbolsWithNumber() {
 		String word = "o4";

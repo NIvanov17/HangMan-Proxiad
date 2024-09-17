@@ -23,7 +23,7 @@ import config.WebbInitialializer;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AppConfig.class, WebbInitialializer.class, RootConfig.class })
 @WebAppConfiguration
-public class WelcomeControllerIT {
+ class WelcomeControllerIT {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -31,19 +31,19 @@ public class WelcomeControllerIT {
 	private MockMvc mockMvc;
 
 	@BeforeEach
-	public void setup() {
+	 void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
 	@Test
-	public void testWelcome() throws Exception {
+	 void testWelcome() throws Exception {
 		mockMvc.perform(get("/welcome"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("welcome"));
 	}
 
 	@Test
-	public void testIndex() throws Exception {
+	 void testIndex() throws Exception {
 		mockMvc.perform(get("/"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("welcome"));

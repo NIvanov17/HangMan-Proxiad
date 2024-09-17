@@ -11,13 +11,13 @@ import org.testng.annotations.BeforeMethod;
 
 import pages.WelcomePage;
 
-public class WelcomeTest {
+ class WelcomeTest {
 
 	WebDriver driver;
 	WelcomePage welcomePage;
 
 	@BeforeMethod
-	public void setup() {
+	 void setup() {
 		driver = new ChromeDriver();
 		driver.get("http:/www.localhost:8080/welcome");
 
@@ -25,14 +25,14 @@ public class WelcomeTest {
 	}
 
 	@AfterMethod
-	public void tearDown() {
+	 void tearDown() {
 		if (driver != null) {
 			driver.quit();
 		}
 	}
 
 	@org.testng.annotations.Test
-	public void testSinglePlayer() throws InterruptedException {
+	 void testSinglePlayer() throws InterruptedException {
 		welcomePage.clickSinglePlayerButton();
 		String actual = driver.findElement(By.id("tries-left")).getText();
 		Thread.sleep(2000);
@@ -42,7 +42,7 @@ public class WelcomeTest {
 	}
 
 	@org.testng.annotations.Test
-	public void testMultiPlayer() throws InterruptedException {
+	 void testMultiPlayer() throws InterruptedException {
 		welcomePage.clickMultiPlayerButton();
 		String actual = driver.findElement(By.tagName("h2")).getText();
 		Thread.sleep(2000);
@@ -52,7 +52,7 @@ public class WelcomeTest {
 	}
 
 	@org.testng.annotations.Test
-	public void testHistory() throws InterruptedException {
+	 void testHistory() throws InterruptedException {
 		welcomePage.clickHistoryButton();
 		String actual = driver.findElement(By.tagName("h2")).getText();
 		Thread.sleep(2000);
