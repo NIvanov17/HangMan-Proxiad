@@ -1,127 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="4" passed="3" failed="1" skipped="0">
+<testng-results ignored="0" total="3" passed="3" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2024-09-17T17:55:23 EEST" name="Default suite" finished-at="2024-09-17T17:55:36 EEST" duration-ms="13075">
+  <suite started-at="2024-09-19T15:45:58 EEST" name="Default suite" finished-at="2024-09-19T15:46:13 EEST" duration-ms="15523">
     <groups>
     </groups>
-    <test started-at="2024-09-17T17:55:23 EEST" name="Default test" finished-at="2024-09-17T17:55:36 EEST" duration-ms="13075">
-      <class name="selenium.MultiPlayerTest">
-        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:23 EEST" name="setUp" finished-at="2024-09-17T17:55:25 EEST" duration-ms="1475" status="PASS">
+    <test started-at="2024-09-19T15:45:58 EEST" name="Default test" finished-at="2024-09-19T15:46:13 EEST" duration-ms="15523">
+      <class name="selenium.MultiPlayerStartedTest">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:45:58 EEST" name="setUp" finished-at="2024-09-19T15:45:59 EEST" duration-ms="1638" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="testBackToHome()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:25 EEST" name="testBackToHome" finished-at="2024-09-17T17:55:25 EEST" duration-ms="115" status="PASS">
+        <test-method signature="testWordDisplayedAndBackToHome()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:45:59 EEST" name="testWordDisplayedAndBackToHome" finished-at="2024-09-19T15:46:02 EEST" duration-ms="2383" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testBackToHome -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:25 EEST" name="tearDown" finished-at="2024-09-17T17:55:25 EEST" duration-ms="101" status="PASS">
+        </test-method> <!-- testWordDisplayedAndBackToHome -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:02 EEST" name="tearDown" finished-at="2024-09-19T15:46:02 EEST" duration-ms="161" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:25 EEST" name="setUp" finished-at="2024-09-17T17:55:26 EEST" duration-ms="883" status="PASS">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:02 EEST" name="setUp" finished-at="2024-09-19T15:46:03 EEST" duration-ms="1152" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="testSendWordAndCategory()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:26 EEST" name="testSendWordAndCategory" finished-at="2024-09-17T17:55:28 EEST" duration-ms="2226" status="FAIL">
-          <exception class="org.openqa.selenium.NoSuchElementException">
-            <message>
-              <![CDATA[no such element: Unable to locate element: {"method":"css selector","selector":"#tries\-left"}
-  (Session info: chrome=128.0.6613.138)
-For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Build info: version: '4.24.0', revision: '748ffc9bc3'
-System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '22.0.1'
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Command: [1d43e243ca18c4b0275559edb97d5946, findElement {value=tries-left, using=id}]
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 128.0.6613.138, chrome: {chromedriverVersion: 128.0.6613.137 (fe621c5aa2d..., userDataDir: C:\Users\NAE3D~1.IVA\AppDat...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:64343}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:64343/devtoo..., se:cdpVersion: 128.0.6613.138, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 1d43e243ca18c4b0275559edb97d5946]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"css selector","selector":"#tries\-left"}
-  (Session info: chrome=128.0.6613.138)
-For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Build info: version: '4.24.0', revision: '748ffc9bc3'
-System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '22.0.1'
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Command: [1d43e243ca18c4b0275559edb97d5946, findElement {value=tries-left, using=id}]
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 128.0.6613.138, chrome: {chromedriverVersion: 128.0.6613.137 (fe621c5aa2d..., userDataDir: C:\Users\NAE3D~1.IVA\AppDat...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:64343}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:64343/devtoo..., se:cdpVersion: 128.0.6613.138, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 1d43e243ca18c4b0275559edb97d5946
-at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
-at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
-at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
-at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
-at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
-at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
-at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:190)
-at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
-at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
-at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:545)
-at org.openqa.selenium.remote.ElementLocation$ElementFinder$2.findElement(ElementLocation.java:165)
-at org.openqa.selenium.remote.ElementLocation.findElement(ElementLocation.java:59)
-at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:368)
-at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:362)
-at selenium.MultiPlayerTest.testSendWordAndCategory(MultiPlayerTest.java:42)
-at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686)
-at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
-at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
-at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992)
-at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203)
-at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154)
-at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134)
-at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-at org.testng.TestRunner.privateRun(TestRunner.java:739)
-at org.testng.TestRunner.run(TestRunner.java:614)
-at org.testng.SuiteRunner.runTest(SuiteRunner.java:421)
-at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413)
-at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373)
-at org.testng.SuiteRunner.run(SuiteRunner.java:312)
-at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95)
-at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274)
-at org.testng.TestNG.runSuitesLocally(TestNG.java:1208)
-at org.testng.TestNG.runSuites(TestNG.java:1112)
-at org.testng.TestNG.run(TestNG.java:1079)
-at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:115)
-at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:293)
-at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:91)
-]]>
-            </full-stacktrace>
-          </exception> <!-- org.openqa.selenium.NoSuchElementException -->
+        <test-method signature="testWordMakeTry()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:03 EEST" name="testWordMakeTry" finished-at="2024-09-19T15:46:07 EEST" duration-ms="4389" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testSendWordAndCategory -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:28 EEST" name="tearDown" finished-at="2024-09-17T17:55:28 EEST" duration-ms="258" status="PASS">
+        </test-method> <!-- testWordMakeTry -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:07 EEST" name="tearDown" finished-at="2024-09-19T15:46:07 EEST" duration-ms="166" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:28 EEST" name="setUp" finished-at="2024-09-17T17:55:29 EEST" duration-ms="987" status="PASS">
+        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:07 EEST" name="setUp" finished-at="2024-09-19T15:46:09 EEST" duration-ms="1070" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setUp -->
-        <test-method signature="testSendWordAndCategoryEmpty()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:29 EEST" name="testSendWordAndCategoryEmpty" finished-at="2024-09-17T17:55:33 EEST" duration-ms="3248" status="PASS">
+        <test-method signature="testWordMakeTryFail()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:09 EEST" name="testWordMakeTryFail" finished-at="2024-09-19T15:46:13 EEST" duration-ms="4353" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testSendWordAndCategoryEmpty -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:33 EEST" name="tearDown" finished-at="2024-09-17T17:55:33 EEST" duration-ms="302" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- tearDown -->
-        <test-method is-config="true" signature="setUp()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:33 EEST" name="setUp" finished-at="2024-09-17T17:55:34 EEST" duration-ms="979" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- setUp -->
-        <test-method signature="testSendWordAndCategoryFail()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:34 EEST" name="testSendWordAndCategoryFail" finished-at="2024-09-17T17:55:36 EEST" duration-ms="2293" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testSendWordAndCategoryFail -->
-        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerTest@1033576a]" started-at="2024-09-17T17:55:36 EEST" name="tearDown" finished-at="2024-09-17T17:55:36 EEST" duration-ms="159" status="PASS">
+        </test-method> <!-- testWordMakeTryFail -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:selenium.MultiPlayerStartedTest@1033576a]" started-at="2024-09-19T15:46:13 EEST" name="tearDown" finished-at="2024-09-19T15:46:13 EEST" duration-ms="161" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- tearDown -->
-      </class> <!-- selenium.MultiPlayerTest -->
+      </class> <!-- selenium.MultiPlayerStartedTest -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
