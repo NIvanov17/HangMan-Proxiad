@@ -101,7 +101,7 @@ import service.GameService;
 		
 		mockMvc.perform(post("/multiPlayer")
 		.param("currentWord", wordToGuess)
-		.param("action", "resume"))
+		.param("action", "resume").session(extractedSession()))
 		.andExpect(status().isOk())
 		.andExpect(view().name("multiplayerStartedView"));
 	}

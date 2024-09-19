@@ -44,7 +44,8 @@ import service.GameService;
 @WebAppConfiguration
 @ContextConfiguration(classes = {AppConfig.class,WebbInitialializer.class,RootConfig.class})
  class SinglePlayerIT {
-private MockMvc mockMvc;
+	
+	private MockMvc mockMvc;
 	
 	@Autowired
 	WebApplicationContext webApplicationContext;
