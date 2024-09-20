@@ -10,21 +10,22 @@ import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.History;
 import repository.WordsRepository;
+import service.GameService;
 
 @Controller
 public class HistoryController{
 
-	private WordsRepository wordsRepository;
+	private GameService gameService;
 
 	@Autowired
-	public HistoryController(WordsRepository wordsRepository) {
-		this.wordsRepository = wordsRepository;
+	public HistoryController(GameService gameService) {
+		this.gameService = gameService;
 	}
 
 
 	@GetMapping("/history")
 	public String getHistory(HttpSession session) {
-		Map<Game, History> history = wordsRepository.getHistory();
+		Map<Game, History> history = gameService.getHistory();
 		session.setAttribute("history", history);
 		return "history";
 

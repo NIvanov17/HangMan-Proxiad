@@ -1,6 +1,9 @@
 package service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
@@ -233,47 +236,18 @@ class GameServiceTest {
 		assertThat(gameService.containsOtherLetters(word)).isTrue();
 	}
 
-	@Test
-	void testcontainsOtherLetters2() {
-
-		String word = "ttts";
-
+	@ParameterizedTest
+	@ValueSource(strings = { "ttts", "tssss", "aa", "aab" })
+	void testContainsOtherLettersWithVariousInputs(String word) {
 		assertThat(gameService.containsOtherLetters(word)).isFalse();
 	}
 
-	@Test
-	void testcontainsOtherLetters3() {
-
-		String word = "tssss";
-
-		assertThat(gameService.containsOtherLetters(word)).isFalse();
-	}
-
-	@Test
-	void testcontainsOtherLettersTwoLetters() {
-		String word = "aa";
-
-		assertThat(gameService.containsOtherLetters(word)).isFalse();
-	}
-
-	@Test
-	void testContainsOtherLettersThreeLettersFail() {
-		String word = "aab";
-
-		assertThat(gameService.containsOtherLetters(word)).isFalse();
-	}
-
-	@Test
-	void testContainsOnlyLettersWithSpaces() {
-		String word = "  apple";
+	@ParameterizedTest
+	@ValueSource(strings = { "  apple", " 4a0", "  test " })
+	void testContainsOnlyLettersWithSpaces(String word) {
 		assertThat(gameService.containsOnlyLetters(word)).isFalse();
 	}
 
-	@Test
-	void testContainsOnlyLettersWithNumbers() {
-		String word = "4a0";
-		assertThat(gameService.containsOnlyLetters(word)).isFalse();
-	}
 
 	@Test
 	void testIsWordValidWith2Symbols() {

@@ -136,6 +136,10 @@ public class GameService {
 		}
 		return true;
 	}
+	
+	public Map<Game,History> getHistory(){
+		return wordsRepository.getHistory();
+	}
 
 	public boolean isWordValid(String wordToGuess) {
 		if (wordToGuess.length() < Commands.MIN_LENGHT || !containsOnlyLetters(wordToGuess)) {

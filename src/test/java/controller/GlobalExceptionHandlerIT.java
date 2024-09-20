@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {AppConfig.class,WebbInitialializer.class,RootConfig.class})
-public class GlobalExceptionHandlerIT {
+class GlobalExceptionHandlerIT {
 
 	private MockMvc mockMvc;
 	

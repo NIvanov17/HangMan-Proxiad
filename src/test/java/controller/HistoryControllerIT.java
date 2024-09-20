@@ -28,6 +28,7 @@ import config.WebbInitialializer;
 import model.Game;
 import model.History;
 import repository.WordsRepository;
+import service.GameService;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AppConfig.class, WebbInitialializer.class, RootConfig.class })
@@ -40,7 +41,7 @@ import repository.WordsRepository;
 	private MockMvc mockMvc;
 
 	@Autowired
-	WordsRepository wordsRepository;
+	GameService gameService;
 
 	@BeforeEach
 	 void setup() {
@@ -53,7 +54,7 @@ import repository.WordsRepository;
 		mockMvc.perform(get("/history"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("history"))
-		.andExpect(request().sessionAttribute("history", wordsRepository.getHistory()));
+		.andExpect(request().sessionAttribute("history", gameService.getHistory()));
 	}
 
 }
