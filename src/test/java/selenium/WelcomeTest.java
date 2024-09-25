@@ -1,5 +1,7 @@
 package selenium;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,7 +18,7 @@ import pages.WelcomePage;
 	WebDriver driver;
 	WelcomePage welcomePage;
 
-	@BeforeMethod
+	@BeforeEach
 	 void setup() {
 		driver = new ChromeDriver();
 		driver.get("http:/www.localhost:8080/welcome");
@@ -24,7 +26,7 @@ import pages.WelcomePage;
 		welcomePage = new WelcomePage(driver);
 	}
 
-	@AfterMethod
+	@AfterEach
 	 void tearDown() {
 		if (driver != null) {
 			driver.quit();

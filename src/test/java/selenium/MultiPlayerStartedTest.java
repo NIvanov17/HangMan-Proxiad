@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -27,6 +28,7 @@ import repository.WordsRepository;
 
 @SpringBootTest(classes = { AppConfig.class })
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 
 	WebDriver driver;
@@ -39,15 +41,13 @@ class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 
 	@BeforeEach
 	void setUp() {
+		Map<Game,History> history = wordsRepository.getHistory();
+		history.clear();
 		driver = new ChromeDriver();
-		driver.get("http://www.localhost:8080/clear-history");
 		driver.get("http://www.localhost:8080/multiPlayer");
 		multiPlayerPage = new MultiPlayerPage(driver);
 		multiPlayerStartedPage = new MultiPlayerStartedPage(driver);
-		Map<Game, History> history = wordsRepository.getHistory();
-		history.entrySet().forEach(e -> {
-			System.out.print(e.getKey());
-		});
+		
 	}
 
 	@AfterEach
@@ -55,10 +55,11 @@ class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 		if (driver != null) {
 			driver.quit();
 		}
+		Map<Game,History> history = wordsRepository.getHistory();
+		history.clear();
 	}
 
 	@org.junit.jupiter.api.Test
-	@DirtiesContext
 	void testWordMakeTry() throws InterruptedException {
 
 		multiPlayerPage.setWordToGuess("bananas");

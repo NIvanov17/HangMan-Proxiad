@@ -1,5 +1,7 @@
 package selenium;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,7 +19,7 @@ import pages.MultiPlayerPage;
 	WebDriver webDriver;
 	MultiPlayerPage multiPlayerPage;
 	
-	@BeforeMethod
+	@BeforeEach
 	 void setUp() {
 		webDriver = new ChromeDriver();
 		webDriver.get("http://www.localhost:8080/multiPlayer?action=newGame");
@@ -25,14 +27,14 @@ import pages.MultiPlayerPage;
 		multiPlayerPage = new MultiPlayerPage(webDriver);
 	}
 	
-	@AfterMethod
+	@AfterEach
 	 void tearDown() {
 		if(webDriver != null) {
 			webDriver.quit();
 		}
 	}
 
-	@Test
+	@org.junit.jupiter.api.Test
 	 void testSendWordAndCategory() throws InterruptedException {
 		String word = "peach";
 		multiPlayerPage.setWordToGuess(word);
@@ -44,7 +46,7 @@ import pages.MultiPlayerPage;
 		Assert.assertEquals(actual, expected);
 	}
 	
-	@Test
+	@org.junit.jupiter.api.Test
 	 void testSendWordAndCategoryFail() throws InterruptedException {
 		String word = "peac4";
 		multiPlayerPage.setWordToGuess(word);
@@ -56,7 +58,7 @@ import pages.MultiPlayerPage;
 		Assert.assertEquals(actual, expected);
 	}
 	
-	@Test
+	@org.junit.jupiter.api.Test
 	 void testSendWordAndCategoryEmpty() throws InterruptedException {
 		multiPlayerPage.setWordToGuess("");
 		multiPlayerPage.setCategory(Category.FRUITS);
@@ -67,7 +69,7 @@ import pages.MultiPlayerPage;
 		Assert.assertEquals(actual, expected);
 	}
 	
-	@Test
+	@org.junit.jupiter.api.Test
 	 void testBackToHome() throws InterruptedException {
 
 
