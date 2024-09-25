@@ -2,6 +2,7 @@ package service;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -203,6 +204,7 @@ public class GameService {
 	}
 
 	public String newGameStarted(HttpSession session, Map<Game, History> history) throws ServletException, IOException {
+		List<Game> gameslist = wordsRepository.getGameslist();
 		Game game = wordsRepository.getRandomGame();
 		if (history.containsKey(game)) {
 			game = wordsRepository.getRandomGame();
@@ -277,7 +279,8 @@ public class GameService {
 			throws ServletException, IOException {
 		game = new Game();
 		game = game.createNewGame(wordToGuess, category);
-
+		game.setSessionId(session.getId());
+		
 		String wordWithoutSpaces = new String(wordToReturn(wordToGuess));
 		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
 		char firstLetter = getFirstLetter(wordWithoutSpaces);

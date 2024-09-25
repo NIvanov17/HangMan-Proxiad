@@ -19,6 +19,7 @@ import model.History;
 public class WordsRepository {
 	private  List<Game> gamesList;
 	private  Map<Game, History> history;
+	public static final Random RANDOM = new Random();
 
 	public WordsRepository() {
 		gamesList = new ArrayList<>();
@@ -35,8 +36,7 @@ public class WordsRepository {
 	}
 
 	public  Game getRandomGame() {
-		Random random = new Random();
-		Game game = gamesList.get(random.nextInt(gamesList.size()));
+		Game game = gamesList.get(RANDOM.nextInt(gamesList.size()));
 		return game;
 	}
 

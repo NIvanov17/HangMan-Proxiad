@@ -3,7 +3,7 @@ package model;
 import enums.Category;
 
 public class Game {
-	
+
 	private static long counter = 1;
 
 	private long id;
@@ -12,21 +12,19 @@ public class Game {
 
 	private Category category;
 
-	public Game() {
-	
+	private String sessionId;
+
+	public Game createNewGame(String word, Category category) {
+		Game game = new Game();
+		game.setId(generateNextId());
+		game.setWord(word);
+		game.setCategory(category);
+		return game;
 	}
 
-	 public Game createNewGame(String word, Category category) {
-	        Game game = new Game();
-	        game.setId(generateNextId());
-	        game.setWord(word);
-	        game.setCategory(category);
-	        return game;
-	    }
-
-	    private synchronized long generateNextId() {
-	        return counter++;
-	    }
+	private synchronized long generateNextId() {
+		return counter++;
+	}
 
 	public long getId() {
 		return id;
@@ -50,6 +48,14 @@ public class Game {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 }
