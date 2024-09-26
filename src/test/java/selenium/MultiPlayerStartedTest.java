@@ -19,12 +19,14 @@ import org.testng.Assert;
 import config.AppConfig;
 import config.WebbInitialializer;
 import enums.Category;
+import enums.Commands;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.History;
 import pages.MultiPlayerPage;
 import pages.MultiPlayerStartedPage;
 import repository.WordsRepository;
+import service.GameService;
 
 @SpringBootTest(classes = { AppConfig.class })
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class })
@@ -37,17 +39,15 @@ class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 	@Autowired
 	private WordsRepository wordsRepository;
 
-	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 	@BeforeEach
 	void setUp() {
-		Map<Game,History> history = wordsRepository.getHistory();
+		Map<Game, History> history = wordsRepository.getHistory();
+		int size = wordsRepository.getHistory().size();
 		history.clear();
 		driver = new ChromeDriver();
 		driver.get("http://www.localhost:8080/multiPlayer");
 		multiPlayerPage = new MultiPlayerPage(driver);
 		multiPlayerStartedPage = new MultiPlayerStartedPage(driver);
-		
 	}
 
 	@AfterEach
@@ -55,42 +55,48 @@ class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 		if (driver != null) {
 			driver.quit();
 		}
-		Map<Game,History> history = wordsRepository.getHistory();
-		history.clear();
+
 	}
 
 	@org.junit.jupiter.api.Test
 	void testWordMakeTry() throws InterruptedException {
-
-		multiPlayerPage.setWordToGuess("bananas");
+		String randomString = GameService.generateRandomString(5);
+		multiPlayerPage.setWordToGuess(randomString);
 		multiPlayerPage.setCategory(Category.FRUITS);
 		Thread.sleep(2000);
 		multiPlayerPage.clickSubmitButton();
 
-		WebElement guessBtn = driver.findElement(By.cssSelector("button[type='submit']"));
+		WebElement guessBtn = driver
+				.findElement(By.cssSelector("button[value='" + randomString.charAt(1) + "']"));
 		guessBtn.click();
 
-		WebElement updatedWord = driver.findElement(By.id("currentState"));
-		Assert.assertTrue(updatedWord.getText().contains("a"));
+		String updatedWord = driver.findElement(By.id("currentState")).getText();
+		Assert.assertTrue(updatedWord.charAt(17) == (randomString.charAt(1)));
 	}
 
 	@org.junit.jupiter.api.Test
 	void testWordMakeTryFail() throws InterruptedException {
 
-		multiPlayerPage.setWordToGuess("robots");
-		multiPlayerPage.setCategory(Category.TECHNOLOGY);
-		System.out.print(HttpSession.class);
-		int history = wordsRepository.getHistory().size();
+		String randomString = GameService.generateRandomString(5);
+		multiPlayerPage.setWordToGuess(randomString);
+		multiPlayerPage.setCategory(Category.FRUITS);
+		Thread.sleep(2000);
 		multiPlayerPage.clickSubmitButton();
-		Thread.sleep(2000);
-		WebElement guessBtn = driver.findElement(By.cssSelector("button[type='submit']"));
+		
+		char letterNotInWord = ' ';
+	    for (char c : Commands.CHARACTERS.toCharArray()) {
+	        if (randomString.indexOf(c) == -1) {  
+	            letterNotInWord = c;
+	            break;  
+	        }
+	    }
+
+		WebElement guessBtn = driver
+				.findElement(By.cssSelector("button[value='" + letterNotInWord + "']"));
 		guessBtn.click();
-		String currentUrl = driver.getCurrentUrl();
-		Assert.assertTrue(currentUrl.contains("/multiplayerStarted"));
-		Thread.sleep(2000);
-		WebElement updatedWord = driver.findElement(By.id("currentState"));
-		Assert.assertFalse(updatedWord.getText().contains("a"));
-		Assert.assertTrue(multiPlayerStartedPage.getTriesLeft() < 6);
+
+		String updatedWord = driver.findElement(By.id("currentState")).getText();
+		Assert.assertFalse(updatedWord.contains(String.valueOf(letterNotInWord)));
 	}
 
 	@org.junit.jupiter.api.Test

@@ -58,7 +58,7 @@ body {
 			%>
 			<form action="/multiplayerStarted" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
-				<button type="submit"
+				<button type="submit" value="<%=lowerCaseLetter%>"
 					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
 	out.print("disabled");

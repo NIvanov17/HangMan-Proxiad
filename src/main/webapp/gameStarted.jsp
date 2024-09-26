@@ -59,7 +59,7 @@ body {
 			%>
 			<form action="/hangMan" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
-				<button type="submit" name="guess-btn"
+				<button type="submit" name="guess-btn" value="<%=lowerCaseLetter%>"
 					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
 	out.print("disabled");

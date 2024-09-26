@@ -9,4 +9,5 @@ public class Commands {
 	public static final int SMALL_Z = 122;
 	public static final int SMALL_A = 97;
 	public static final int MIN_LENGHT = 3;
+	public static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
 }
