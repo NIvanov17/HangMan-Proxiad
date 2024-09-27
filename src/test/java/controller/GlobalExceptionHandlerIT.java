@@ -1,39 +1,30 @@
 package controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import config.AppConfig;
-import config.RootConfig;
-import config.WebbInitialializer;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
-@ContextConfiguration(classes = {AppConfig.class,WebbInitialializer.class,RootConfig.class})
+@SpringBootTest(classes = HangManApp.class)
+@AutoConfigureMockMvc
 class GlobalExceptionHandlerIT {
 
 	private MockMvc mockMvc;
 	
-	@Autowired
-	WebApplicationContext webApplicationContext;
 
-	@BeforeEach
-	 void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
+
 	
 	@Test
 	void testInavlidURLIT() throws Exception {

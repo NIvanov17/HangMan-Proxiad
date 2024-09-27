@@ -15,16 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import config.AppConfig;
-import config.RootConfig;
-import config.WebbInitialializer;
 import enums.Category;
 import model.Game;
 import model.History;
@@ -33,7 +29,6 @@ import service.GameService;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {AppConfig.class,WebbInitialializer.class,RootConfig.class})
  class MultiPlayerControllerIT {
 
 	private MockMvc mockMvc;

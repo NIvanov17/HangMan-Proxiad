@@ -11,12 +11,12 @@ public class WelcomeController {
 
 	@GetMapping("/welcome")
 	public String welcome() {
-		return "welcome";
+		return "welcomePage";
 	}
 	
 	@GetMapping("/")
 	public String index() {
-		return "welcome";
+		return "welcomePage";
 	}
 
 
