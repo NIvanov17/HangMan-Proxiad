@@ -1,15 +1,11 @@
 package selenium;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -17,29 +13,21 @@ import org.testng.Assert;
 
 import enums.Category;
 import enums.Commands;
-import model.Game;
-import model.History;
 import pages.MultiPlayerPage;
 import pages.MultiPlayerStartedPage;
-import repository.WordsRepository;
 import service.GameService;
 
 
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MultiPlayerStartedTest extends AbstractTestNGSpringContextTests {
 
 	WebDriver driver;
 	MultiPlayerStartedPage multiPlayerStartedPage;
 	private MultiPlayerPage multiPlayerPage;
-	@Autowired
-	private WordsRepository wordsRepository;
+
 
 	@BeforeEach
 	void setUp() {
-		Map<Game, History> history = wordsRepository.getHistory();
-		int size = wordsRepository.getHistory().size();
-		history.clear();
 		driver = new ChromeDriver();
 		driver.get("http://www.localhost:8080/multiPlayer");
 		multiPlayerPage = new MultiPlayerPage(driver);

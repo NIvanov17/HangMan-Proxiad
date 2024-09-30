@@ -25,7 +25,7 @@ import service.GameService;
 
 
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class })
-public class MultiPlayerE2ETest extends AbstractTestNGSpringContextTests {
+class MultiPlayerE2ETest extends AbstractTestNGSpringContextTests {
 
 	WebDriver driver;
 	MultiPlayerStartedPage multiPlayerStartedPage;

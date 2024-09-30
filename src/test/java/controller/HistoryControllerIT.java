@@ -9,30 +9,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import app.HangManApp;
 import service.GameService;
 
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@SpringBootTest(classes = HangManApp.class)
+@AutoConfigureMockMvc
  class HistoryControllerIT {
 
-	@Autowired
-	WebApplicationContext webApplicationContext;
 
+	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
 	GameService gameService;
 
-	@BeforeEach
-	 void setup() {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
 
 	@Test
 	 void testGetHistory() throws Exception {

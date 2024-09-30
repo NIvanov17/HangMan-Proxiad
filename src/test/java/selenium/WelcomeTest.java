@@ -33,7 +33,7 @@ import pages.WelcomePage;
 		}
 	}
 
-	@org.testng.annotations.Test
+	@org.junit.jupiter.api.Test
 	 void testSinglePlayer() throws InterruptedException {
 		welcomePage.clickSinglePlayerButton();
 		String actual = driver.findElement(By.id("tries-left")).getText();
@@ -43,7 +43,7 @@ import pages.WelcomePage;
 
 	}
 
-	@org.testng.annotations.Test
+	@org.junit.jupiter.api.Test
 	 void testMultiPlayer() throws InterruptedException {
 		welcomePage.clickMultiPlayerButton();
 		String actual = driver.findElement(By.tagName("h2")).getText();
@@ -53,7 +53,7 @@ import pages.WelcomePage;
 
 	}
 
-	@org.testng.annotations.Test
+	@org.junit.jupiter.api.Test
 	 void testHistory() throws InterruptedException {
 		welcomePage.clickHistoryButton();
 		String actual = driver.findElement(By.tagName("h2")).getText();
