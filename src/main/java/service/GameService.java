@@ -198,7 +198,7 @@ public class GameService {
 			return "gameStarted";
 
 		} else {
-			return "multiplayerStartedView";
+			return "multiplayerStarted";
 
 		}
 
