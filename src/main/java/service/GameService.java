@@ -303,7 +303,7 @@ public class GameService {
 		session.setAttribute("isWordValid", true);
 
 
-		return "multiplayerStartedView";
+		return "multiplayerStarted";
 	}
 
 	public String tryGuessMultiplayer(char guess, HttpSession session) throws IOException {

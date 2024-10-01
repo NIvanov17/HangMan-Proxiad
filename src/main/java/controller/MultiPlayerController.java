@@ -37,7 +37,7 @@ public class MultiPlayerController {
 	@GetMapping("/multiPlayer")
 	public String multiPlayer() {
 
-		return "multiPlayerView";
+		return "multiPlayer";
 	}
 
 	@PostMapping("/multiPlayer")
@@ -81,7 +81,7 @@ public class MultiPlayerController {
 	@GetMapping("/multiplayerStarted")
 	protected String multiPLayerGameStarted(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		return "multiplayerStartedView";
+		return "multiplayerStarted";
 	}
 
 	

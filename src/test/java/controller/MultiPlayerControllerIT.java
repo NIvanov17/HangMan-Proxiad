@@ -58,7 +58,7 @@ import service.GameService;
 	 void multiPlayerGetViewIT() throws Exception {
 		mockMvc.perform(get("/multiPlayer"))
 		.andExpect(status().isOk())
-		.andExpect(view().name("multiPlayerView"));
+		.andExpect(view().name("multiPlayer"));
 	}
 
 	@Test
@@ -102,7 +102,7 @@ import service.GameService;
 		.param("currentWord", wordToGuess)
 		.param("action", "resume").session(extractedSession()))
 		.andExpect(status().isOk())
-		.andExpect(view().name("multiplayerStartedView"));
+		.andExpect(view().name("multiplayerStarted"));
 	}
 	
 
@@ -115,14 +115,14 @@ import service.GameService;
 				.param("wordToGuess", wordToGuess)
 				.param("category", category.name()))
 				.andExpect(status().isOk())
-				.andExpect(view().name("multiplayerStartedView"));
+				.andExpect(view().name("multiplayerStarted"));
 	}
 	
 	@Test 
 	 void multiPlayerGameStartedViewIT() throws Exception {
 		mockMvc.perform(get("/multiplayerStarted"))
 		.andExpect(status().isOk())
-		.andExpect(view().name("multiplayerStartedView"));
+		.andExpect(view().name("multiplayerStarted"));
 	}
 	
 	

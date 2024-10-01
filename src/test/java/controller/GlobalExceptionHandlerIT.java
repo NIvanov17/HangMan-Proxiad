@@ -17,7 +17,6 @@ import app.HangManApp;
 
 
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = HangManApp.class)
 @AutoConfigureMockMvc
 class GlobalExceptionHandlerIT {
