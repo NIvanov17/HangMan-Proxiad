@@ -120,7 +120,7 @@ import service.GameService;
 	
 	@Test 
 	 void multiPlayerGameStartedViewIT() throws Exception {
-		mockMvc.perform(get("/multiplayerStarted"))
+		mockMvc.perform(get("/multiplayer/game"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("multiplayerStarted"));
 	}
@@ -129,17 +129,17 @@ import service.GameService;
 
 	@Test 
 	 void multiPlayerGameStartedTryWrongIT() throws Exception {
-		mockMvc.perform(post("/multiplayerStarted").param("guess", "a").session(extractedSession()))
+		mockMvc.perform(post("/multiplayer/game").param("guess", "a").session(extractedSession()))
 		.andExpect(status().is3xxRedirection())
-		.andExpect(redirectedUrl("/multiplayerStarted"));
+		.andExpect(redirectedUrl("/multiplayer/game"));
 	}
 
 	
 	@Test 
 	 void multiPlayerGameStartedTryCorrectIT() throws Exception {
-		mockMvc.perform(post("/multiplayerStarted").param("guess", "e").session(extractedSession()))
+		mockMvc.perform(post("/multiplayer/game").param("guess", "e").session(extractedSession()))
 		.andExpect(status().is3xxRedirection())
-		.andExpect(redirectedUrl("/multiplayerStarted"));
+		.andExpect(redirectedUrl("/multiplayer/game"));
 	}
 	
 	String setUpHistory() {
