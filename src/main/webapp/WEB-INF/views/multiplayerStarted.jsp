@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/gameStarted.css">
+<link rel="stylesheet" href="/css/gameStarted.css">
 <title>Game Started!</title>
 <style type="text/css">
 body {
@@ -56,7 +56,7 @@ body {
 			for (char letter = 'A'; letter <= 'Z'; letter++) {
 				char lowerCaseLetter = Character.toLowerCase(letter);
 			%>
-			<form action="/multiplayerStarted" method="post">
+			<form action="/multiplayer/game" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
 				<button type="submit" value="<%=lowerCaseLetter%>"
 					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
@@ -68,7 +68,7 @@ body {
 			}
 			%>
 		</div>
-		<img src="img/<%=triesLeft%>.png" alt="Hangman State">
+		<img src="/img/<%=triesLeft%>.png" alt="Hangman State">
 		<%
 		if (isFinished) {
 		%>

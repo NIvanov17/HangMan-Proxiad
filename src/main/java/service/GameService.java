@@ -332,7 +332,7 @@ public class GameService {
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 
 			}
-			return "redirect:/multiplayerStarted";
+			return "redirect:/multiplayer/game";
 		} else {
 			triesLeft--;
 			wordsRepository.getHistory().put(wordToFind,
@@ -345,7 +345,7 @@ public class GameService {
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
 
 			}
-			return "redirect:/multiplayerStarted";
+			return "redirect:/multiplayer/game";
 		}
 	}
 	

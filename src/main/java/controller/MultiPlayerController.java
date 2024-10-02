@@ -78,14 +78,14 @@ public class MultiPlayerController {
 		return gameService.prepareWordToBeDisplayed(session, wordToGuess, category);
 	}
 	
-	@GetMapping("/multiplayerStarted")
+	@GetMapping("/multiplayer/game")
 	protected String multiPLayerGameStarted(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		return "multiplayerStarted";
 	}
 
 	
-	@PostMapping("/multiplayerStarted")
+	@PostMapping("/multiplayer/game")
 	protected String multiPlayerGameGuess(HttpSession session,HttpServletRequest request)
 			throws ServletException, IOException {
 		char guess = request.getParameter("guess").charAt(0);
