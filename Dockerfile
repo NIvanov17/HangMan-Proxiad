@@ -11,9 +11,6 @@ COPY target/hangMan.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
 
 
-
-
-
 # Step 1: Use an official OpenJDK runtime as a parent image
 #FROM openjdk:17-jdk-alpine
 

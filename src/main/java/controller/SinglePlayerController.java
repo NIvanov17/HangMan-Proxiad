@@ -51,9 +51,9 @@ public class SinglePlayerController {
 	}
 
 	@PostMapping("/hangMan")
-	public String singlePlayerGameGuess(HttpSession session, HttpServletRequest request)
-			throws IOException {
-		char guess = request.getParameter("guess").charAt(0);
+	public String singlePlayerGameGuess(@RequestParam("guess") char guess, HttpSession session,
+			HttpServletRequest request) throws IOException {
+
 		return gameService.tryGuess(guess, session, history);
 	}
 
