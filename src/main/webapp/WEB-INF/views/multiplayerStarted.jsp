@@ -56,8 +56,8 @@ body {
 			for (char letter = 'A'; letter <= 'Z'; letter++) {
 				char lowerCaseLetter = Character.toLowerCase(letter);
 			%>
-			<form action="/multiplayer/game" method="post">
-				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
+			<form action="/multiplayer/guess" method="post">
+				<input type="hidden" name="letter" value="<%=lowerCaseLetter%>" />
 				<button type="submit" value="<%=lowerCaseLetter%>"
 					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element

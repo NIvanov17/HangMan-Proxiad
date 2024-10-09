@@ -129,7 +129,7 @@ import service.GameService;
 
 	@Test 
 	 void multiPlayerGameStartedTryWrongIT() throws Exception {
-		mockMvc.perform(post("/multiplayer/game").param("guess", "a").session(extractedSession()))
+		mockMvc.perform(post("/multiplayer/guess").param("letter", "a").session(extractedSession()))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(redirectedUrl("/multiplayer/game"));
 	}
@@ -137,7 +137,7 @@ import service.GameService;
 	
 	@Test 
 	 void multiPlayerGameStartedTryCorrectIT() throws Exception {
-		mockMvc.perform(post("/multiplayer/game").param("guess", "e").session(extractedSession()))
+		mockMvc.perform(post("/multiplayer/guess").param("letter", "e").session(extractedSession()))
 		.andExpect(status().is3xxRedirection())
 		.andExpect(redirectedUrl("/multiplayer/game"));
 	}

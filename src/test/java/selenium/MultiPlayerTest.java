@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import enums.Category;
 import pages.MultiPlayerPage;
+import service.GameService;
 
 
  class MultiPlayerTest {
@@ -36,7 +37,7 @@ import pages.MultiPlayerPage;
 
 	@org.junit.jupiter.api.Test
 	 void testSendWordAndCategory() throws InterruptedException {
-		String word = "peach";
+		String word = GameService.generateRandomString(5);
 		multiPlayerPage.setWordToGuess(word);
 		multiPlayerPage.setCategory(Category.FRUITS);
 		Thread.sleep(2000);

@@ -84,11 +84,11 @@ public class MultiPlayerController {
 		return "multiplayerStarted";
 	}
 
-	@PostMapping("/multiplayer/game")
-	protected String multiPlayerGameGuess(@RequestParam("guess") char guess, HttpSession session,
+	@PostMapping("/multiplayer/guess")
+	protected String multiPlayerGameGuess(@RequestParam("letter") char letter, HttpSession session,
 			HttpServletRequest request) throws ServletException, IOException {
 
-		return gameService.tryGuessMultiplayer(guess, session);
+		return gameService.tryGuessMultiplayer(letter, session);
 	}
 
 }
