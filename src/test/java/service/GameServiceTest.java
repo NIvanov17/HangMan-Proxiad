@@ -1,9 +1,6 @@
 package service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
@@ -12,6 +9,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
-import model.History;
+import model.Word;
 import repository.WordsRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,18 +58,18 @@ class GameServiceTest {
 
 	@Test
 	void testWordWithSpacesGameShouldReturnWord() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
 
-		assertThat(gameService.wordWithSpaces(game)).isEqualTo("t e s t");
+		assertThat(gameService.wordWithSpaces(word)).isEqualTo("t e s t");
 	}
 
 	@Test
 	void testWordWithSpacesGameShouldThrowNull() {
-		Game game = new Game();
-		game.setWord(null);
+		Word word = new Word();
+		word.setWord(null);
 
-		assertThatThrownBy(() -> gameService.wordWithSpaces(game)).isInstanceOf(NullPointerException.class);
+		assertThatThrownBy(() -> gameService.wordWithSpaces(word)).isInstanceOf(NullPointerException.class);
 	}
 
 	@Test
@@ -91,64 +90,64 @@ class GameServiceTest {
 
 	@Test
 	void testContainsShouldReturnTrue() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
 
-		assertThat(gameService.contains(game, 'e')).isTrue();
+		assertThat(gameService.contains(word, 'e')).isTrue();
 	}
 
 	@Test
 	void testContainsShouldReturnFalse() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
 
-		assertThat(gameService.contains(game, 'x')).isFalse();
+		assertThat(gameService.contains(word, 'x')).isFalse();
 	}
 
 	@Test
 	void testPutLetterOnPlaceSingleLetter() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
 		char guess = 'e';
 		char[] currentState = { 't', ' ', '_', ' ', '_', ' ', 't' };
 
-		String res = gameService.putLetterOnPlace(game, guess, currentState);
+		String res = gameService.putLetterOnPlace(word, guess, currentState);
 
 		assertThat(res).isEqualTo("t e _ t");
 	}
 
 	@Test
 	void testPutLetterOnPlaceManyLetters() {
-		Game game = new Game();
-		game.setWord(TEST_WORD_REPEATING_LAST_LETTER);
+		Word word = new Word();
+		word.setWord(TEST_WORD_REPEATING_LAST_LETTER);
 		char guess = 'n';
 		char[] currentState = { 'b', 'a', '_', 'a', '_', 'a' };
 
-		String res = gameService.putLetterOnPlace(game, guess, currentState);
+		String res = gameService.putLetterOnPlace(word, guess, currentState);
 
 		assertThat(res).isEqualTo("b a n a n a");
 	}
 
 	@Test
 	void testPutLetterOnPlaceDoesntMatch() {
-		Game game = new Game();
-		game.setWord(TESTING);
+		Word word = new Word();
+		word.setWord(TESTING);
 		char guess = 'x';
 		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
 
-		String res = gameService.putLetterOnPlace(game, guess, currentState);
+		String res = gameService.putLetterOnPlace(word, guess, currentState);
 
 		assertThat(res).isEqualTo("t _ _ t _ _ g");
 	}
 
 	@Test
 	void testPutLetterOnPlaceWithLetter() {
-		Game game = new Game();
-		game.setWord(TESTING);
+		Word word = new Word();
+		word.setWord(TESTING);
 		char guess = '5';
 		char[] currentState = { 't', '_', '_', 't', '_', '_', 'g' };
 
-		String res = gameService.putLetterOnPlace(game, guess, currentState);
+		String res = gameService.putLetterOnPlace(word, guess, currentState);
 
 		assertThat(res).isEqualTo("t _ _ t _ _ g");
 	}
@@ -165,22 +164,22 @@ class GameServiceTest {
 
 	@Test
 	void testIsWordGuessed() {
-		Game game = new Game();
-		game.setWord("test");
+		Word word = new Word();
+		word.setWord("test");
 
 		String toCompare = gameService.wordWithSpaces(TEST_WORD);
 
-		assertThat(gameService.isWordGuessed(game, toCompare)).isTrue();
+		assertThat(gameService.isWordGuessed(word, toCompare)).isTrue();
 	}
 
 	@Test
 	void testIsWordGuessedFailed() {
-		Game game = new Game();
-		game.setWord("t _ s t");
+		Word word = new Word();
+		word.setWord("t _ s t");
 
 		String toCompare = gameService.wordWithSpaces(TEST_WORD);
 
-		assertThat(gameService.isWordGuessed(game, toCompare)).isFalse();
+		assertThat(gameService.isWordGuessed(word, toCompare)).isFalse();
 	}
 
 	@Test
@@ -210,20 +209,20 @@ class GameServiceTest {
 
 	@Test
 	void testHistoryContainsWord() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
-		Map<Game, History> history = new HashMap<>();
-		history.put(game, null);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
+		Map<Word, Game> history = new HashMap<>();
+		history.put(word, null);
 
 		assertThat(gameService.historyContainsWord(history, TEST_WORD)).isTrue();
 	}
 
 	@Test
 	void testHistoryContainsWordFailed() {
-		Game game = new Game();
-		game.setWord(TEST_WORD);
-		Map<Game, History> history = new HashMap<>();
-		history.put(game, null);
+		Word word = new Word();
+		word.setWord(TEST_WORD);
+		Map<Word, Game> history = new HashMap<>();
+		history.put(word, null);
 
 		assertThat(gameService.historyContainsWord(history, TESTING)).isFalse();
 	}

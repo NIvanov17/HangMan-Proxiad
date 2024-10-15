@@ -18,15 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import app.HangManApp;
 import enums.Category;
 import model.Game;
-import model.History;
+import model.Word;
 import repository.WordsRepository;
 import service.GameService;
 
@@ -47,7 +45,7 @@ import service.GameService;
 	@Autowired
 	WordsRepository wordsRepository;
 	
-	Map<Game,History> injectedHistory;
+	Map<Word,Game> injectedHistory;
 
 	@BeforeEach
 	 void setup() {
@@ -144,25 +142,25 @@ import service.GameService;
 	
 	String setUpHistory() {
 		String wordToGuess = "test";
-		Game game = new Game();
-		game.setWord("test");
-		game.setCategory(Category.TECHNOLOGY);
+		Word word = new Word();
+		word.setWord("test");
+		word.setCategory(Category.TECHNOLOGY);
 		
-		History history = new History();
-		history.setCategory(Category.TECHNOLOGY);
-		history.setFinished(false);
-		history.setMode("multiPlayer");
-		history.setTriesLeft(5);
-		history.setUsedChars(Set.of('t'));
-		history.setWordState("t _ _ t");
-		injectedHistory.put(game, history);
+		Game game = new Game();
+		game.setCategory(Category.TECHNOLOGY);
+		game.setFinished(false);
+		game.setMode("multiPlayer");
+		game.setTriesLeft(5);
+		game.setUsedChars(Set.of('t'));
+		game.setWordState("t _ _ t");
+		injectedHistory.put(word, game);
 		return wordToGuess;
 	}
 	
 	MockHttpSession extractedSession() {
 		MockHttpSession session = new MockHttpSession();
 		Set<Character> usedCharacters = new HashSet<>();
-		Game wordToFind = new Game();
+		Word wordToFind = new Word();
 		wordToFind.setWord("test");
 		Category category = Category.TECHNOLOGY;
 		int triesLeft = 6;

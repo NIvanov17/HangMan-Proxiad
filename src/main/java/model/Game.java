@@ -1,45 +1,54 @@
 package model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import enums.Category;
 
 public class Game {
-
-	private static long counter = 1;
-
-	private long id;
-
-	private String word;
-
+	private String wordState;
+	private int triesLeft;
 	private Category category;
+	private Set<Character> usedChars;
+	private boolean isFinished;
+	private String mode;
 
-	private String sessionId;
-
-	public Game createNewGame(String word, Category category) {
-		Game game = new Game();
-		game.setId(generateNextId());
-		game.setWord(word);
-		game.setCategory(category);
-		return game;
+	public Game(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,
+			boolean isFinished, String mode) {
+		this.wordState = wordState;
+		this.triesLeft = triesLeft;
+		this.category = category;
+		this.usedChars = new HashSet<>(usedCharacters);
+		this.setFinished(false);
+		this.mode = mode;
 	}
 
-	private synchronized long generateNextId() {
-		return counter++;
+	public Game() {
 	}
 
-	public long getId() {
-		return id;
+	public void reset(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,
+			boolean isFinished) {
+		this.wordState = wordState;
+		this.triesLeft = triesLeft;
+		this.category = category;
+		this.usedChars.clear();
+		this.setFinished(false);
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public String getWordState() {
+		return wordState;
 	}
 
-	public String getWord() {
-		return word;
+	public void setWordState(String wordState) {
+		this.wordState = wordState;
 	}
 
-	public void setWord(String name) {
-		this.word = name;
+	public int getTriesLeft() {
+		return triesLeft;
+	}
+
+	public void setTriesLeft(int triesLeft) {
+		this.triesLeft = triesLeft;
 	}
 
 	public Category getCategory() {
@@ -50,12 +59,28 @@ public class Game {
 		this.category = category;
 	}
 
-	public String getSessionId() {
-		return sessionId;
+	public Set<Character> getUsedChars() {
+		return usedChars;
 	}
 
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	public void setUsedChars(Set<Character> usedChars) {
+		this.usedChars = usedChars;
+	}
+
+	public boolean isFinished() {
+		return isFinished;
+	}
+
+	public void setFinished(boolean isFinished) {
+		this.isFinished = isFinished;
+	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 }

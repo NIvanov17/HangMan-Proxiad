@@ -1,5 +1,5 @@
 <%@ page import="enums.Category"%>
-<%@ page import="model.Game"%>
+<%@ page import="model.Word"%>
 <html>
 <head>
 <link rel="stylesheet" href="css/multiPlayer.css">
@@ -45,7 +45,7 @@ select#category {
 	<%
 	Boolean isValid = (Boolean) session.getAttribute("isWordValid");
 	String errorMessage = (String) session.getAttribute("errorMessage");
-	Game word = (Game) session.getAttribute("word");
+	Word word = (Word) session.getAttribute("word");
 	%>
 	<div class="container">
 		<h2>Multiplayer Game Started!</h2>

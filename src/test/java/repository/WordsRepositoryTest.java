@@ -1,30 +1,25 @@
 package repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import model.Game;
-import model.History;
-import service.GameService;
+import model.Word;
 
 class WordsRepositoryTest {
 
 	private WordsRepository wordsRepository;
 
-	private List<Game> gamesList;
+	private List<Word> gamesList;
 
-	private Map<Game, History> history;
+	private Map<Word, Game> history;
 
 	@BeforeEach
 	public void setUp() {
@@ -32,15 +27,15 @@ class WordsRepositoryTest {
 		gamesList = wordsRepository.getGameslist();
 		history = new HashMap<>();
 
-		Game newGame = new Game();
+		Word newGame = new Word();
 		newGame.setWord("test");
 		gamesList.add(newGame);
 
-		Game newGame2 = new Game();
+		Word newGame2 = new Word();
 		newGame2.setWord("test2");
 		gamesList.add(newGame2);
 
-		Game newGame3 = new Game();
+		Word newGame3 = new Word();
 		newGame3.setWord("test3");
 		gamesList.add(newGame3);
 	}
@@ -48,11 +43,11 @@ class WordsRepositoryTest {
 	@Test
 	void getRandomSingleWord() {
 		gamesList.clear();
-		Game newGame4 = new Game();
+		Word newGame4 = new Word();
 		newGame4.setWord("test4");
 		gamesList.add(newGame4);
 
-		Game randomGame = wordsRepository.getRandomGame();
+		Word randomGame = wordsRepository.getRandomGame();
 
 		assertThat(randomGame).isNotNull();
 		assertThat(randomGame).isEqualTo(newGame4);
@@ -62,7 +57,7 @@ class WordsRepositoryTest {
 	@Test
 	void getRandomWord() {
 
-		Game randomGame = wordsRepository.getRandomGame();
+		Word randomGame = wordsRepository.getRandomGame();
 
 		assertThat(randomGame).isNotNull();
 		assertThat(gamesList).contains(randomGame);
@@ -71,7 +66,7 @@ class WordsRepositoryTest {
 
 	@Test
 	void testGetHistory() {
-		Map<Game, History> getHistory = wordsRepository.getHistory();
+		Map<Word,Game> getHistory = wordsRepository.getHistory();
 
 		assertThat(getHistory).isEqualTo(history);
 
@@ -80,7 +75,7 @@ class WordsRepositoryTest {
 	@Test
 	void testInitializeWords() throws IOException {
 
-		List<Game> initializeWords = wordsRepository.initializeWords();
+		List<Word> initializeWords = wordsRepository.initializeWords();
 
 		assertThat(initializeWords).isNotEmpty();
 		assertThat(initializeWords.get(0).getWord()).isEqualTo("apple");

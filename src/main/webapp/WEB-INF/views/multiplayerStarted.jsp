@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ page import="enums.Category"%>
-<%@ page import="model.Game"%>
+<%@ page import="model.Word"%>
 <%@ page isELIgnored="false"%>
 
 
@@ -35,7 +35,7 @@ body {
 <body>
 
 	<%
-	Game word = (Game) session.getAttribute("word");
+	Word word = (Word) session.getAttribute("word");
 	Integer triesLeft = (Integer) session.getAttribute("triesLeft");
 	Boolean isFinished = (Boolean) session.getAttribute("isFinished");
 	String currentState = (String) session.getAttribute("currentState");

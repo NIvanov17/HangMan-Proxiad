@@ -15,20 +15,20 @@ import enums.Commands;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
-import model.History;
+import model.Word;
 import repository.WordsRepository;
 
 @Service
 public class GameService {
 	private WordsRepository wordsRepository;
-	private Game game;
+	private Word word;
 
 	@Autowired
 	public GameService(WordsRepository wordsRepository) {
 		this.wordsRepository = wordsRepository;
 	}
 
-	public String wordWithSpaces(Game wordWithoutSpaces) {
+	public String wordWithSpaces(Word wordWithoutSpaces) {
 		StringBuilder sb = new StringBuilder();
 		String word = wordWithoutSpaces.getWord();
 		for (int i = 0; i < word.length(); i++) {
@@ -58,7 +58,7 @@ public class GameService {
 		return currentState;
 	}
 
-	public boolean contains(Game wordToFind, char guess) {
+	public boolean contains(Word wordToFind, char guess) {
 		String word = wordToFind.getWord();
 		for (int i = 0; i < word.length(); i++) {
 			if (word.charAt(i) == guess) {
@@ -69,7 +69,7 @@ public class GameService {
 		return false;
 	}
 
-	public String putLetterOnPlace(Game wordToFind, char guess, char[] currentState) {
+	public String putLetterOnPlace(Word wordToFind, char guess, char[] currentState) {
 		StringBuilder sb = new StringBuilder();
 		String currentstateWithoutSpaces = new String(currentState);
 		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
@@ -93,7 +93,7 @@ public class GameService {
 		return triesLeft == 0;
 	}
 
-	public boolean isWordGuessed(Game wordToFind, String currentState) {
+	public boolean isWordGuessed(Word wordToFind, String currentState) {
 		return currentState.equals(wordWithSpaces(wordToFind));
 	}
 
@@ -106,13 +106,13 @@ public class GameService {
 	}
 
 	public void restartGame(HttpSession session, Set<Character> usedCharacters) {
-		game = wordsRepository.getRandomGame();
+		word = wordsRepository.getRandomGame();
 		usedCharacters.removeAll(usedCharacters);
-		String currentState = wordWithSpaces(new String(wordToReturn(game.getWord())));
-		if (wordsRepository.getHistory().containsKey(game)) {
-			game = wordsRepository.getRandomGame();
+		String currentState = wordWithSpaces(new String(wordToReturn(word.getWord())));
+		if (wordsRepository.getHistory().containsKey(word)) {
+			word = wordsRepository.getRandomGame();
 		}
-		session.setAttribute("word", game.getWord());
+		session.setAttribute("word", word.getWord());
 		session.setAttribute("currentState", currentState);
 		session.setAttribute("triesLeft", 6);
 		session.setAttribute("gameStatus", "");
@@ -139,7 +139,7 @@ public class GameService {
 		return true;
 	}
 	
-	public Map<Game,History> getHistory(){
+	public Map<Word,Game> getHistory(){
 		return wordsRepository.getHistory();
 	}
 
@@ -164,8 +164,8 @@ public class GameService {
 		return true;
 	}
 
-	public boolean historyContainsWord(Map<Game, History> history, String wordToGuess) {
-		for (Map.Entry<Game, History> e : history.entrySet()) {
+	public boolean historyContainsWord(Map<Word, Game> history, String wordToGuess) {
+		for (Map.Entry<Word, Game> e : history.entrySet()) {
 			if (e.getKey().getWord().equals(wordToGuess)) {
 				return true;
 			}
@@ -173,19 +173,19 @@ public class GameService {
 		return false;
 	}
 
-	public String resumeGame(String wordToSet, HttpSession session, Map<Game, History> history)
+	public String resumeGame(String wordToSet, HttpSession session, Map<Word, Game> history)
 			throws ServletException, IOException {
-		Game selectedgame = null;
+		Word selectedWord = null;
 
-		for (Game g : history.keySet()) {
+		for (Word w : history.keySet()) {
 
-			if (g.getWord().equals(wordToSet)) {
-				selectedgame = g;
+			if (w.getWord().equals(wordToSet)) {
+				selectedWord = w;
 				break;
 			}
 		}
-		History gamesHistory = history.get(selectedgame);
-		session.setAttribute("word", selectedgame);
+		Game gamesHistory = history.get(selectedWord);
+		session.setAttribute("word", selectedWord);
 		session.setAttribute("currentState", gamesHistory.getWordState());
 		session.setAttribute("triesLeft", gamesHistory.getTriesLeft());
 		session.setAttribute("isFinished", gamesHistory.isFinished());
@@ -204,14 +204,14 @@ public class GameService {
 
 	}
 
-	public String newGameStarted(HttpSession session, Map<Game, History> history) throws ServletException, IOException {
-		List<Game> gameslist = wordsRepository.getGameslist();
-		Game game = wordsRepository.getRandomGame();
-		if (history.containsKey(game)) {
-			game = wordsRepository.getRandomGame();
+	public String newGameStarted(HttpSession session, Map<Word, Game> history) throws ServletException, IOException {
+		List<Word> gameslist = wordsRepository.getGameslist();
+		Word word = wordsRepository.getRandomGame();
+		if (history.containsKey(word)) {
+			word = wordsRepository.getRandomGame();
 		}
-		Category wordCategory = game.getCategory();
-		String wordWithoutSpaces = new String(wordToReturn(game.getWord()));
+		Category wordCategory = word.getCategory();
+		String wordWithoutSpaces = new String(wordToReturn(word.getWord()));
 		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
 		char firstLetter = getFirstLetter(wordWithoutSpaces);
 		char lastLetter = getLastLetter(wordWithoutSpaces);
@@ -221,7 +221,7 @@ public class GameService {
 		int triesLeft = 6;
 		String mode = "Single Player";
 
-		session.setAttribute("word", game);
+		session.setAttribute("word", word);
 		session.setAttribute("wordCategory", wordCategory);
 		session.setAttribute("triesLeft", triesLeft);
 		session.setAttribute("currentState", wordToReturn);
@@ -233,8 +233,8 @@ public class GameService {
 		return "gameStarted";
 	}
 
-	public String tryGuess(char guess, HttpSession session, Map<Game, History> history) throws IOException {
-		Game wordToFind = (Game) session.getAttribute("word");
+	public String tryGuess(char guess, HttpSession session, Map<Word, Game> history) throws IOException {
+		Word wordToFind = (Word) session.getAttribute("word");
 		int triesLeft = (int) session.getAttribute("triesLeft");
 		String currentStateAsStr = (String) session.getAttribute("currentState");
 		boolean isFinished = (boolean) session.getAttribute("isFinished");
@@ -248,7 +248,7 @@ public class GameService {
 		if (contains(wordToFind, guess)) {
 			String wordToReturn = putLetterOnPlace(wordToFind, guess, currentState);
 			history.put(wordToFind,
-					new History(wordToReturn, triesLeft, wordCategory, usedCharacters, isFinished, mode));
+					new Game(wordToReturn, triesLeft, wordCategory, usedCharacters, isFinished, mode));
 
 			session.setAttribute("currentState", wordToReturn);
 
@@ -263,7 +263,7 @@ public class GameService {
 		} else {
 			triesLeft--;
 			history.put(wordToFind,
-					new History(currentStateAsStr, triesLeft, wordCategory, usedCharacters, isFinished, mode));
+					new Game(currentStateAsStr, triesLeft, wordCategory, usedCharacters, isFinished, mode));
 
 			session.setAttribute("triesLeft", triesLeft);
 			if (checkFailedTries(triesLeft)) {
@@ -278,9 +278,8 @@ public class GameService {
 
 	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, Category category)
 			throws ServletException, IOException {
-		game = new Game();
-		game = game.createNewGame(wordToGuess, category);
-		game.setSessionId(session.getId());
+		word = new Word();
+		word = word.createNewGame(wordToGuess, category);
 		
 		String wordWithoutSpaces = new String(wordToReturn(wordToGuess));
 		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
@@ -292,7 +291,7 @@ public class GameService {
 		int triesLeft = 6;
 		String mode = "Multiplayer";
 
-		session.setAttribute("word", game);
+		session.setAttribute("word", word);
 		session.setAttribute("category", category);
 		session.setAttribute("triesLeft", triesLeft);
 		session.setAttribute("currentState", wordToReturn);
@@ -308,7 +307,7 @@ public class GameService {
 
 	public String tryGuessMultiplayer(char guess, HttpSession session) throws IOException {
 		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-		Game wordToFind = (Game) session.getAttribute("word");
+		Word wordToFind = (Word) session.getAttribute("word");
 		Category category = (Category) session.getAttribute("category");
 		int triesLeft = (int) session.getAttribute("triesLeft");
 		String currentStateAsStr = (String) session.getAttribute("currentState");
@@ -321,7 +320,7 @@ public class GameService {
 		if (contains(wordToFind, guess)) {
 			String wordToReturn = putLetterOnPlace(wordToFind, guess, currentState);
 			wordsRepository.getHistory().put(wordToFind,
-					new History(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
+					new Game(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
 
 			session.setAttribute("currentState", wordToReturn);
 
@@ -336,7 +335,7 @@ public class GameService {
 		} else {
 			triesLeft--;
 			wordsRepository.getHistory().put(wordToFind,
-					new History(currentStateAsStr, triesLeft, category, usedCharacters, isFinished, mode));
+					new Game(currentStateAsStr, triesLeft, category, usedCharacters, isFinished, mode));
 
 			session.setAttribute("triesLeft", triesLeft);
 			if (checkFailedTries(triesLeft)) {

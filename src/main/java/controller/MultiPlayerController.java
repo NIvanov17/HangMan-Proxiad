@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
-import model.History;
+import model.Word;
 import repository.WordsRepository;
 import service.GameService;
 
@@ -25,7 +25,7 @@ public class MultiPlayerController {
 
 	private GameService gameService;
 	private WordsRepository wordsRepository;
-	private Map<Game, History> history;
+	private Map<Word, Game> history;
 
 	@Autowired
 	public MultiPlayerController(GameService gameService, WordsRepository wordsRepository) {

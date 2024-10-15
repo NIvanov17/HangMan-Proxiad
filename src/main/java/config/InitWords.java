@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import model.Game;
+import model.Word;
 import repository.WordsRepository;
 
 @Component
@@ -23,7 +24,7 @@ public class InitWords implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		List<Game> list;
+		List<Word> list;
 		try {
 			list = wordRepository.initializeWords();
 			wordRepository.getGameslist().addAll(list);

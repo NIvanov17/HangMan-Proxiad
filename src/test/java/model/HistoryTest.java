@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import enums.Category;
 
-class HistoryTest {
+class gameTest {
 
 	private String wordState;
 
@@ -24,7 +24,7 @@ class HistoryTest {
 
 	private String mode;
 
-	private History history;
+	private Game game;
 
 	@BeforeEach
 	public void setUp() {
@@ -36,19 +36,19 @@ class HistoryTest {
 		usedCharacters.add('h');
 		isFinished = false;
 		mode = "Multiplayer";
-		history = new History(wordState, triesLeft, category, usedCharacters, isFinished, mode);
+		game = new Game(wordState, triesLeft, category, usedCharacters, isFinished, mode);
 	}
 
 	@Test
-	void testHistoryConstructor() {
-		History newHistory = new History(wordState, triesLeft, category, usedCharacters, isFinished, mode);
+	void testgameConstructor() {
+		Game newGame = new Game(wordState, triesLeft, category, usedCharacters, isFinished, mode);
 
-		assertThat(newHistory.getWordState()).isEqualTo(wordState);
-		assertThat(newHistory.getTriesLeft()).isEqualTo(triesLeft);
-		assertThat(newHistory.getCategory()).isEqualTo(category);
-		assertThat(newHistory.getUsedChars()).isEqualTo(usedCharacters);
-		assertThat(newHistory.isFinished()).isFalse();
-		assertThat(newHistory.getMode()).isEqualTo(mode);
+		assertThat(newGame.getWordState()).isEqualTo(wordState);
+		assertThat(newGame.getTriesLeft()).isEqualTo(triesLeft);
+		assertThat(newGame.getCategory()).isEqualTo(category);
+		assertThat(newGame.getUsedChars()).isEqualTo(usedCharacters);
+		assertThat(newGame.isFinished()).isFalse();
+		assertThat(newGame.getMode()).isEqualTo(mode);
 	}
 
 	@Test
@@ -59,13 +59,13 @@ class HistoryTest {
 		Set<Character> newUsedChars = new HashSet<>();
 		boolean newIsFinished = false;
 
-		history.reset(newWordState, newTriesLeft, newCategory, newUsedChars, newIsFinished);
+		game.reset(newWordState, newTriesLeft, newCategory, newUsedChars, newIsFinished);
 
-		assertThat(history.getWordState()).isEqualTo(newWordState);
-		assertThat(history.getTriesLeft()).isEqualTo(newTriesLeft);
-		assertThat(history.getCategory()).isEqualTo(newCategory);
-		assertThat(history.getUsedChars()).containsExactlyInAnyOrderElementsOf(newUsedChars);
-		assertThat(history.isFinished()).isFalse();
+		assertThat(game.getWordState()).isEqualTo(newWordState);
+		assertThat(game.getTriesLeft()).isEqualTo(newTriesLeft);
+		assertThat(game.getCategory()).isEqualTo(newCategory);
+		assertThat(game.getUsedChars()).containsExactlyInAnyOrderElementsOf(newUsedChars);
+		assertThat(game.isFinished()).isFalse();
 	}
 
 	@Test
@@ -74,45 +74,45 @@ class HistoryTest {
 		Set<Character> charToSet = new HashSet<>();
 		charToSet.add(toSet);
 
-		History newHistory = new History(wordState, triesLeft, category, new HashSet<>(), isFinished, mode);
+		Game newgame = new Game(wordState, triesLeft, category, new HashSet<>(), isFinished, mode);
 
-		newHistory.setUsedChars(charToSet);
+		newgame.setUsedChars(charToSet);
 
-		assertThat(newHistory.getUsedChars()).contains(toSet);
+		assertThat(newgame.getUsedChars()).contains(toSet);
 	}
 
 	@Test
 	void testSetWordState() {
 		String wordToSet = "p e _ _ h";
-		history.setWordState(wordToSet);
+		game.setWordState(wordToSet);
 
-		assertThat(history.getWordState()).isEqualTo(wordToSet);
+		assertThat(game.getWordState()).isEqualTo(wordToSet);
 	}
 	
 	@Test
 	void testSetTriesLeft() {
 		int triesToSet = 3;
-		history.setTriesLeft(triesToSet);
+		game.setTriesLeft(triesToSet);
 
-		assertThat(history.getTriesLeft()).isEqualTo(triesToSet);
+		assertThat(game.getTriesLeft()).isEqualTo(triesToSet);
 	}
 	
 	@Test
 	void testSetCategory() {
 		Category categoryToSet = Category.ANIMALS;
-		history.setCategory(categoryToSet);
+		game.setCategory(categoryToSet);
 		
 
-		assertThat(history.getCategory()).isEqualTo(categoryToSet);
+		assertThat(game.getCategory()).isEqualTo(categoryToSet);
 	}
 	
 	@Test
 	void testSetMode() {
 		String modeToSet = "Single player";
-		history.setMode(modeToSet);
+		game.setMode(modeToSet);
 		
 
-		assertThat(history.getMode()).isEqualTo(modeToSet);
+		assertThat(game.getMode()).isEqualTo(modeToSet);
 	}
 
 }

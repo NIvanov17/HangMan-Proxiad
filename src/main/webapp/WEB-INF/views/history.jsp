@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ page import="model.Game"%>
-<%@ page import="model.History"%>
+<%@ page import="model.Word"%>
 <%@ page import="java.util.Map.Entry"%>
 <!DOCTYPE html>
 <html>
@@ -32,43 +32,43 @@
 		</thead>
 		<tbody>
 			<%
-			Map<Game, History> allHistory = (Map<Game, History>) session.getAttribute("history");
-			Iterator<Entry<Game, History>> iterator = allHistory.entrySet().iterator();
+			Map<Word, Game> allHistory = (Map<Word, Game>) session.getAttribute("history");
+			Iterator<Entry<Word, Game>> iterator = allHistory.entrySet().iterator();
 			while (iterator.hasNext()) {
-				Entry<Game, History> entry = iterator.next();
-				Game game = entry.getKey();
-				History history = entry.getValue();
+				Entry<Word, Game> entry = iterator.next();
+				Word word = entry.getKey();
+				Game game = entry.getValue();
 			%>
 			<tr>
-				<td><%=game.getId()%></td>
-				<td><%=history.getMode()%></td>
-				<td><%=history.getTriesLeft()%></td>
-				<td><%=history.getCategory()%></td>
-				<td><%=history.isFinished() ? game.getWord() : history.getWordState()%></td>
-				<td><%=history.isFinished()%></td>
+				<td><%=word.getId()%></td>
+				<td><%=game.getMode()%></td>
+				<td><%=game.getTriesLeft()%></td>
+				<td><%=game.getCategory()%></td>
+				<td><%=game.isFinished() ? word.getWord() : game.getWordState()%></td>
+				<td><%=game.isFinished()%></td>
 				<td>
 					<%
-					if (history.getMode().equals("Single Player")) {
+					if (game.getMode().equals("Single Player")) {
 					%>
 					<form action="/hangMan" method="get">
-						<input type="hidden" name="currentWord"value="<%=game.getWord()%>" /> 
-						<input type="hidden" name="currentWordState" value="<%=history.getWordState()%>" /> 
-						<input type="hidden" name="triesLeft" value="<%=history.getTriesLeft()%>" />
-						<input type="hidden" name="usedCharacters" value="<%=history.getUsedChars()%>" /> 
-						<input type="hidden" name="category" value="<%=history.getCategory()%>" />
+						<input type="hidden" name="currentWord"value="<%=word.getWord()%>" /> 
+						<input type="hidden" name="currentWordState" value="<%=game.getWordState()%>" /> 
+						<input type="hidden" name="triesLeft" value="<%=game.getTriesLeft()%>" />
+						<input type="hidden" name="usedCharacters" value="<%=game.getUsedChars()%>" /> 
+						<input type="hidden" name="category" value="<%=game.getCategory()%>" />
 						<button type="submit" name="action" value="resume"
-							<%=history.isFinished() ? "disabled" : ""%>>Resume Game</button>
+							<%=game.isFinished() ? "disabled" : ""%>>Resume Game</button>
 					</form> 
 					<%
  						} else {
  					%>
 					<form action="/multiPlayer" method="post">
-						<input type="hidden" name="currentWord" value="<%=game.getWord()%>" /> 
-						<input type="hidden" name="currentWordState" value="<%=history.getWordState()%>" /> 
-						<input type="hidden" name="triesLeft" value="<%=history.getTriesLeft()%>" /> 
-						<input type="hidden" name="usedCharacters" value="<%=history.getUsedChars()%>" /> 
-						<input type="hidden" name="category" value="<%=history.getCategory()%>" />
-						<button type="submit" name="action" value="resume"<%=history.isFinished() ? "disabled" : ""%>>Resume Game</button>
+						<input type="hidden" name="currentWord" value="<%=word.getWord()%>" /> 
+						<input type="hidden" name="currentWordState" value="<%=game.getWordState()%>" /> 
+						<input type="hidden" name="triesLeft" value="<%=game.getTriesLeft()%>" /> 
+						<input type="hidden" name="usedCharacters" value="<%=game.getUsedChars()%>" /> 
+						<input type="hidden" name="category" value="<%=game.getCategory()%>" />
+						<button type="submit" name="action" value="resume"<%=game.isFinished() ? "disabled" : ""%>>Resume Game</button>
 					</form> 
 					<%}%>
 				</td>
