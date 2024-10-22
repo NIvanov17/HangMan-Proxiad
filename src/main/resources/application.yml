@@ -8,11 +8,21 @@ spring:
       suffix: .jsp
     throw-exception-if-no-handler-found: true
 
-
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
 
-logging:
-  level:
-    org.springframework.web: DEBUG
+  datasource:
+    url: jdbc:mariadb://localhost:3306/hangMan?createDatabaseIfNotExist=true
+    username: root
+    password: Parola.123
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   
+    show-sql: true        
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect 
+

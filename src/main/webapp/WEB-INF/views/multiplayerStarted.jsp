@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
-<%@ page import="enums.Category"%>
+<%@ page import="model.Category"%>
 <%@ page import="model.Word"%>
+<%@ page import="model.Game"%>
 <%@ page isELIgnored="false"%>
 
 
@@ -36,19 +37,14 @@ body {
 
 	<%
 	Word word = (Word) session.getAttribute("word");
-	Integer triesLeft = (Integer) session.getAttribute("triesLeft");
-	Boolean isFinished = (Boolean) session.getAttribute("isFinished");
-	String currentState = (String) session.getAttribute("currentState");
-	String gameStatus = (String) session.getAttribute("gameStatus");
-	Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-	Category category = (Category)session.getAttribute("category");
-	String mode = (String)session.getAttribute("mode");
+	Game wordGiverGame = (Game) session.getAttribute("giverGame");
+	Game wordGuesserGame = (Game) session.getAttribute("guesserGame");
 	%>
 	<div class="container">
 
-		<h1 id="currentState">Word to Guess: ${currentState}</h1>
+		<h1 id="currentState">Word to Guess: ${word.getCurrentState()}</h1>
 		<h2 id="tries-left">Tries left: ${triesLeft}</h2>
-		<h3 id="category">Category: ${category}</h3>
+		<h3 id="category">Category: ${word.getCategory().getCategoryName()}</h3>
 		<h3 id="mode">Mode: ${mode}</h3>
 		<h2 id="status">${gameStatus}</h2>
 		<div>
@@ -56,10 +52,10 @@ body {
 			for (char letter = 'A'; letter <= 'Z'; letter++) {
 				char lowerCaseLetter = Character.toLowerCase(letter);
 			%>
-			<form action="/multiplayer/guess" method="post">
+			<form action="/${giverUsername}/${guesserUsername}/multiplayer/guess" method="post">
 				<input type="hidden" name="letter" value="<%=lowerCaseLetter%>" />
 				<button type="submit" value="<%=lowerCaseLetter%>"
-					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
+					<%if (wordGiverGame.getUsedChars().contains(lowerCaseLetter) || wordGiverGame.isFinished() == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
 	out.print("disabled");
 }%>><%=letter%></button>
@@ -68,11 +64,11 @@ body {
 			}
 			%>
 		</div>
-		<img src="/img/<%=triesLeft%>.png" alt="Hangman State">
+		<img src="/img/<%=wordGiverGame.getTriesLeft()%>.png" alt="Hangman State">
 		<%
-		if (isFinished) {
+		if (wordGiverGame.isFinished()) {
 		%>
-		<form action="/multiPlayer" method="get">
+		<form action="/${giverUsername}/${guesserUsername}/multiplayer" method="get">
 			<button type="submit" name="action" value="restart">Restart Multiplayer
 				Game</button>
 		</form>

@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
-<%@ page import="enums.Category"%>
+<%@ page import="model.Category"%>
 <%@ page import="model.Word"%>
+<%@ page import="model.Game"%>
 <%@ page isELIgnored="false"%>
 
 
@@ -10,7 +11,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/gameStarted.css">
+<link rel="stylesheet" href="/css/gameStarted.css">
 <title>Game Started!</title>
 <style type="text/css">
 body {
@@ -37,20 +38,16 @@ body {
 
 	<%
 	Word word = (Word) session.getAttribute("word");
-	Integer triesLeft = (Integer) session.getAttribute("triesLeft");
-	Boolean isFinished = (Boolean) session.getAttribute("isFinished");
-	String currentState = (String) session.getAttribute("currentState");
+	Game game = (Game) session.getAttribute("game");
 	String gameStatus = (String) session.getAttribute("gameStatus");
-	Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-	Category wordCategory = (Category) session.getAttribute("wordCategory");
-	String mode = (String) session.getAttribute("mode");
+	String username = (String)session.getAttribute("username");
 	%>
 	<div class="container">
 
-		<h1>Word to Guess: ${currentState}</h1>
-		<h2 id="tries-left">Tries left: ${triesLeft}</h2>
-		<h3>Category: ${wordCategory}</h3>
-		<h3>Mode: ${mode}</h3>
+		<h1>Word to Guess: ${word.getCurrentState()}</h1>
+		<h2 id="tries-left">Tries left: ${game.getTriesLeft()}</h2>
+		<h3>Category: ${word.getCategory().getCategoryName()}</h3>
+		<h3>Mode: ${game.getMode()}</h3>
 		<h2>${gameStatus}</h2>
 		<div>
 			<%
@@ -60,7 +57,7 @@ body {
 			<form action="/hangMan" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
 				<button type="submit" name="guess-btn" value="<%=lowerCaseLetter%>"
-					<%if (usedCharacters.contains(lowerCaseLetter) || isFinished == true) {
+					<%if (game.getUsedChars().contains(lowerCaseLetter) || game.isFinished() == true) {
 	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
 	out.print("disabled");
 }%>><%=letter%></button>
@@ -69,15 +66,15 @@ body {
 			}
 			%>
 		</div>
-		<img src="img/<%=triesLeft%>.png" alt="Hangman State">
+		<img src="/img/<%=game.getTriesLeft()%>.png" alt="Hangman State">
 		<%
-		if (isFinished) {
+		if (game.isFinished()) {
 		%>
 
 		<%
-		if (mode.equals("Single Player")) {
+		if (game.getMode().equals("Single Player")) {
 		%>
-		<form action="/hangMan" method="get">
+		<form action="/<%=username%>/hangMan" method="get">
 			<button type="submit" name="action" value="restart">Restart
 				Single Player Game</button>
 		</form>

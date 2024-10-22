@@ -1,8 +1,8 @@
-<%@ page import="enums.Category"%>
+<%@ page import="enums.CategoryName"%>
 <%@ page import="model.Word"%>
 <html>
 <head>
-<link rel="stylesheet" href="css/multiPlayer.css">
+<link rel="stylesheet" href="/css/multiPlayer.css">
 <style type="text/css">
 button {
 	background-color: #4CAF50; /* Green */
@@ -60,13 +60,13 @@ select#category {
 		}
 		%>
 
-		<form action="/multiPlayer" method="post">
+		<form action="${pageContext.request.contextPath}/${giverUsername}/${guesserUsername}/multiplayer" method="post">
 			<label for="wordToGuess">Enter word:</label> 
 			<input type="text" id="wordToGuess" name="wordToGuess" /> 
 			<label for="category">Select
 				Category:</label> <select id="category" name="category" required>
 				<%
-				for (Category category : Category.values()) {
+				for (CategoryName category : CategoryName.values()) {
 				%>
 				<option value="<%=category.name()%>"><%=category.name()%></option>
 				<%

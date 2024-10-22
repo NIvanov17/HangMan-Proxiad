@@ -8,30 +8,34 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import model.Game;
 import model.Word;
-import repository.WordsRepository;
+import repository.WordRepository;
+import service.WordService;
 
 @Component
 public class InitWords implements ApplicationListener<ContextRefreshedEvent> {
 
-	private WordsRepository wordRepository;
+	private WordService wordService;
+	private WordRepository wordRepository;
 
 	@Autowired
-	public InitWords(WordsRepository wordRepository) {
+	public InitWords(WordService wordService, WordRepository wordRepository) {
+		this.wordService = wordService;
 		this.wordRepository = wordRepository;
+
 	}
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		List<Word> list;
 		try {
-			list = wordRepository.initializeWords();
-			wordRepository.getGameslist().addAll(list);
+			List<Word> all = wordRepository.findAll();
+			if (all.isEmpty()) {
+				wordService.initWords();
+			}
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 
 	}
 

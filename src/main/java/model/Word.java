@@ -1,29 +1,37 @@
 package model;
 
-import enums.Category;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "word")
 public class Word {
 
-	private static long counter = 1;
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 
+	@Column(nullable = false)
 	private String name;
 
+	@Column(name = "current-state", nullable = false)
+	private String currentState;
+
+
+	@ManyToOne
 	private Category category;
 
+	public Word() {
 
-	public Word createNewGame(String wordToSet, Category category) {
-		Word word = new Word();
-		word.setId(generateNextId());
-		word.setWord(wordToSet);
-		word.setCategory(category);
-		return word;
 	}
 
-	private synchronized long generateNextId() {
-		return counter++;
-	}
 
 	public long getId() {
 		return id;
@@ -33,14 +41,6 @@ public class Word {
 		this.id = id;
 	}
 
-	public String getWord() {
-		return name;
-	}
-
-	public void setWord(String name) {
-		this.name = name;
-	}
-
 	public Category getCategory() {
 		return category;
 	}
@@ -48,6 +48,21 @@ public class Word {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	public String getName() {
+		return name;
+	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCurrentState() {
+		return currentState;
+	}
+
+	public void setCurrentState(String currentState) {
+		this.currentState = currentState;
+	}
 
 }

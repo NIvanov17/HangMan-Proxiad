@@ -33,11 +33,10 @@ button {
 <body>
 	<div class="container">
 		<h2>Welcome, player!</h2>
-		<form action="/hangMan" method="get">
-			<button id="single" type="submit" class="styled-button" name="action"
-				value="newGame">New Single Player Game</button>
+		<form action="/username" method="get">
+			<button id="single" type="submit" class="styled-button">New Single Player Game</button>
 		</form>
-		<form action="/multiPlayer" method="get">
+		<form action="/word-giver" method="get">
 			<button id="multi" type="submit" class="styled-button" name="action"
 				value="newGame">New Multiplayer Game</button>
 		</form>

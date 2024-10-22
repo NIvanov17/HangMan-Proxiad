@@ -1,0 +1,277 @@
+[
+	{
+		"id": 1,
+		"word": "apple",
+		"category": "FRUITS"
+	},
+	{
+		"id": 2,
+		"word": "orange",
+		"category": "FRUITS"
+	},
+	{
+		"id": 3,
+		"word": "banana",
+		"category": "FRUITS"
+	},
+	{
+		"id": 4,
+		"word": "pineapple",
+		"category": "FRUITS"
+	},
+	{
+		"id": 5,
+		"word": "tomato",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 6,
+		"word": "cucumber",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 7,
+		"word": "lettuce",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 8,
+		"word": "carrot",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 9,
+		"word": "garlic",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 10,
+		"word": "pumpkin",
+		"category": "VEGETABLES"
+	},
+	{
+		"id": 11,
+		"word": "rabbit",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 12,
+		"word": "gorilla",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 13,
+		"word": "hippopotamus",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 14,
+		"word": "monkey",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 15,
+		"word": "desk",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 16,
+		"word": "table",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 17,
+		"word": "sofa",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 18,
+		"word": "headphones",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 19,
+		"word": "monitor",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 20,
+		"word": "keyboard",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 21,
+		"word": "screen",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 22,
+		"word": "mouse",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 23,
+		"word": "printer",
+		"category": "TECHNOLOGY"
+	},
+	{
+		"id": 24,
+		"word": "elephant",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 25,
+		"word": "zebra",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 26,
+		"word": "lion",
+		"category": "ANIMALS"
+	},
+	{
+		"id": 27,
+		"word": "grape",
+		"category": "FRUITS"
+	},
+	{
+		"id": 28,
+		"word": "strawberry",
+		"category": "FRUITS"
+	},
+	{
+		"id": 29,
+		"word": "peach",
+		"category": "FRUITS"
+	},
+	{
+		"id": 30,
+		"word": "chair",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 31,
+		"word": "cabinet",
+		"category": "FURNITURES"
+	},
+	{
+		"id": 32,
+		"word": "eagle",
+		"category": "BIRDS"
+	},
+	{
+		"id": 33,
+		"word": "sparrow",
+		"category": "BIRDS"
+	},
+	{
+		"id": 34,
+		"word": "penguin",
+		"category": "BIRDS"
+	},
+	{
+		"id": 35,
+		"word": "ostrich",
+		"category": "BIRDS"
+	},
+	{
+		"id": 36,
+		"word": "falcon",
+		"category": "BIRDS"
+	},
+	{
+		"id": 37,
+		"word": "hammer",
+		"category": "TOOLS"
+	},
+	{
+		"id": 38,
+		"word": "screwdriver",
+		"category": "TOOLS"
+	},
+	{
+		"id": 39,
+		"word": "wrench",
+		"category": "TOOLS"
+	},
+	{
+		"id": 40,
+		"word": "drill",
+		"category": "TOOLS"
+	},
+	{
+		"id": 41,
+		"word": "saw",
+		"category": "TOOLS"
+	},
+	{
+		"id": 42,
+		"word": "pencil",
+		"category": "STATIONERY"
+	},
+	{
+		"id": 43,
+		"word": "eraser",
+		"category": "STATIONERY"
+	},
+	{
+		"id": 44,
+		"word": "notebook",
+		"category": "STATIONERY"
+	},
+	{
+		"id": 45,
+		"word": "stapler",
+		"category": "STATIONERY"
+	},
+	{
+		"id": 46,
+		"word": "marker",
+		"category": "STATIONERY"
+	},
+	{
+		"id": 47,
+		"word": "lamp",
+		"category": "HOUSEHOLD"
+	},
+	{
+		"id": 48,
+		"word": "vacuum",
+		"category": "HOUSEHOLD"
+	},
+	{
+		"id": 49,
+		"word": "blender",
+		"category": "HOUSEHOLD"
+	},
+	{
+		"id": 50,
+		"word": "refrigerator",
+		"category": "HOUSEHOLD"
+	},
+	{
+		"id": 51,
+		"word": "oven",
+		"category": "HOUSEHOLD"
+	},
+	{
+		"id": 52,
+		"word": "spider",
+		"category": "INSECTS"
+	},
+	{
+		"id": 53,
+		"word": "ant",
+		"category": "INSECTS"
+	},
+	{
+		"id": 54,
+		"word": "butterfly",
+		"category": "INSECTS"
+	},
+	{
+		"id": 55,
+		"word": "mosquito",
+		"category": "INSECTS"
+	}
+]

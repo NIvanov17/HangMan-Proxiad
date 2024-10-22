@@ -1,62 +1,81 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import enums.Category;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "game")
 public class Game {
-	private String wordState;
-	private int triesLeft;
-	private Category category;
-	private Set<Character> usedChars;
-	private boolean isFinished;
-	private String mode;
 
-	public Game(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,
-			boolean isFinished, String mode) {
-		this.wordState = wordState;
-		this.triesLeft = triesLeft;
-		this.category = category;
-		this.usedChars = new HashSet<>(usedCharacters);
-		this.setFinished(false);
-		this.mode = mode;
-	}
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+
+	@ManyToOne
+	private Word word;
+
+	@Column(name = "tries-left")
+	private int triesLeft;
+
+	@Column(name = "used-characters")
+	private Set<Character> usedChars;
+
+	@Column(name = "finished")
+	private boolean isFinished;
+
+	@Column(nullable = false)
+	private String mode;
+	
+	@OneToMany(mappedBy = "game",cascade = CascadeType.PERSIST)
+	private List<GamePlayer> playerInGames;
+
+	
 
 	public Game() {
+		this.usedChars = new HashSet<>();
+		this.playerInGames = new ArrayList<>();
 	}
 
-	public void reset(String wordState, int triesLeft, Category category, Set<Character> usedCharacters,
-			boolean isFinished) {
-		this.wordState = wordState;
-		this.triesLeft = triesLeft;
-		this.category = category;
-		this.usedChars.clear();
-		this.setFinished(false);
+//	public void reset( int triesLeft, Category category, Set<Character> usedCharacters,
+//			boolean isFinished) {
+//		this.triesLeft = triesLeft;
+//		this.usedChars.clear();
+//		this.setFinished(false);
+//	}
+
+	public long getId() {
+		return id;
 	}
 
-	public String getWordState() {
-		return wordState;
+	public void setId(long id) {
+		this.id = id;
 	}
 
-	public void setWordState(String wordState) {
-		this.wordState = wordState;
+	public Word getWord() {
+		return word;
 	}
 
+	public void setWord(Word word) {
+		this.word = word;
+	}
 	public int getTriesLeft() {
 		return triesLeft;
 	}
 
 	public void setTriesLeft(int triesLeft) {
 		this.triesLeft = triesLeft;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
 	}
 
 	public Set<Character> getUsedChars() {
@@ -82,5 +101,16 @@ public class Game {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+
+	public List<GamePlayer> getPlayerInGames() {
+		return playerInGames;
+	}
+
+	public void setPlayerInGames(List<GamePlayer> playerInGames) {
+		this.playerInGames = playerInGames;
+	}
+
+
+
 
 }

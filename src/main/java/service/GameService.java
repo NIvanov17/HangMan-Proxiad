@@ -3,91 +3,72 @@ package service;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import enums.Category;
 import enums.Commands;
+import enums.RoleName;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
+import model.Category;
 import model.Game;
+import model.GamePlayer;
+import model.Player;
 import model.Word;
-import repository.WordsRepository;
+import repository.GamePlayerRepository;
+import repository.GameRepository;
+import repository.WordRepository;
 
 @Service
 public class GameService {
-	private WordsRepository wordsRepository;
-	private Word word;
+	private GameRepository gameRepository;
+	private PlayerService playerService;
+	private WordService wordService;
+	private CategoryService categoryservice;
+	private GamePlayerRepository gamePlayerRepository;
 
 	@Autowired
-	public GameService(WordsRepository wordsRepository) {
-		this.wordsRepository = wordsRepository;
+	public GameService(GameRepository gameRepository, PlayerService playerService, WordService wordService,
+			CategoryService categoryservice, GamePlayerRepository gamePlayerRepository) {
+		this.gameRepository = gameRepository;
+		this.playerService = playerService;
+		this.wordService = wordService;
+		this.categoryservice = categoryservice;
+		this.gamePlayerRepository = gamePlayerRepository;
 	}
 
 	public String wordWithSpaces(Word wordWithoutSpaces) {
 		StringBuilder sb = new StringBuilder();
-		String word = wordWithoutSpaces.getWord();
+		String word = wordWithoutSpaces.getName();
 		for (int i = 0; i < word.length(); i++) {
 			sb.append(word.charAt(i)).append(' ');
 		}
 		return sb.toString().trim();
 	}
 
-	public char[] wordToReturn(String word) {
-		char[] currentState = new char[word.length()];
-		currentState[0] = word.charAt(0);
-		currentState[word.length() - 1] = word.charAt(word.length() - 1);
-
-		for (int i = 1; i < word.length() - 1; i++) {
-			if (word.charAt(i) == currentState[0]) {
-				currentState[i] = word.charAt(i);
-				continue;
-			} else if (word.charAt(i) == currentState[word.length() - 1]) {
-				currentState[i] = word.charAt(i);
-				continue;
-			} else {
-				currentState[i] = '_';
-			}
-
-		}
-
-		return currentState;
-	}
-
-	public boolean contains(Word wordToFind, char guess) {
-		String word = wordToFind.getWord();
-		for (int i = 0; i < word.length(); i++) {
-			if (word.charAt(i) == guess) {
-				return true;
-			}
-
-		}
-		return false;
-	}
-
-	public String putLetterOnPlace(Word wordToFind, char guess, char[] currentState) {
-		StringBuilder sb = new StringBuilder();
-		String currentstateWithoutSpaces = new String(currentState);
-		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
-
-		for (int i = 0; i < wordToFind.getWord().length(); i++) {
-			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A
-					&& currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
-				sb.append(currentstateWithoutSpaces.charAt(i));
-			} else if (wordToFind.getWord().charAt(i) == guess) {
-				sb.append(wordToFind.getWord().charAt(i));
-			} else {
-				sb.append('_');
-			}
-		}
-
-		String currentWordWithSpaces = wordWithSpaces(sb.toString().trim());
-		return currentWordWithSpaces;
-	}
+//	public String putLetterOnPlace(Word wordToFind, char guess, char[] currentState) {
+//		StringBuilder sb = new StringBuilder();
+//		String currentstateWithoutSpaces = new String(currentState);
+//		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
+//
+//		for (int i = 0; i < wordToFind.getWord().length(); i++) {
+//			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A
+//					&& currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
+//				sb.append(currentstateWithoutSpaces.charAt(i));
+//			} else if (wordToFind.getWord().charAt(i) == guess) {
+//				sb.append(wordToFind.getWord().charAt(i));
+//			} else {
+//				sb.append('_');
+//			}
+//		}
+//
+//		String currentWordWithSpaces = wordWithSpaces(sb.toString().trim());
+//		return currentWordWithSpaces;
+//	}
 
 	public boolean checkFailedTries(int triesLeft) {
 		return triesLeft == 0;
@@ -105,29 +86,21 @@ public class GameService {
 		return wordWithoutSpaces.charAt(wordWithoutSpaces.length() - 1);
 	}
 
-	public void restartGame(HttpSession session, Set<Character> usedCharacters) {
-		word = wordsRepository.getRandomGame();
-		usedCharacters.removeAll(usedCharacters);
-		String currentState = wordWithSpaces(new String(wordToReturn(word.getWord())));
-		if (wordsRepository.getHistory().containsKey(word)) {
-			word = wordsRepository.getRandomGame();
-		}
-		session.setAttribute("word", word.getWord());
-		session.setAttribute("currentState", currentState);
-		session.setAttribute("triesLeft", 6);
-		session.setAttribute("gameStatus", "");
-		session.setAttribute("isFinished", false);
-		session.setAttribute("usedCharacters", usedCharacters);
-
-	}
-
-	public String wordWithSpaces(String word) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < word.length(); i++) {
-			sb.append(word.charAt(i)).append(' ');
-		}
-		return sb.toString().trim();
-	}
+//	public void restartGame(HttpSession session, Set<Character> usedCharacters) {
+//		word = wordRepository.getRandomGame();
+//		usedCharacters.removeAll(usedCharacters);
+//		String currentState = wordWithSpaces(new String(wordToReturn(word.getWord())));
+//		if (wordRepository.getHistory().containsKey(word)) {
+//			word = wordRepository.getRandomGame();
+//		}
+//		session.setAttribute("word", word.getWord());
+//		session.setAttribute("currentState", currentState);
+//		session.setAttribute("triesLeft", 6);
+//		session.setAttribute("gameStatus", "");
+//		session.setAttribute("isFinished", false);
+//		session.setAttribute("usedCharacters", usedCharacters);
+//
+//	}
 
 	public boolean containsOtherLetters(String wordToGuess) {
 		String copy = String.valueOf(wordToGuess);
@@ -137,10 +110,6 @@ public class GameService {
 			return false;
 		}
 		return true;
-	}
-	
-	public Map<Word,Game> getHistory(){
-		return wordsRepository.getHistory();
 	}
 
 	public boolean isWordValid(String wordToGuess) {
@@ -164,199 +133,254 @@ public class GameService {
 		return true;
 	}
 
-	public boolean historyContainsWord(Map<Word, Game> history, String wordToGuess) {
-		for (Map.Entry<Word, Game> e : history.entrySet()) {
-			if (e.getKey().getWord().equals(wordToGuess)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	public String resumeGame(HttpSession session, Long gameId){
+		Game game = getGameById(gameId);
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player player = null;
 
-	public String resumeGame(String wordToSet, HttpSession session, Map<Word, Game> history)
-			throws ServletException, IOException {
-		Word selectedWord = null;
-
-		for (Word w : history.keySet()) {
-
-			if (w.getWord().equals(wordToSet)) {
-				selectedWord = w;
+		for (GamePlayer gamePlayer : playerInGames) {
+			if (gamePlayer.getRole() == RoleName.GUESSER) {
+				player = gamePlayer.getPlayer();
 				break;
 			}
 		}
-		Game gamesHistory = history.get(selectedWord);
-		session.setAttribute("word", selectedWord);
-		session.setAttribute("currentState", gamesHistory.getWordState());
-		session.setAttribute("triesLeft", gamesHistory.getTriesLeft());
-		session.setAttribute("isFinished", gamesHistory.isFinished());
-		session.setAttribute("usedCharacters", gamesHistory.getUsedChars());
-		session.setAttribute("wordCategory", gamesHistory.getCategory());
-		session.setAttribute("mode", gamesHistory.getMode());
-		session.setAttribute("gameStatus", "");
+			session.setAttribute("word", game.getWord());
+			session.setAttribute("game", game);
+			session.setAttribute("username", player.getUsername());
+			session.setAttribute("gameStatus", "");
 
-		if (gamesHistory.getMode().equals("Single Player")) {
-			return "gameStarted";
+			if (game.getMode().equals("Single Player")) {
+				return "gameStarted";
 
-		} else {
-			return "multiplayerStarted";
+			} else {
+				return "multiplayerStarted";
 
-		}
-
+			}
+		
 	}
 
-	public String newGameStarted(HttpSession session, Map<Word, Game> history) throws ServletException, IOException {
-		List<Word> gameslist = wordsRepository.getGameslist();
-		Word word = wordsRepository.getRandomGame();
-		if (history.containsKey(word)) {
-			word = wordsRepository.getRandomGame();
-		}
-		Category wordCategory = word.getCategory();
-		String wordWithoutSpaces = new String(wordToReturn(word.getWord()));
-		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
-		char firstLetter = getFirstLetter(wordWithoutSpaces);
-		char lastLetter = getLastLetter(wordWithoutSpaces);
-		Set<Character> usedCharacters = new HashSet<Character>();
-		usedCharacters.add(firstLetter);
-		usedCharacters.add(lastLetter);
-		int triesLeft = 6;
-		String mode = "Single Player";
+	private Game getGameById(long gameId) {
+
+		return gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game does not exist!"));
+	}
+
+	public String newGameStarted(HttpSession session, String username) throws ServletException, IOException {
+		Word word = wordService.getRandomGame();
+		Game game = createNewSinglePlayerGame(word, username);
 
 		session.setAttribute("word", word);
-		session.setAttribute("wordCategory", wordCategory);
-		session.setAttribute("triesLeft", triesLeft);
-		session.setAttribute("currentState", wordToReturn);
-		session.setAttribute("isFinished", false);
-		session.setAttribute("usedCharacters", usedCharacters);
-		session.setAttribute("mode", mode);
+		session.setAttribute("game", game);
+		session.setAttribute("username", username);
 		session.setAttribute("gameStatus", "");
 
 		return "gameStarted";
 	}
 
-	public String tryGuess(char guess, HttpSession session, Map<Word, Game> history) throws IOException {
+	public String tryGuess(char guess, HttpSession session) throws IOException {
 		Word wordToFind = (Word) session.getAttribute("word");
-		int triesLeft = (int) session.getAttribute("triesLeft");
-		String currentStateAsStr = (String) session.getAttribute("currentState");
-		boolean isFinished = (boolean) session.getAttribute("isFinished");
-		Category wordCategory = (Category) session.getAttribute("wordCategory");
-		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
-		String mode = (String) session.getAttribute("mode");
+		Game game = (Game) session.getAttribute("game");
+		String username = (String) session.getAttribute("username");
+		int triesLeft = game.getTriesLeft();
 
-		char[] currentState = currentStateAsStr.toCharArray();
-		usedCharacters.add(guess);
+		Set<Character> usedChars = game.getUsedChars();
+		usedChars.add(guess);
+		game.setUsedChars(usedChars);
 
-		if (contains(wordToFind, guess)) {
-			String wordToReturn = putLetterOnPlace(wordToFind, guess, currentState);
-			history.put(wordToFind,
-					new Game(wordToReturn, triesLeft, wordCategory, usedCharacters, isFinished, mode));
-
-			session.setAttribute("currentState", wordToReturn);
+		if (wordService.contains(wordToFind, guess)) {
+			String wordToReturn = wordService.putLetterOnPlace(wordToFind, guess);
+			wordToFind.setCurrentState(wordToReturn);
+			session.setAttribute("word", wordToFind);
+			gameRepository.save(game);
 
 			if (isWordGuessed(wordToFind, wordToReturn)) {
-
-				history.get(wordToFind).setFinished(true);
-				session.setAttribute("isFinished", true);
+				game.setFinished(true);
+				playerService.incrementWins(username);
+				gameRepository.save(game);
+				session.setAttribute("game", game);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 
 			}
 			return "gameStarted";
 		} else {
 			triesLeft--;
-			history.put(wordToFind,
-					new Game(currentStateAsStr, triesLeft, wordCategory, usedCharacters, isFinished, mode));
+			game.setTriesLeft(triesLeft);
+			gameRepository.save(game);
 
-			session.setAttribute("triesLeft", triesLeft);
+			session.setAttribute("game", game);
 			if (checkFailedTries(triesLeft)) {
-				history.get(wordToFind).setFinished(true);
-				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+				game.setFinished(true);
+				game.setTriesLeft(0);
+				gameRepository.save(game);
+				session.setAttribute("game", game);
+				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
 
 			}
 			return "gameStarted";
 		}
 	}
 
-	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, Category category)
-			throws ServletException, IOException {
-		word = new Word();
-		word = word.createNewGame(wordToGuess, category);
-		
-		String wordWithoutSpaces = new String(wordToReturn(wordToGuess));
-		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
-		char firstLetter = getFirstLetter(wordWithoutSpaces);
-		char lastLetter = getLastLetter(wordWithoutSpaces);
-		Set<Character> usedCharacters = new HashSet<Character>();
-		usedCharacters.add(firstLetter);
-		usedCharacters.add(lastLetter);
-		int triesLeft = 6;
-		String mode = "Multiplayer";
+	private Game findById(long id) {
+		return gameRepository.findById(id).get();
+	}
 
-		session.setAttribute("word", word);
-		session.setAttribute("category", category);
-		session.setAttribute("triesLeft", triesLeft);
-		session.setAttribute("currentState", wordToReturn);
-		session.setAttribute("isFinished", false);
-		session.setAttribute("usedCharacters", usedCharacters);
+	private Game createNewSinglePlayerGame(Word word, String username) {
+		char firstLetter = getFirstLetter(word.getName());
+		char lastLetter = getLastLetter(word.getName());
+		HashSet<Character> hashSet = new HashSet<>();
+		hashSet.add(firstLetter);
+		hashSet.add(lastLetter);
+		Game game = new Game();
+		game.setFinished(false);
+		game.setMode("Single Player");
+		game.setTriesLeft(6);
+		game.setUsedChars(hashSet);
+		game.setWord(word);
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player player = playerService.getPlayerByUsername(username);
+		GamePlayer gamePlayer = new GamePlayer();
+		gamePlayer.setPlayer(player);
+		gamePlayer.setGame(game);
+		gamePlayer.setRole(RoleName.GUESSER);
+		playerInGames.add(gamePlayer);
+
+		gameRepository.save(game);
+		gamePlayerRepository.save(gamePlayer);
+
+		return game;
+	}
+
+	private Game createNewMultiPlayerGame(Word word, String username, RoleName role) {
+		char firstLetter = getFirstLetter(word.getName());
+		char lastLetter = getLastLetter(word.getName());
+		HashSet<Character> hashSet = new HashSet<>();
+		hashSet.add(firstLetter);
+		hashSet.add(lastLetter);
+		Game game = new Game();
+		game.setFinished(false);
+		game.setMode("Multiplayer");
+		game.setTriesLeft(6);
+		game.setUsedChars(hashSet);
+		game.setWord(word);
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player player = playerService.getPlayerByUsername(username);
+		GamePlayer gamePlayer = new GamePlayer();
+		gamePlayer.setPlayer(player);
+		gamePlayer.setGame(game);
+		gamePlayer.setRole(role);
+		playerInGames.add(gamePlayer);
+
+		gameRepository.save(game);
+		gamePlayerRepository.save(gamePlayer);
+
+		return game;
+	}
+
+	public boolean containsWord(Word word) {
+		return gameRepository.findWordById(word.getId()).isPresent() ? true : false;
+	}
+
+	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, String category,
+			String giverUsername, String guesserUsername) throws ServletException, IOException {
+		Category categoryByName = categoryservice.getCategoryByName(category);
+
+		Word word = wordService.createWord(wordToGuess, categoryByName);
+		Game wordGiverGame = createNewMultiPlayerGame(word, giverUsername, RoleName.WORD_GIVER);
+		Game wordGuesserGame = createNewMultiPlayerGame(word, guesserUsername, RoleName.GUESSER);
+
 		session.setAttribute("gameStatus", "");
-		session.setAttribute("mode", mode);
+		session.setAttribute("word", word);
+		session.setAttribute("giverGame", wordGiverGame);
+		session.setAttribute("guesserGame", wordGuesserGame);
+		session.setAttribute("triesLeft", wordGiverGame.getTriesLeft());
+		session.setAttribute("mode", wordGiverGame.getMode());
+		session.setAttribute("giverUsername", giverUsername);
+		session.setAttribute("guesserUsername", guesserUsername);
 		session.setAttribute("isWordValid", true);
-
 
 		return "multiplayerStarted";
 	}
 
 	public String tryGuessMultiplayer(char guess, HttpSession session) throws IOException {
-		Set<Character> usedCharacters = (Set<Character>) session.getAttribute("usedCharacters");
+
 		Word wordToFind = (Word) session.getAttribute("word");
-		Category category = (Category) session.getAttribute("category");
-		int triesLeft = (int) session.getAttribute("triesLeft");
-		String currentStateAsStr = (String) session.getAttribute("currentState");
-		boolean isFinished = (boolean) session.getAttribute("isFinished");
-		String mode = (String) session.getAttribute("mode");
+		Game wordGiverGame = (Game) session.getAttribute("giverGame");
+		Game wordGuesserGame = (Game) session.getAttribute("guesserGame");
+		Set<Character> usedChars = wordGuesserGame.getUsedChars();
+		String guesserUsername = null;
+		String giverUsername = null;
+		for (GamePlayer gamePlayer : wordGuesserGame.getPlayerInGames()) {
+			if (gamePlayer.getRole() == RoleName.GUESSER) {
+				guesserUsername = gamePlayer.getPlayer().getUsername();
+			}
+		}
+		for (GamePlayer gamePlayer : wordGiverGame.getPlayerInGames()) {
+			if (gamePlayer.getRole() == RoleName.WORD_GIVER) {
+				giverUsername = gamePlayer.getPlayer().getUsername();
+			}
+		}
 
-		char[] currentState = currentStateAsStr.toCharArray();
-		usedCharacters.add(guess);
+		char[] currentState = wordToFind.getCurrentState().toCharArray();
+		usedChars.add(guess);
+		wordGiverGame.setUsedChars(usedChars);
+		wordGuesserGame.setUsedChars(usedChars);
 
-		if (contains(wordToFind, guess)) {
-			String wordToReturn = putLetterOnPlace(wordToFind, guess, currentState);
-			wordsRepository.getHistory().put(wordToFind,
-					new Game(wordToReturn, triesLeft, category, usedCharacters, isFinished, mode));
+		if (wordService.contains(wordToFind, guess)) {
+			String wordToReturn = wordService.putLetterOnPlace(wordToFind, guess);
+			wordToFind.setCurrentState(wordToReturn);
 
 			session.setAttribute("currentState", wordToReturn);
-
 			if (isWordGuessed(wordToFind, wordToReturn)) {
-
-				wordsRepository.getHistory().get(wordToFind).setFinished(true);
+				wordGiverGame.setFinished(true);
+				wordGuesserGame.setFinished(true);
+				playerService.incrementWins(guesserUsername);
+				gameRepository.save(wordGiverGame);
+				gameRepository.save(wordGuesserGame);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 
 			}
-			return "redirect:/multiplayer/game";
+			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer/game";
 		} else {
+			int triesLeft = wordGuesserGame.getTriesLeft();
 			triesLeft--;
-			wordsRepository.getHistory().put(wordToFind,
-					new Game(currentStateAsStr, triesLeft, category, usedCharacters, isFinished, mode));
-
+			wordGiverGame.setTriesLeft(wordGiverGame.getTriesLeft() - 1);
+			wordGuesserGame.setTriesLeft(triesLeft);
+			gameRepository.save(wordGuesserGame);
+			gameRepository.save(wordGiverGame);
 			session.setAttribute("triesLeft", triesLeft);
 			if (checkFailedTries(triesLeft)) {
-				wordsRepository.getHistory().get(wordToFind).setFinished(true);
+				wordGiverGame.setFinished(true);
+				wordGuesserGame.setFinished(true);
+				playerService.incrementWins(giverUsername);
 				session.setAttribute("isFinished", true);
-				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getWord() + ".");
+				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
 
 			}
-			return "redirect:/multiplayer/game";
+			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer/game";
 		}
 	}
-	
+
 	public static String generateRandomString(int length) {
 		Random random = new Random();
-        StringBuilder result = new StringBuilder(length);
-        
-        for (int i = 0; i < length; i++) {
-            result.append(Commands.CHARACTERS.charAt(random.nextInt(Commands.CHARACTERS.length())));
-        }
-        
-        return result.toString();
-    }
+		StringBuilder result = new StringBuilder(length);
+
+		for (int i = 0; i < length; i++) {
+			result.append(Commands.CHARACTERS.charAt(random.nextInt(Commands.CHARACTERS.length())));
+		}
+
+		return result.toString();
+	}
+
+	public List<Game> getAllGamesForPlayerByUsername(String username) {
+
+		Player playerByUsername = playerService.getPlayerByUsername(username);
+		long id = playerByUsername.getId();
+		return findAllGamesForPlayerById(id).stream().map(GamePlayer::getGame).collect(Collectors.toList());
+
+	}
+
+	private List<GamePlayer> findAllGamesForPlayerById(long id) {
+		return gamePlayerRepository.findAllGamesForPlayerWithId(id);
+	}
 
 }
