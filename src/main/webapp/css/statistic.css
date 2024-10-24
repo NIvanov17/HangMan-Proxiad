@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f4;
+	padding: 30px;
+}
+
+table {
+	width: 70%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+
+th, td {
+	padding: 5px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+	max-width: 1px;
+}
+
+th {
+	background-color: #4CAF50;
+	color: white;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+tr:hover {
+	background-color: #e0e0e0;
+}
+
+.btn {
+	display: inline-block;
+	padding: 10px 15px;
+	background-color: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.btn:hover {
+	background-color: #45a049;
+}
+
+h1 {
+	text-align: center;
+}
+
+.attempts-number {
+	color: #4CAF50;
+	font-weight: bold;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+button {
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 14px;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+#homeButton {
+	background-color: orange;
+}
+
+.ratio {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.ratio h2 {
+margin-bottom: 0.2em;
+
+}
+.ratio p {
+	font-weight: bold;
+	color: #4CAF50;
+	font-size: 20px;
+}

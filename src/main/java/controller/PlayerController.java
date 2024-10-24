@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
 import service.PlayerService;
 
 @Controller
@@ -23,6 +24,7 @@ public class PlayerController {
 
 	@GetMapping("/username")
 	public String username() {
+		
 		return "player";
 	}
 
@@ -32,7 +34,13 @@ public class PlayerController {
 	}
 
 	@PostMapping("/word-giver")
-	public String createWordGiver(@RequestParam(required = true) String username) {
+	public String createWordGiver(@RequestParam(required = true) String username, HttpSession session) {
+		
+		if(!playerService.isValid(username)) {
+			session.setAttribute("isValid", playerService.isValid(username));
+			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			return "redirect:/word-giver";
+		}
 
 		if (!playerService.contains(username)) {
 			playerService.register(username);
@@ -54,29 +62,24 @@ public class PlayerController {
 		if (!playerService.contains(guesserUsername)) {
 			playerService.register(guesserUsername);
 		}
-		
+
 		return "redirect:/" + giverUsername + "/" + guesserUsername + "/multiplayer";
 	}
 
-	@GetMapping("/history")
-	public String history() {
-		return "player-history";
-	}
-
-	@PostMapping("/history")
-	public String getHistoryForPlayer(@RequestParam(required = true) String username) {
-
-		return "redirect:/history/" + username;
-	}
-
 	@PostMapping("/username")
-	public String createPlayer(@RequestParam(required = true) String username,RedirectAttributes redirectAttributes) {
+	public String createPlayer(@RequestParam(required = true) String username, RedirectAttributes redirectAttributes,HttpSession session) {
+		
+		if(!playerService.isValid(username)) {
+			session.setAttribute("isValid", playerService.isValid(username));
+			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			return "redirect:/username";
+		}
 
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}
-		
-		redirectAttributes.addFlashAttribute("username",username);
+
+		redirectAttributes.addFlashAttribute("username", username);
 		return "redirect:/game/hangMan";
 	}
 }

@@ -26,11 +26,11 @@ public class SinglePlayerController {
 		this.gameService = gameService;
 	}
 
-	@GetMapping("game/hangMan")
+	@GetMapping("/game/hangMan")
 	public String singlePlayerGameStarted(@RequestParam(name = "action", required = false) String action,
 			@RequestParam(required = false) Long gameId, HttpSession session, Model model)
 			throws ServletException, IOException {
-
+		System.out.println("in the get method");
 		if ("resume".equals(action)) {
 			return gameService.resumeGame(session,gameId);
 

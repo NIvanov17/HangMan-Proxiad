@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,23 +38,21 @@ public class Game {
 
 	@Column(nullable = false)
 	private String mode;
-	
-	@OneToMany(mappedBy = "game",cascade = CascadeType.PERSIST)
-	private List<GamePlayer> playerInGames;
 
+	@Column(name = "current-state")
+	private String currentState;
+
+	@OneToMany(mappedBy = "game", cascade = CascadeType.PERSIST)
+	private List<GamePlayer> playerInGames;
 	
+	@OneToOne(mappedBy = "game")
+	private Statistic statistic;
 
 	public Game() {
 		this.usedChars = new HashSet<>();
 		this.playerInGames = new ArrayList<>();
 	}
 
-//	public void reset( int triesLeft, Category category, Set<Character> usedCharacters,
-//			boolean isFinished) {
-//		this.triesLeft = triesLeft;
-//		this.usedChars.clear();
-//		this.setFinished(false);
-//	}
 
 	public long getId() {
 		return id;
@@ -70,6 +69,7 @@ public class Game {
 	public void setWord(Word word) {
 		this.word = word;
 	}
+
 	public int getTriesLeft() {
 		return triesLeft;
 	}
@@ -110,7 +110,23 @@ public class Game {
 		this.playerInGames = playerInGames;
 	}
 
+	public String getCurrentState() {
+		return currentState;
+	}
+
+	public void setCurrentState(String currentState) {
+		this.currentState = currentState;
+	}
 
 
+	public Statistic getStatistic() {
+		return statistic;
+	}
+
+
+	public void setStatistic(Statistic statistic) {
+		this.statistic = statistic;
+	}
+	
 
 }

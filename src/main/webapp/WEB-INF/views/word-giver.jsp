@@ -39,8 +39,22 @@ button {
 </head>
 <body>
 
+	<%
+	Boolean isValid = (Boolean) session.getAttribute("isValid");
+	String errorMessage = (String) session.getAttribute("errorMsg");
+	%>
+
 	<div class="container">
 		<h1>Welcome, Word Giver!</h1>
+				<%
+		if (isValid != null && !isValid) {
+		%>
+		<div class="error-msg" style="color: red; font-weight: bold;">
+			<%=errorMessage%>
+		</div>
+		<%
+		}
+		%>
 		<form action="/word-giver" method="post">
 			<label for="username">Please enter your username:</label> 
 			<input type="text" id="username" name="username">

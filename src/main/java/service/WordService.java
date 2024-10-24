@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import enums.CategoryName;
 import enums.Commands;
 import model.Category;
+import model.Game;
 import model.Word;
 import model.DTOs.WordDTO;
 import repository.CategoryRepository;
@@ -58,10 +59,8 @@ public class WordService {
 					});
 
 			Word word = new Word();
-			String wordWithoutSpaces = new String(wordToReturn(wordDTO.getWord()));
-			String wordToReturn = wordWithSpaces(wordWithoutSpaces);
+
 			word.setName(wordDTO.getWord());
-			word.setCurrentState(wordToReturn);
 			word.setCategory(category);
 			wordRepository.save(word);
 
@@ -103,17 +102,17 @@ public class WordService {
 
 	}
 
-	public String putLetterOnPlace(Word wordToFind, char guess) {
+	public String putLetterOnPlace(Game game, char guess) {
 		StringBuilder sb = new StringBuilder();
-		String currentstateWithoutSpaces = new String(wordToFind.getCurrentState());
+		String currentstateWithoutSpaces = new String(game.getCurrentState());
 		currentstateWithoutSpaces = currentstateWithoutSpaces.replaceAll(" ", "");
 
-		for (int i = 0; i < wordToFind.getName().length(); i++) {
+		for (int i = 0; i < game.getWord().getName().length(); i++) {
 			if (currentstateWithoutSpaces.charAt(i) >= Commands.SMALL_A
 					&& currentstateWithoutSpaces.charAt(i) <= Commands.SMALL_Z) {
 				sb.append(currentstateWithoutSpaces.charAt(i));
-			} else if (wordToFind.getName().charAt(i) == guess) {
-				sb.append(wordToFind.getName().charAt(i));
+			} else if (game.getWord().getName().charAt(i) == guess) {
+				sb.append(game.getWord().getName().charAt(i));
 			} else {
 				sb.append('_');
 			}
@@ -125,14 +124,27 @@ public class WordService {
 	}
 
 	public Word createWord(String wordToSet, Category category) {
-		Word word = new Word();
-		word.setName(wordToSet);
-		word.setCategory(category);
-		String wordWithoutSpaces = new String(wordToReturn(wordToSet));
-		String wordToReturn = wordWithSpaces(wordWithoutSpaces);
-		word.setCurrentState(wordToReturn);
-		wordRepository.save(word);
+		Word word = null;
+		if (!contains(wordToSet)) {
+			word = new Word();
+			word.setName(wordToSet);
+			word.setCategory(category);
+			String wordWithoutSpaces = new String(wordToReturn(wordToSet));
+			String wordToReturn = wordWithSpaces(wordWithoutSpaces);
+			wordRepository.save(word);
+		}else {
+			word = getWordByName(wordToSet);
+		}
+
 		return word;
+	}
+
+	private boolean contains(String wordToSet) {
+		return wordRepository.findWordByName(wordToSet).isPresent();
+	}
+
+	private Word getWordByName(String wordToSet) {
+		return wordRepository.findWordByName(wordToSet).orElseThrow(()->new IllegalArgumentException("Word with this name is not existing!"));
 	}
 
 	public boolean contains(Word wordToFind, char guess) {

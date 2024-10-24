@@ -31,6 +31,12 @@ public class MultiPlayerController {
 
 		return "multiPlayer";
 	}
+	
+	@GetMapping("/{gameId}/multiplayer")
+	public String multiPlayerHome(@PathVariable long gameId,HttpSession session) {
+
+		return gameService.resumeGame(session,gameId);
+	}
 
 	@PostMapping("/{giverUsername}/{guesserUsername}/multiplayer")
 	public String sendInputWord(@PathVariable String giverUsername, @PathVariable String guesserUsername,
@@ -40,10 +46,6 @@ public class MultiPlayerController {
 		boolean isValid = true;
 		String wordToGuess = request.getParameter("wordToGuess");
 
-//		if ("resume".equals(action)) {
-//			String currentWord = request.getParameter("currentWord");
-//			return gameService.resumeGame(currentWord, session);
-//		}
 		if (wordToGuess.equals("")) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
@@ -61,8 +63,8 @@ public class MultiPlayerController {
 		model.addAttribute("giverUsername", giverUsername);
 		model.addAttribute("guesserUsername", guesserUsername);
 
-		return gameService.prepareWordToBeDisplayed(session, wordToGuess, categoryParam, giverUsername,
-				guesserUsername);
+		return gameService.prepareWordToBeDisplayed(session, wordToGuess, categoryParam,
+				giverUsername, guesserUsername);
 	}
 	
 

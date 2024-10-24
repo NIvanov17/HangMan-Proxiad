@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -56,6 +58,15 @@ public class Statistic {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public LocalDateTime getFinishedAt() {
+		return finishedAt;
+	}
+
+	public void setFinishedAt(LocalDateTime finishedAt) {
+		this.finishedAt = finishedAt;
+	}
+
 
 	
 	

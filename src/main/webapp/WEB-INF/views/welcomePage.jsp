@@ -32,7 +32,7 @@ button {
 </head>
 <body>
 	<div class="container">
-		<h2>Welcome, player!</h2>
+		<h2>Welcome To Best HangMan app!</h2>
 		<form action="/username" method="get">
 			<button id="single" type="submit" class="styled-button">New Single Player Game</button>
 		</form>
@@ -43,6 +43,12 @@ button {
 		<form action="/history" method="get">
 			<button id="history" type="submit" class="styled-button" value="submit">Games
 				History</button>
+		</form>
+		<form action="/statistic" method="get">
+			<button id="history" type="submit" class="styled-button" value="submit">Load Statistic</button>
+		</form>
+		<form action="/ranking" method="get">
+			<button id="history" type="submit" class="styled-button" value="submit">Rankings</button>
 		</form>
 	</div>
 </body>

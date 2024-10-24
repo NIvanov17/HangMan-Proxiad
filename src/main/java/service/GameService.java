@@ -1,5 +1,7 @@
 package service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -30,15 +32,18 @@ public class GameService {
 	private WordService wordService;
 	private CategoryService categoryservice;
 	private GamePlayerRepository gamePlayerRepository;
+	private StatisticService statisticService;
 
 	@Autowired
 	public GameService(GameRepository gameRepository, PlayerService playerService, WordService wordService,
-			CategoryService categoryservice, GamePlayerRepository gamePlayerRepository) {
+			CategoryService categoryservice, GamePlayerRepository gamePlayerRepository,
+			StatisticService statisticService) {
 		this.gameRepository = gameRepository;
 		this.playerService = playerService;
 		this.wordService = wordService;
 		this.categoryservice = categoryservice;
 		this.gamePlayerRepository = gamePlayerRepository;
+		this.statisticService = statisticService;
 	}
 
 	public String wordWithSpaces(Word wordWithoutSpaces) {
@@ -133,7 +138,7 @@ public class GameService {
 		return true;
 	}
 
-	public String resumeGame(HttpSession session, Long gameId){
+	public String resumeGame(HttpSession session, Long gameId) {
 		Game game = getGameById(gameId);
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
 		Player player = null;
@@ -144,19 +149,19 @@ public class GameService {
 				break;
 			}
 		}
-			session.setAttribute("word", game.getWord());
-			session.setAttribute("game", game);
-			session.setAttribute("username", player.getUsername());
-			session.setAttribute("gameStatus", "");
+		session.setAttribute("word", game.getWord());
+		session.setAttribute("game", game);
+		session.setAttribute("username", player.getUsername());
+		session.setAttribute("gameStatus", "");
 
-			if (game.getMode().equals("Single Player")) {
-				return "gameStarted";
+		if (game.getMode().equals("Single Player")) {
+			return "gameStarted";
 
-			} else {
-				return "multiplayerStarted";
+		} else {
+			return "multiplayerStarted";
 
-			}
-		
+		}
+
 	}
 
 	private Game getGameById(long gameId) {
@@ -187,8 +192,8 @@ public class GameService {
 		game.setUsedChars(usedChars);
 
 		if (wordService.contains(wordToFind, guess)) {
-			String wordToReturn = wordService.putLetterOnPlace(wordToFind, guess);
-			wordToFind.setCurrentState(wordToReturn);
+			String wordToReturn = wordService.putLetterOnPlace(game, guess);
+			game.setCurrentState(wordToReturn);
 			session.setAttribute("word", wordToFind);
 			gameRepository.save(game);
 
@@ -198,7 +203,7 @@ public class GameService {
 				gameRepository.save(game);
 				session.setAttribute("game", game);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
-
+				statisticService.createStatistic(game);
 			}
 			return "gameStarted";
 		} else {
@@ -213,7 +218,7 @@ public class GameService {
 				gameRepository.save(game);
 				session.setAttribute("game", game);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
-
+				statisticService.createStatistic(game);
 			}
 			return "gameStarted";
 		}
@@ -235,6 +240,11 @@ public class GameService {
 		game.setTriesLeft(6);
 		game.setUsedChars(hashSet);
 		game.setWord(word);
+
+		String wordWithoutSpaces = new String(wordService.wordToReturn(word.getName()));
+		String wordToReturn = wordService.wordWithSpaces(wordWithoutSpaces);
+		game.setCurrentState(wordToReturn);
+
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
 		Player player = playerService.getPlayerByUsername(username);
 		GamePlayer gamePlayer = new GamePlayer();
@@ -249,7 +259,7 @@ public class GameService {
 		return game;
 	}
 
-	private Game createNewMultiPlayerGame(Word word, String username, RoleName role) {
+	private Game createNewMultiPlayerGame(Word word) {
 		char firstLetter = getFirstLetter(word.getName());
 		char lastLetter = getLastLetter(word.getName());
 		HashSet<Character> hashSet = new HashSet<>();
@@ -261,22 +271,13 @@ public class GameService {
 		game.setTriesLeft(6);
 		game.setUsedChars(hashSet);
 		game.setWord(word);
+		String wordWithoutSpaces = new String(wordService.wordToReturn(word.getName()));
+		String wordToReturn = wordService.wordWithSpaces(wordWithoutSpaces);
+		game.setCurrentState(wordToReturn);
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
-		Player player = playerService.getPlayerByUsername(username);
-		GamePlayer gamePlayer = new GamePlayer();
-		gamePlayer.setPlayer(player);
-		gamePlayer.setGame(game);
-		gamePlayer.setRole(role);
-		playerInGames.add(gamePlayer);
-
 		gameRepository.save(game);
-		gamePlayerRepository.save(gamePlayer);
 
 		return game;
-	}
-
-	public boolean containsWord(Word word) {
-		return gameRepository.findWordById(word.getId()).isPresent() ? true : false;
 	}
 
 	public String prepareWordToBeDisplayed(HttpSession session, String wordToGuess, String category,
@@ -284,15 +285,13 @@ public class GameService {
 		Category categoryByName = categoryservice.getCategoryByName(category);
 
 		Word word = wordService.createWord(wordToGuess, categoryByName);
-		Game wordGiverGame = createNewMultiPlayerGame(word, giverUsername, RoleName.WORD_GIVER);
-		Game wordGuesserGame = createNewMultiPlayerGame(word, guesserUsername, RoleName.GUESSER);
+		Game game = createNewMultiPlayerGame(word);
+		createPlayer(giverUsername, game, RoleName.WORD_GIVER);
+		createPlayer(guesserUsername, game, RoleName.GUESSER);
 
 		session.setAttribute("gameStatus", "");
 		session.setAttribute("word", word);
-		session.setAttribute("giverGame", wordGiverGame);
-		session.setAttribute("guesserGame", wordGuesserGame);
-		session.setAttribute("triesLeft", wordGiverGame.getTriesLeft());
-		session.setAttribute("mode", wordGiverGame.getMode());
+		session.setAttribute("game", game);
 		session.setAttribute("giverUsername", giverUsername);
 		session.setAttribute("guesserUsername", guesserUsername);
 		session.setAttribute("isWordValid", true);
@@ -300,61 +299,68 @@ public class GameService {
 		return "multiplayerStarted";
 	}
 
+	private void createPlayer(String giverUsername, Game game, RoleName role) {
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player player = playerService.getPlayerByUsername(giverUsername);
+		GamePlayer gamePlayer = new GamePlayer();
+		gamePlayer.setPlayer(player);
+		gamePlayer.setGame(game);
+		gamePlayer.setRole(role);
+		playerInGames.add(gamePlayer);
+		gamePlayerRepository.save(gamePlayer);
+	}
+
 	public String tryGuessMultiplayer(char guess, HttpSession session) throws IOException {
 
 		Word wordToFind = (Word) session.getAttribute("word");
-		Game wordGiverGame = (Game) session.getAttribute("giverGame");
-		Game wordGuesserGame = (Game) session.getAttribute("guesserGame");
-		Set<Character> usedChars = wordGuesserGame.getUsedChars();
+		Game game = (Game) session.getAttribute("game");
+		Set<Character> usedChars = game.getUsedChars();
 		String guesserUsername = null;
 		String giverUsername = null;
-		for (GamePlayer gamePlayer : wordGuesserGame.getPlayerInGames()) {
+		for (GamePlayer gamePlayer : game.getPlayerInGames()) {
 			if (gamePlayer.getRole() == RoleName.GUESSER) {
 				guesserUsername = gamePlayer.getPlayer().getUsername();
 			}
 		}
-		for (GamePlayer gamePlayer : wordGiverGame.getPlayerInGames()) {
+
+		for (GamePlayer gamePlayer : game.getPlayerInGames()) {
 			if (gamePlayer.getRole() == RoleName.WORD_GIVER) {
 				giverUsername = gamePlayer.getPlayer().getUsername();
 			}
 		}
 
-		char[] currentState = wordToFind.getCurrentState().toCharArray();
+		char[] currentState = game.getCurrentState().toCharArray();
 		usedChars.add(guess);
-		wordGiverGame.setUsedChars(usedChars);
-		wordGuesserGame.setUsedChars(usedChars);
+		game.setUsedChars(usedChars);
 
 		if (wordService.contains(wordToFind, guess)) {
-			String wordToReturn = wordService.putLetterOnPlace(wordToFind, guess);
-			wordToFind.setCurrentState(wordToReturn);
+			String wordToReturn = wordService.putLetterOnPlace(game, guess);
+			game.setCurrentState(wordToReturn);
 
 			session.setAttribute("currentState", wordToReturn);
 			if (isWordGuessed(wordToFind, wordToReturn)) {
-				wordGiverGame.setFinished(true);
-				wordGuesserGame.setFinished(true);
+				game.setFinished(true);
 				playerService.incrementWins(guesserUsername);
-				gameRepository.save(wordGiverGame);
-				gameRepository.save(wordGuesserGame);
+				gameRepository.save(game);
+				statisticService.createStatistic(game);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.CONGRATULATIONS_YOU_WON);
 
 			}
 			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer/game";
 		} else {
-			int triesLeft = wordGuesserGame.getTriesLeft();
+			int triesLeft = game.getTriesLeft();
 			triesLeft--;
-			wordGiverGame.setTriesLeft(wordGiverGame.getTriesLeft() - 1);
-			wordGuesserGame.setTriesLeft(triesLeft);
-			gameRepository.save(wordGuesserGame);
-			gameRepository.save(wordGiverGame);
+			game.setTriesLeft(triesLeft);
+			gameRepository.save(game);
 			session.setAttribute("triesLeft", triesLeft);
 			if (checkFailedTries(triesLeft)) {
-				wordGiverGame.setFinished(true);
-				wordGuesserGame.setFinished(true);
+				game.setFinished(true);
 				playerService.incrementWins(giverUsername);
 				session.setAttribute("isFinished", true);
 				session.setAttribute("gameStatus", Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
-
+				gameRepository.save(game);
+				statisticService.createStatistic(game);
 			}
 			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer/game";
 		}
@@ -371,16 +377,55 @@ public class GameService {
 		return result.toString();
 	}
 
-	public List<Game> getAllGamesForPlayerByUsername(String username) {
+	public List<Game> getAllGamesForPlayerByUsername(String username, RoleName guesser) {
 
 		Player playerByUsername = playerService.getPlayerByUsername(username);
 		long id = playerByUsername.getId();
-		return findAllGamesForPlayerById(id).stream().map(GamePlayer::getGame).collect(Collectors.toList());
+		return findAllGamesForPlayerById(id, guesser).stream().map(GamePlayer::getGame).collect(Collectors.toList());
 
 	}
 
-	private List<GamePlayer> findAllGamesForPlayerById(long id) {
-		return gamePlayerRepository.findAllGamesForPlayerWithId(id);
+	private List<GamePlayer> findAllGamesForPlayerById(long id, RoleName guesser) {
+		return gamePlayerRepository.findAllGamesForPlayerWithId(id, guesser);
+	}
+
+	public boolean containsWord(Word word) {
+		return gameRepository.findWordById(word.getId()).isPresent() ? true : false;
+	}
+
+	public List<Game> getTopTenGames() {
+		Pageable topTen = PageRequest.of(0, 10);
+		return gameRepository.findTopTenMostUsedGames(topTen);
+	}
+
+	public double averageAttempts() {
+		List<Game> games = getTopTenGames();
+		double attempts = 0.0;
+		for (Game game : games) {
+			attempts += Math.abs(game.getTriesLeft() - 6);
+		}
+
+		return attempts / 10;
+	}
+
+	public String calculateWinLossRatio() {
+		List<Game> games = getTopTenGames();
+		int wins = 0;
+		int loss = 0;
+
+		for (Game game : games) {
+			String status = game.getStatistic().getStatus();
+			switch (status) {
+			case "WON":
+				wins++;
+				break;
+
+			case "LOSE":
+				loss++;
+				break;
+			}
+		}
+		return wins + "/" + loss;
 	}
 
 }

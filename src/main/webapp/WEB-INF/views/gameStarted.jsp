@@ -44,7 +44,7 @@ body {
 	%>
 	<div class="container">
 
-		<h1>Word to Guess: ${word.getCurrentState()}</h1>
+		<h1>Word to Guess: ${game.getCurrentState()}</h1>
 		<h2 id="tries-left">Tries left: ${game.getTriesLeft()}</h2>
 		<h3>Category: ${word.getCategory().getCategoryName()}</h3>
 		<h3>Mode: ${game.getMode()}</h3>
@@ -74,16 +74,15 @@ body {
 		<%
 		if (game.getMode().equals("Single Player")) {
 		%>
-		<form action="/<%=username%>/hangMan" method="get">
-			<button type="submit" name="action" value="restart">Restart
-				Single Player Game</button>
+		<form action="/username" method="get">
+		 <input type="hidden" name="action" value="restart" />
+			<button type="submit">Restart Single Player Game</button>
 		</form>
 		<%
 		} else {
 		%>
 		<form action="/multiPlayer" method="get">
-			<button type="submit" name="action" value="restart">Restart
-				Multiplayer Game</button>
+			<button type="submit" name="action" value="restart">Restart Multiplayer Game</button>
 		</form>
 		<%
 		}
