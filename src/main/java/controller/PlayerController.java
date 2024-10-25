@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import model.Player;
 import service.PlayerService;
 
 @Controller
@@ -41,29 +42,43 @@ public class PlayerController {
 			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
 			return "redirect:/word-giver";
 		}
-
+		session.setAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}
+		
+		Player player = playerService.getPlayerByUsername(username);
 
-		return "redirect:/" + username + "/word-guesser";
+		return "redirect:/" + player.getId() + "/word-guesser";
 	}
 
-	@GetMapping("/{username}/word-guesser")
-	public String wordGuesser(@PathVariable("username") String giverUsername, Model model) {
-		model.addAttribute("username", giverUsername);
+	@GetMapping("/{id}/word-guesser")
+	public String wordGuesser(@PathVariable long id, Model model) {
+		
+		model.addAttribute("id", id);
 		return "word-guesser";
 	}
 
-	@PostMapping("/{username}/word-guesser")
-	public String createWordGuesser(@PathVariable("username") String giverUsername,
-			@RequestParam(required = true) String guesserUsername) {
+	@PostMapping("/{id}/word-guesser")
+	public String createWordGuesser(@PathVariable long id,
+			@RequestParam(required = true) String guesserUsername,HttpSession session) {
+		
+		if(!playerService.isValid(guesserUsername) || playerService.areUsernamesEqual(id,guesserUsername)) {
+			session.setAttribute("isValid", playerService.isValid(guesserUsername));
+			session.setAttribute("areEqual", playerService.areUsernamesEqual(id,guesserUsername));
+			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			return "redirect:/{id}/word-guesser";
+		}
 
 		if (!playerService.contains(guesserUsername)) {
 			playerService.register(guesserUsername);
 		}
+		
+		session.setAttribute("errorMsg","");
+		
+		Player playerGuesser = playerService.getPlayerByUsername(guesserUsername);
 
-		return "redirect:/" + giverUsername + "/" + guesserUsername + "/multiplayer";
+		return "redirect:/" + id + "/" + playerGuesser.getId() + "/multiplayer";
 	}
 
 	@PostMapping("/username")
@@ -75,6 +90,7 @@ public class PlayerController {
 			return "redirect:/username";
 		}
 
+		session.setAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}

@@ -39,9 +39,26 @@ button {
 </head>
 <body>
 
+	<%
+	Boolean isValid = (Boolean) session.getAttribute("isValid");
+	Boolean areEqual = (Boolean) session.getAttribute("areEqual");
+	String errorMessage = (String) session.getAttribute("errorMsg");
+	%>
+
 	<div class="container">
 		<h1>Welcome, Word Guesser!</h1>
-		<form action="${pageContext.request.contextPath}/${username}/word-guesser" method="post">
+		
+		<% 
+		if ((isValid != null && !isValid) || (areEqual != null && areEqual)) {
+		%>
+		<div class="error-msg" style="color: red; font-weight: bold;">
+			<%=errorMessage%>
+		</div>
+		<%
+		}
+		%>
+		<form action="${pageContext.request.contextPath}/${id}/word-guesser"
+			method="post">
 			<label for="username">Please enter your username:</label> <input
 				type="text" id="username" name="guesserUsername">
 			<button id="submit-username" type="submit">Submit</button>

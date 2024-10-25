@@ -26,8 +26,8 @@ public class MultiPlayerController {
 		this.gameService = gameService;
 	}
 
-	@GetMapping("/{giverUsername}/{guesserUsername}/multiplayer")
-	public String multiPlayerHome(@PathVariable String giverUsername, @PathVariable String guesserUsername) {
+	@GetMapping("/{giverId}/{guesserId}/multiplayer")
+	public String multiPlayerHome(@PathVariable long giverId, @PathVariable long guesserId) {
 
 		return "multiPlayer";
 	}
@@ -38,8 +38,8 @@ public class MultiPlayerController {
 		return gameService.resumeGame(session,gameId);
 	}
 
-	@PostMapping("/{giverUsername}/{guesserUsername}/multiplayer")
-	public String sendInputWord(@PathVariable String giverUsername, @PathVariable String guesserUsername,
+	@PostMapping("/{giverId}/{guesserId}/multiplayer")
+	public String sendInputWord(@PathVariable long giverId, @PathVariable long guesserId,
 			@RequestParam(required = false) String action, HttpSession session, HttpServletRequest request, Model model)
 			throws ServletException, IOException {
 
@@ -51,32 +51,32 @@ public class MultiPlayerController {
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
 
-			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer";
+			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
 			session.setAttribute("isWordValid", isValid);
 			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
 
-			return "redirect:/{giverUsername}/{guesserUsername}/multiplayer";
+			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		}
 		String categoryParam = request.getParameter("category");
-		model.addAttribute("giverUsername", giverUsername);
-		model.addAttribute("guesserUsername", guesserUsername);
+		model.addAttribute("giverId", giverId);
+		model.addAttribute("guesserId", guesserId);
 
 		return gameService.prepareWordToBeDisplayed(session, wordToGuess, categoryParam,
-				giverUsername, guesserUsername);
+				giverId, guesserId);
 	}
 	
 
-	@PostMapping("/{giverUsername}/{guesserUsername}/multiplayer/guess")
-	protected String multiPlayerGameGuess(@PathVariable String giverUsername, @PathVariable String guesserUsername,
+	@PostMapping("/{giverId}/{guesserId}/multiplayer/guess")
+	protected String multiPlayerGameGuess(@PathVariable long giverId, @PathVariable long guesserId,
 			@RequestParam("letter") char letter, HttpSession session, HttpServletRequest request)
 			throws ServletException, IOException {
 		return gameService.tryGuessMultiplayer(letter, session);
 	}
 
-	@GetMapping("/{giverUsername}/{guesserUsername}/multiplayer/game")
-	protected String multiPlayerGame(@PathVariable String giverUsername, @PathVariable String guesserUsername){
+	@GetMapping("/{giverId}/{guesserId}/multiplayer/game")
+	protected String multiPlayerGame(@PathVariable long giverId, @PathVariable long guesserId){
 
 		return "multiplayerStarted";
 	}

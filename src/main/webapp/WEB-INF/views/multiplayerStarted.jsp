@@ -37,8 +37,8 @@
     <%
         Word word = (Word) session.getAttribute("word");
         Game game = (Game) session.getAttribute("game");
-        String giverUsername = (String) session.getAttribute("giverUsername");
-        String guesserUsername = (String) session.getAttribute("guesserUsername");
+        Long guesserId = (Long) session.getAttribute("guesserId");
+        Long giverId = (Long) session.getAttribute("giverId");
     %>
     
     <div class="container">
@@ -61,7 +61,7 @@
                 for (char letter = 'A'; letter <= 'Z'; letter++) {
                     char lowerCaseLetter = Character.toLowerCase(letter);
             %>
-            <form action="/<%= giverUsername %>/<%= guesserUsername %>/multiplayer/guess" method="post">
+            <form action="/${giverId}/${guesserId}/multiplayer/guess" method="post">
                 <input type="hidden" name="letter" value="<%= lowerCaseLetter %>" />
                 <button type="submit" value="<%= lowerCaseLetter %>"
                     <% if (game.getUsedChars().contains(lowerCaseLetter) || game.isFinished()) {

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,15 +39,30 @@ button {
 </head>
 <body>
 
-<div class="container">
+	<%
+	Boolean isValid = (Boolean) session.getAttribute("isValid");
+	String errorMessage = (String) session.getAttribute("errorMsg");
+	%>
+
+	<div class="container">
 		<h1>Welcome, Player!</h1>
+		<%
+		if (isValid != null && !isValid) {
+		%>
+		<div class="error-msg" style="color: red; font-weight: bold;">
+			<%=errorMessage%>
+		</div>
+		<%
+		}
+		%>
 		<form action="/history" method="post">
-			<label for="username">Please enter your username:</label> 
-			<input type="text" id="username" name="username">
+			<label for="username">Please enter your username:</label> <input
+				type="text" id="username" name="username">
 			<button id="submit-username" type="submit">Load History</button>
 		</form>
 		<form action="/welcome" method="get">
-			<button id="homeButton" type="submit" name="toHomePage">Home Page</button>
+			<button id="homeButton" type="submit" name="toHomePage">Home
+				Page</button>
 		</form>
 	</div>
 </body>

@@ -34,7 +34,13 @@ public class StatisticController {
 	}
 
 	@PostMapping("/history")
-	public String getHistoryForPlayer(@RequestParam(required = true) String username) {
+	public String getHistoryForPlayer(@RequestParam(required = true) String username,HttpSession session) {
+		
+		if(!playerService.contains(username)) {
+			session.setAttribute("isValid", playerService.contains(username));
+			session.setAttribute("errorMsg","Invalid username! Username is not existing.");
+			return "redirect:/history";
+		}
 
 		return "redirect:/history/" + username;
 	}

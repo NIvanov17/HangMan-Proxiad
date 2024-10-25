@@ -46,6 +46,8 @@ select#category {
 	Boolean isValid = (Boolean) session.getAttribute("isWordValid");
 	String errorMessage = (String) session.getAttribute("errorMessage");
 	Word word = (Word) session.getAttribute("word");
+	Long giverId = (Long)session.getAttribute("giverId");
+	Long guesserId = (Long)session.getAttribute("guesserId");
 	%>
 	<div class="container">
 		<h2>Multiplayer Game Started!</h2>
@@ -60,7 +62,7 @@ select#category {
 		}
 		%>
 
-		<form action="${pageContext.request.contextPath}/${giverUsername}/${guesserUsername}/multiplayer" method="post">
+		<form action="${pageContext.request.contextPath}/${guesserId}/${guesserId}/multiplayer" method="post">
 			<label for="wordToGuess">Enter word:</label> 
 			<input type="text" id="wordToGuess" name="wordToGuess" /> 
 			<label for="category">Select

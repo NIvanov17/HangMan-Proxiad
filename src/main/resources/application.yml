@@ -25,12 +25,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: hangman
 
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    baselineVersion: '0'
-    debug: true
-    outOfOrder: true
-    ignoreMigrationPatterns: "*:ignored"
+flyway:
+  enabled: true
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+  baselineVersion: '1'
+  default_schema: hangman
+  schemas: hangman

@@ -40,7 +40,7 @@ body {
 	Word word = (Word) session.getAttribute("word");
 	Game game = (Game) session.getAttribute("game");
 	String gameStatus = (String) session.getAttribute("gameStatus");
-	String username = (String)session.getAttribute("username");
+	Long id = (Long)session.getAttribute("id");
 	%>
 	<div class="container">
 

@@ -16,7 +16,7 @@ public class PlayerService {
 	private PlayerRepository playerRepository;
 
 	@Autowired
-	public PlayerService (PlayerRepository playerRepository) {
+	public PlayerService(PlayerRepository playerRepository) {
 		this.playerRepository = playerRepository;
 	}
 
@@ -31,41 +31,50 @@ public class PlayerService {
 	}
 
 	public Player getPlayerByUsername(String username) {
-		return playerRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException(username));
+		return playerRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException(username));
 	}
 
-	public void incrementWins(String username) {
-		Player playerByUsername = getPlayerByUsername(username);
-		int totalWins = playerByUsername.getTotalWins();
-		playerByUsername.setTotalWins(totalWins + 1);
-		
+	public void incrementWins(long id) {
+		Player player = getPlayerById(id);
+		int totalWins = player.getTotalWins();
+		player.setTotalWins(totalWins + 1);
+
 	}
 
 	public List<Player> getAllPlayersByWins() {
 		return playerRepository.findAllByOrderByTotalWinsDesc();
 	}
-	
+
 	public List<Player> getTopTenPlayersByWins() {
 		Pageable topTen = PageRequest.of(0, 10);
 		return playerRepository.findAllByOrderByTotalWinsDesc(topTen);
 	}
 
 	public boolean isValid(String username) {
-		if(username.isBlank() || username.length() < 2) {
+		if (username.isBlank() || username.length() < 2) {
 			return false;
 		}
 		boolean hasLetter = false;
-		for(char symbol : username.toCharArray()) {
-			if(Character.isLetter(symbol)) {
+		for (char symbol : username.toCharArray()) {
+			if (Character.isLetter(symbol)) {
 				hasLetter = true;
 				break;
 			}
 		}
-		if(hasLetter) {
+		if (hasLetter) {
 			return true;
 		}
-	
+
 		return false;
 	}
-}
 
+	public Player getPlayerById(long id) {
+		return playerRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Player is not existing!"));
+	}
+
+	public boolean areUsernamesEqual(long id, String guesserUsername) {
+		Player player = getPlayerById(id);
+		
+		return player.getUsername().equals(guesserUsername);
+	}
+}
