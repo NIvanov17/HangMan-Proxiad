@@ -105,22 +105,9 @@ public class GameService {
 	public String resumeGame(HttpSession session, Long gameId) {
 		Game game = getGameById(gameId);
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
-		Player guesser = null;
-		Player giver = null;
+		Player guesser = getPlayerByRole(playerInGames, RoleName.GUESSER);
+		Player giver = getPlayerByRole(playerInGames, RoleName.GUESSER);
 
-		for (GamePlayer gamePlayer : playerInGames) {
-			if (gamePlayer.getRole() == RoleName.GUESSER) {
-				guesser = gamePlayer.getPlayer();
-				break;
-			}
-		}
-		
-		for (GamePlayer gamePlayer : playerInGames) {
-			if (gamePlayer.getRole() == RoleName.WORD_GIVER) {
-				giver = gamePlayer.getPlayer();
-				break;
-			}
-		}
 		session.setAttribute("word", game.getWord());
 		session.setAttribute("game", game);
 		session.setAttribute("guesserId", guesser.getId());
@@ -135,6 +122,17 @@ public class GameService {
 
 		}
 
+	}
+
+	private Player getPlayerByRole(List<GamePlayer> playerInGames, RoleName role) {
+		Player player = null;
+		for (GamePlayer gamePlayer : playerInGames) {
+			if (gamePlayer.getRole() == role) {
+				player = gamePlayer.getPlayer();
+				break;
+			}
+		}
+		return player;
 	}
 
 	private Game getGameById(long gameId) {
@@ -289,19 +287,10 @@ public class GameService {
 		Word wordToFind = (Word) session.getAttribute("word");
 		Game game = (Game) session.getAttribute("game");
 		Set<Character> usedChars = game.getUsedChars();
-		Long guesserId = null;
-		Long giverId = null;
-		for (GamePlayer gamePlayer : game.getPlayerInGames()) {
-			if (gamePlayer.getRole() == RoleName.GUESSER) {
-				guesserId = gamePlayer.getPlayer().getId();
-			}
-		}
-
-		for (GamePlayer gamePlayer : game.getPlayerInGames()) {
-			if (gamePlayer.getRole() == RoleName.WORD_GIVER) {
-				giverId = gamePlayer.getPlayer().getId();
-			}
-		}
+		Long guesserId = getPlayerIdByRole(game,RoleName.GUESSER);
+		
+		Long giverId = getPlayerIdByRole(game, RoleName.WORD_GIVER);
+		
 
 		char[] currentState = game.getCurrentState().toCharArray();
 		usedChars.add(guess);
@@ -310,6 +299,7 @@ public class GameService {
 		if (wordService.contains(wordToFind, guess)) {
 			String wordToReturn = wordService.putLetterOnPlace(game, guess);
 			game.setCurrentState(wordToReturn);
+			gameRepository.save(game);
 
 			session.setAttribute("currentState", wordToReturn);
 			if (isWordGuessed(wordToFind, wordToReturn)) {
@@ -338,6 +328,14 @@ public class GameService {
 			}
 			return "redirect:/{giverId}/{guesserId}/multiplayer/game";
 		}
+	}
+
+	private Long getPlayerIdByRole(Game game, RoleName role) {
+		return game.getPlayerInGames().stream()
+				.filter(gamePlayer -> gamePlayer.getRole() == role)
+				.map(gamePlayer -> gamePlayer.getPlayer().getId())
+				.findFirst()
+				.orElse(null);
 	}
 
 	public static String generateRandomString(int length) {
@@ -389,14 +387,10 @@ public class GameService {
 
 		for (Game game : games) {
 			String status = game.getStatistic().getStatus();
-			switch (status) {
-			case "WON":
+			if (status.equals("WON")) {
 				wins++;
-				break;
-
-			case "LOSE":
+			} else {
 				loss++;
-				break;
 			}
 		}
 		return wins + "/" + loss;

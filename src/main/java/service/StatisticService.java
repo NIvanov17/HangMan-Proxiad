@@ -21,12 +21,7 @@ public class StatisticService {
 
 	public void createStatistic(Game game) {
 
-		String status;
-		if (game.isFinished() && !game.getCurrentState().contains("_")) {
-			status = "WON";
-		} else {
-			status = "LOSE";
-		}
+		String status = game.isFinished() && !game.getCurrentState().contains("_") ? "WON" : "LOSE";
 
 		Statistic statistic = new Statistic();
 		statistic.setGame(game);
