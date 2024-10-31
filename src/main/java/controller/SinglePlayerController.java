@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import service.GameService;
 
 @Controller
@@ -27,7 +25,7 @@ public class SinglePlayerController {
 	}
 
 	@GetMapping("/game/hangMan")
-	public String singlePlayerGameStarted(@RequestParam(name = "action", required = false) String action,
+	public String singlePlayerGameStarted(@RequestParam(required = false) String action,
 			@RequestParam(required = false) Long gameId, Model model)
 			throws ServletException, IOException {
 		if ("resume".equals(action)) {
@@ -40,7 +38,7 @@ public class SinglePlayerController {
 	}
 
 	@PostMapping("/hangMan/{id}")
-	public String singlePlayerGameGuess(@PathVariable long id,@RequestParam("guess") char guess, Model model,
+	public String singlePlayerGameGuess(@PathVariable long id,@RequestParam char guess, Model model,
 			HttpServletRequest request) throws IOException {
 
 		return gameService.tryGuess(guess, model,id);

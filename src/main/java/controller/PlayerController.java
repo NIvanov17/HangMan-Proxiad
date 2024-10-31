@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import enums.Attributes;
 import enums.Commands;
+import enums.ErrorMessages;
 import jakarta.servlet.http.HttpSession;
 import model.Player;
 import service.PlayerService;
@@ -39,8 +41,8 @@ public class PlayerController {
 	public String createWordGiver(@RequestParam(required = true) String username, Model model) {
 		
 		if(!playerService.isValid(username)) {
-			model.addAttribute("isValid", playerService.isValid(username));
-			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
+			model.addAttribute(Attributes.IS_VALID, playerService.isValid(username));
+			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
 			return "redirect:/word-giver";
 		}
 		model.addAttribute("errorMsg","");
@@ -65,9 +67,9 @@ public class PlayerController {
 			@RequestParam(required = true) String guesserUsername,Model model) {
 		
 		if(!playerService.isValid(guesserUsername) || playerService.areUsernamesEqual(id,guesserUsername)) {
-			model.addAttribute("isValid", playerService.isValid(guesserUsername));
-			model.addAttribute("areEqual", playerService.areUsernamesEqual(id,guesserUsername));
-			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
+			model.addAttribute(Attributes.IS_VALID, playerService.isValid(guesserUsername));
+			model.addAttribute(Attributes.ARE_EQUAL, playerService.areUsernamesEqual(id,guesserUsername));
+			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
 			return "redirect:/{id}/word-guesser";
 		}
 
@@ -86,8 +88,8 @@ public class PlayerController {
 	public String createPlayer(@RequestParam(required = true) String username, RedirectAttributes redirectAttributes,Model model) {
 		
 		if(!playerService.isValid(username)) {
-			model.addAttribute("isValid", playerService.isValid(username));
-			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
+			model.addAttribute(Attributes.IS_VALID, playerService.isValid(username));
+			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
 			return "redirect:/username";
 		}
 

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import enums.Attributes;
 import enums.Commands;
+import enums.ErrorMessages;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import service.GameService;
@@ -29,8 +31,8 @@ public class MultiPlayerController {
 	@GetMapping("/{giverId}/{guesserId}/multiplayer")
 	public String multiPlayerHome(@PathVariable long giverId, @PathVariable long guesserId, Model model) {
 
-		model.addAttribute("giverId", giverId);
-		model.addAttribute("guesserId", guesserId);
+		model.addAttribute(Attributes.GIVVER_ID, giverId);
+		model.addAttribute(Attributes.GUESSER_ID, guesserId);
 		return "multiPlayer";
 	}
 
@@ -49,20 +51,20 @@ public class MultiPlayerController {
 
 		if (wordToGuess.equals("")) {
 			isValid = false;
-			model.addAttribute("isWordValid", isValid);
-			model.addAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
+			model.addAttribute(Attributes.IS_WORD_VALID, isValid);
+			model.addAttribute(Attributes.ERROR_MESSAGE, ErrorMessages.WORD_FIELD_IS_EMPTY);
 
 			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
-			model.addAttribute("isWordValid", isValid);
-			model.addAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
+			model.addAttribute( Attributes.IS_WORD_VALID, isValid);
+			model.addAttribute(Attributes.ERROR_MESSAGE, ErrorMessages.WORD_FIELD_IS_LESS_SYMBOLS);
 
 			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		}
 		String categoryParam = request.getParameter("category");
-		model.addAttribute("giverId", giverId);
-		model.addAttribute("guesserId", guesserId);
+		model.addAttribute(Attributes.GIVVER_ID, giverId);
+		model.addAttribute(Attributes.GUESSER_ID, guesserId);
 
 		return gameService.prepareWordToBeDisplayed(model, wordToGuess, categoryParam, giverId, guesserId);
 	}

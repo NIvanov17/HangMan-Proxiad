@@ -1,5 +1,6 @@
 package controller;
 
+import java.lang.classfile.Attributes;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import enums.Commands;
+import enums.ErrorMessages;
 import enums.RoleName;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
@@ -39,8 +41,8 @@ public class StatisticController {
 	public String getHistoryForPlayer(@RequestParam(required = true) String username,RedirectAttributes redirectAttributes) {
 		
 		if(!playerService.contains(username)) {
-			redirectAttributes.addFlashAttribute("isValid", playerService.contains(username));
-			redirectAttributes.addFlashAttribute("errorMsg",Commands.USERNAME_NOT_EXISTING);
+			redirectAttributes.addFlashAttribute(enums.Attributes.IS_VALID, playerService.contains(username));
+			redirectAttributes.addFlashAttribute("errorMsg",ErrorMessages.USERNAME_NOT_EXISTING);
 			return "redirect:/history";
 		}
 
@@ -50,8 +52,8 @@ public class StatisticController {
 	@GetMapping("/history/{username}")
 	public String getHistory(@PathVariable String username, Model model) {
 		List<Game> allGamesForPlayer = gameService.getAllGamesForPlayerByUsername(username, RoleName.GUESSER);
-		model.addAttribute("username", username);
-		model.addAttribute("allGames", allGamesForPlayer);
+		model.addAttribute(enums.Attributes.USERNAME, username);
+		model.addAttribute(enums.Attributes.ALL_GAMES, allGamesForPlayer);
 		return "history";
 
 	}
@@ -59,9 +61,9 @@ public class StatisticController {
 	@GetMapping("/statistic")
 	public String statistic(Model model) {
 		List<String> games = gameService.getTopTenGames();
-		model.addAttribute("games", games);
-		model.addAttribute("attempts", gameService.averageAttempts());
-		model.addAttribute("win-loss-ratio", gameService.calculateWinLossRatio());
+		model.addAttribute(enums.Attributes.GAMES, games);
+		model.addAttribute(enums.Attributes.ATTEMPTS, gameService.averageAttempts());
+		model.addAttribute(enums.Attributes.WIN_LOSS_RATIO, gameService.calculateWinLossRatio());
 
 		return "statistic";
 	}
@@ -69,14 +71,14 @@ public class StatisticController {
 	@GetMapping("/ranking")
 	public String ranking(Model model) {
 		List<Player> allPlayers = this.playerService.getAllPlayersByWins();
-		model.addAttribute("allPlayers", allPlayers);
+		model.addAttribute(enums.Attributes.ALL_PLAYERS, allPlayers);
 		return "allTime-ranking";
 	}
 	
 	@GetMapping("/ranking/top")
 	public String rankingTopTen(Model model) {
 		List<Player> players = this.playerService.getTopTenPlayersByWins();
-		model.addAttribute("players", players);
+		model.addAttribute(enums.Attributes.PLAYERS, players);
 		return "top-ranking";
 	}
 

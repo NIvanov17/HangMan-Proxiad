@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import enums.CategoryName;
 import enums.Commands;
+import enums.ErrorMessages;
 import model.Category;
 import model.Game;
 import model.Word;
@@ -144,7 +145,7 @@ public class WordService {
 	}
 
 	private Word getWordByName(String wordToSet) {
-		return wordRepository.findByName(wordToSet).orElseThrow(()->new IllegalArgumentException(Commands.WORD_NOT_EXISTING));
+		return wordRepository.findByName(wordToSet).orElseThrow(()->new IllegalArgumentException(ErrorMessages.WORD_NOT_EXISTING));
 	}
 
 	public boolean contains(Word wordToFind, char guess) {

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import enums.CategoryName;
 import enums.Commands;
+import enums.ErrorMessages;
 import model.Category;
 import repository.CategoryRepository;
 
@@ -18,7 +19,7 @@ public class CategoryService {
 
 	public Category getCategoryByName(String category) {
 		return categoryRepository.findByCategoryName(CategoryName.valueOf(category.toUpperCase()))
-				.orElseThrow(() -> new IllegalArgumentException(String.format(Commands.CATEGORY_NOT_FOUND, category)));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessages.CATEGORY_NOT_FOUND, category)));
 
 	}
 
