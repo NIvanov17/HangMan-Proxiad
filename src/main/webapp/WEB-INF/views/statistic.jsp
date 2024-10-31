@@ -15,10 +15,10 @@
 </head>
 <body>
 	<%
-	List<Game> games = (List<Game>) session.getAttribute("games");
-	Double attempts = (Double) session.getAttribute("attempts");
+	List<String> games = (List<String>) request.getAttribute("games");
+	Double attempts = (Double) request.getAttribute("attempts");
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-	String ratio = (String) session.getAttribute("win-loss-ratio");
+	String ratio = (String) request.getAttribute("win-loss-ratio");
 	%>
 	<form action="/welcome" method="get">
 		<button id="homeButton" type="submit" name="toHomePage">Home
@@ -29,25 +29,21 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Game ID</th>
-					<th>Finished At</th>
+					<th>Number</th>
 					<th>Word</th>
-					<th>Tries Left</th>
-					<th>Status</th>
 				</tr>
 			</thead>
 			<tbody>
 				<%
-				for (Game game : games) {
+				int id = 1;
+				for (String game : games) {
 				%>
 				<tr>
-					<td><%=game.getId()%></td>
-					<td><%=LocalDateTime.parse(game.getStatistic().getFinishedAt().toString()).format(formatter)%></td>
-					<td><%=game.getWord().getName()%></td>
-					<td><%=game.getTriesLeft()%></td>
-					<td><%=game.getStatistic().getStatus()%></td>
+					<td><%= id %></td>
+					<td><%=game%></td>
 				</tr>
 				<%
+				id++;
 				}
 				%>
 			</tbody>

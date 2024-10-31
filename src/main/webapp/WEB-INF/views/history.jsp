@@ -17,7 +17,7 @@
 <body>
 
 	<%
-	String username = (String) session.getAttribute("username");
+	String username = (String) request.getAttribute("username");
 	%>
 	<h2 id="title">Hangman Games History</h2>
 	<h2 id="title">
@@ -42,7 +42,7 @@
 		<tbody>
 			<%
 			// Retrieve the list of games from the session
-			List<Game> games = (List<Game>) session.getAttribute("allGames");
+			List<Game> games = (List<Game>) request.getAttribute("allGames");
 			if (games != null) {
 				for (Game entry : games) {
 			%>

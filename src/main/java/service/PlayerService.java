@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import enums.Commands;
 import model.Player;
 import repository.PlayerRepository;
 
@@ -69,12 +70,16 @@ public class PlayerService {
 	}
 
 	public Player getPlayerById(long id) {
-		return playerRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Player is not existing!"));
+		return playerRepository.findById(id).orElseThrow(()->new IllegalArgumentException(Commands.PLAYER_NOT_EXISTING));
 	}
 
 	public boolean areUsernamesEqual(long id, String guesserUsername) {
 		Player player = getPlayerById(id);
 		
 		return player.getUsername().equals(guesserUsername);
+	}
+
+	public long getPlayerIdByGameId(long gameId) {
+		return playerRepository.findByGameId(gameId);
 	}
 }

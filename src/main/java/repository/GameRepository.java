@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import model.Game;
@@ -13,10 +14,22 @@ import model.Game;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long>{
 
-	Optional<Game> findWordById(long id);
+	Optional<Game> findById(long id);
 
-//	@Query("SELECT g FROM Game g JOIN g.word w GROUP BY g.word ORDER BY COUNT(w.id) DESC")
-	@Query("SELECT g FROM Game g WHERE g.isFinished = true AND g.word.id IN (SELECT g.word.id FROM Game g JOIN g.word w GROUP BY g.word.id ORDER BY COUNT(w.id) DESC)")
-	List<Game> findTopTenGames(Pageable pageable);
+//	@Query("SELECT g FROM Game g WHERE g.isFinished = true AND g.word.id IN (SELECT w.id FROM Game g JOIN g.word w WHERE g.isFinished = true GROUP BY w.id ORDER BY COUNT(g) DESC)")
+//	List<Game> findTopTenGames(Pageable pageable);
+	
+	@Query("SELECT g.word.id FROM Game g WHERE g.isFinished = true GROUP BY g.word.id ORDER BY COUNT(g) DESC")
+	List<Long> findTopUsedWordIds(Pageable pageable);
+	
+	@Query("SELECT w.name FROM Game g JOIN g.word w WHERE g.isFinished = true GROUP BY w.name ORDER BY COUNT(g) DESC")
+	List<String> getTopTenGames(Pageable pageable);
+
+	List<Game> findByWordId(Long id);
+
+	List<Game> findByIsFinishedTrue();
+
+
+	
 
 }

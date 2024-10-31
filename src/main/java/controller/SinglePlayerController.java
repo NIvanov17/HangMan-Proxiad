@@ -28,22 +28,22 @@ public class SinglePlayerController {
 
 	@GetMapping("/game/hangMan")
 	public String singlePlayerGameStarted(@RequestParam(name = "action", required = false) String action,
-			@RequestParam(required = false) Long gameId, HttpSession session, Model model)
+			@RequestParam(required = false) Long gameId, Model model)
 			throws ServletException, IOException {
 		if ("resume".equals(action)) {
-			return gameService.resumeGame(session,gameId);
+			return gameService.resumeGame(model,gameId);
 
 		} 
 		String username = (String) model.asMap().get("username");
-		return gameService.newGameStarted(session, username);
+		return gameService.newGameStarted(model, username);
 
 	}
 
-	@PostMapping("/hangMan")
-	public String singlePlayerGameGuess(@RequestParam("guess") char guess, HttpSession session,
+	@PostMapping("/hangMan/{id}")
+	public String singlePlayerGameGuess(@PathVariable long id,@RequestParam("guess") char guess, Model model,
 			HttpServletRequest request) throws IOException {
 
-		return gameService.tryGuess(guess, session);
+		return gameService.tryGuess(guess, model,id);
 	}
 
 }

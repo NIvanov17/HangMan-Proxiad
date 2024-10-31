@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import enums.Commands;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import service.GameService;
 
 @Controller
@@ -27,35 +27,36 @@ public class MultiPlayerController {
 	}
 
 	@GetMapping("/{giverId}/{guesserId}/multiplayer")
-	public String multiPlayerHome(@PathVariable long giverId, @PathVariable long guesserId) {
+	public String multiPlayerHome(@PathVariable long giverId, @PathVariable long guesserId, Model model) {
 
+		model.addAttribute("giverId", giverId);
+		model.addAttribute("guesserId", guesserId);
 		return "multiPlayer";
 	}
-	
-	@GetMapping("/{gameId}/multiplayer")
-	public String multiPlayerHome(@PathVariable long gameId,HttpSession session) {
 
-		return gameService.resumeGame(session,gameId);
+	@GetMapping("/{gameId}/multiplayer")
+	public String multiPlayerHome(@PathVariable long gameId, Model model) {
+
+		return gameService.resumeGame(model, gameId);
 	}
 
 	@PostMapping("/{giverId}/{guesserId}/multiplayer")
 	public String sendInputWord(@PathVariable long giverId, @PathVariable long guesserId,
-			@RequestParam(required = false) String action, HttpSession session, HttpServletRequest request, Model model)
-			throws ServletException, IOException {
+			@RequestParam(required = false) String action, HttpServletRequest request, Model model) {
 
 		boolean isValid = true;
 		String wordToGuess = request.getParameter("wordToGuess");
 
 		if (wordToGuess.equals("")) {
 			isValid = false;
-			session.setAttribute("isWordValid", isValid);
-			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
+			model.addAttribute("isWordValid", isValid);
+			model.addAttribute("errorMessage", Commands.WORD_FIELD_IS_EMPTY);
 
 			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		} else if (!gameService.isWordValid(wordToGuess)) {
 			isValid = false;
-			session.setAttribute("isWordValid", isValid);
-			session.setAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
+			model.addAttribute("isWordValid", isValid);
+			model.addAttribute("errorMessage", Commands.WORD_FIELD_IS_LESS_SYMBOLS);
 
 			return "redirect:/{giverId}/{guesserId}/multiplayer";
 		}
@@ -63,20 +64,19 @@ public class MultiPlayerController {
 		model.addAttribute("giverId", giverId);
 		model.addAttribute("guesserId", guesserId);
 
-		return gameService.prepareWordToBeDisplayed(session, wordToGuess, categoryParam,
-				giverId, guesserId);
+		return gameService.prepareWordToBeDisplayed(model, wordToGuess, categoryParam, giverId, guesserId);
 	}
-	
 
 	@PostMapping("/{giverId}/{guesserId}/multiplayer/guess")
 	protected String multiPlayerGameGuess(@PathVariable long giverId, @PathVariable long guesserId,
-			@RequestParam("letter") char letter, HttpSession session, HttpServletRequest request)
-			throws ServletException, IOException {
-		return gameService.tryGuessMultiplayer(letter, session);
+			@RequestParam char letter, RedirectAttributes redirectAttributes, HttpServletRequest request)
+			throws IOException {
+		long gameId = Long.parseLong(request.getParameter("gameId"));
+		return gameService.tryGuessMultiplayer(letter, redirectAttributes, gameId);
 	}
 
 	@GetMapping("/{giverId}/{guesserId}/multiplayer/game")
-	protected String multiPlayerGame(@PathVariable long giverId, @PathVariable long guesserId){
+	protected String multiPlayerGame(@PathVariable long giverId, @PathVariable long guesserId) {
 
 		return "multiplayerStarted";
 	}

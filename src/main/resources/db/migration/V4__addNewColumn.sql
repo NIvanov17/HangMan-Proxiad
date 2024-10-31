@@ -1,1 +1,0 @@
-alter table player add column password VARCHAR(50);

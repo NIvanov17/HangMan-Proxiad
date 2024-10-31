@@ -11,5 +11,5 @@ import model.Word;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-	Optional<Word> findWordByName(String wordToSet);
+	Optional<Word> findByName(String wordToSet);
 }

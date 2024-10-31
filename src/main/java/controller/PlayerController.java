@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import enums.Commands;
 import jakarta.servlet.http.HttpSession;
 import model.Player;
 import service.PlayerService;
@@ -35,14 +36,14 @@ public class PlayerController {
 	}
 
 	@PostMapping("/word-giver")
-	public String createWordGiver(@RequestParam(required = true) String username, HttpSession session) {
+	public String createWordGiver(@RequestParam(required = true) String username, Model model) {
 		
 		if(!playerService.isValid(username)) {
-			session.setAttribute("isValid", playerService.isValid(username));
-			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			model.addAttribute("isValid", playerService.isValid(username));
+			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
 			return "redirect:/word-giver";
 		}
-		session.setAttribute("errorMsg","");
+		model.addAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}
@@ -61,12 +62,12 @@ public class PlayerController {
 
 	@PostMapping("/{id}/word-guesser")
 	public String createWordGuesser(@PathVariable long id,
-			@RequestParam(required = true) String guesserUsername,HttpSession session) {
+			@RequestParam(required = true) String guesserUsername,Model model) {
 		
 		if(!playerService.isValid(guesserUsername) || playerService.areUsernamesEqual(id,guesserUsername)) {
-			session.setAttribute("isValid", playerService.isValid(guesserUsername));
-			session.setAttribute("areEqual", playerService.areUsernamesEqual(id,guesserUsername));
-			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			model.addAttribute("isValid", playerService.isValid(guesserUsername));
+			model.addAttribute("areEqual", playerService.areUsernamesEqual(id,guesserUsername));
+			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
 			return "redirect:/{id}/word-guesser";
 		}
 
@@ -74,7 +75,7 @@ public class PlayerController {
 			playerService.register(guesserUsername);
 		}
 		
-		session.setAttribute("errorMsg","");
+		model.addAttribute("errorMsg","");
 		
 		Player playerGuesser = playerService.getPlayerByUsername(guesserUsername);
 
@@ -82,15 +83,15 @@ public class PlayerController {
 	}
 
 	@PostMapping("/username")
-	public String createPlayer(@RequestParam(required = true) String username, RedirectAttributes redirectAttributes,HttpSession session) {
+	public String createPlayer(@RequestParam(required = true) String username, RedirectAttributes redirectAttributes,Model model) {
 		
 		if(!playerService.isValid(username)) {
-			session.setAttribute("isValid", playerService.isValid(username));
-			session.setAttribute("errorMsg","Invalid username! Username must contain letter and must be more than 1 symbol.");
+			model.addAttribute("isValid", playerService.isValid(username));
+			model.addAttribute("errorMsg",Commands.INVALID_USERNAME);
 			return "redirect:/username";
 		}
 
-		session.setAttribute("errorMsg","");
+		model.addAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}

@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import enums.Commands;
 import enums.RoleName;
 import jakarta.servlet.http.HttpSession;
 import model.Game;
@@ -18,7 +21,6 @@ import service.PlayerService;
 
 @Controller
 public class StatisticController {
-//TODO: backward competible 
 	private GameService gameService;
 	private PlayerService playerService;
 
@@ -34,11 +36,11 @@ public class StatisticController {
 	}
 
 	@PostMapping("/history")
-	public String getHistoryForPlayer(@RequestParam(required = true) String username,HttpSession session) {
+	public String getHistoryForPlayer(@RequestParam(required = true) String username,RedirectAttributes redirectAttributes) {
 		
 		if(!playerService.contains(username)) {
-			session.setAttribute("isValid", playerService.contains(username));
-			session.setAttribute("errorMsg","Invalid username! Username is not existing.");
+			redirectAttributes.addFlashAttribute("isValid", playerService.contains(username));
+			redirectAttributes.addFlashAttribute("errorMsg",Commands.USERNAME_NOT_EXISTING);
 			return "redirect:/history";
 		}
 
@@ -46,35 +48,35 @@ public class StatisticController {
 	}
 
 	@GetMapping("/history/{username}")
-	public String getHistory(@PathVariable String username, HttpSession session) {
+	public String getHistory(@PathVariable String username, Model model) {
 		List<Game> allGamesForPlayer = gameService.getAllGamesForPlayerByUsername(username, RoleName.GUESSER);
-		session.setAttribute("username", username);
-		session.setAttribute("allGames", allGamesForPlayer);
+		model.addAttribute("username", username);
+		model.addAttribute("allGames", allGamesForPlayer);
 		return "history";
 
 	}
 
 	@GetMapping("/statistic")
-	public String statistic(HttpSession session) {
-		List<Game> games = gameService.getTopTenGames();
-		session.setAttribute("games", games);
-		session.setAttribute("attempts", gameService.averageAttempts());
-		session.setAttribute("win-loss-ratio", gameService.calculateWinLossRatio());
+	public String statistic(Model model) {
+		List<String> games = gameService.getTopTenGames();
+		model.addAttribute("games", games);
+		model.addAttribute("attempts", gameService.averageAttempts());
+		model.addAttribute("win-loss-ratio", gameService.calculateWinLossRatio());
 
 		return "statistic";
 	}
 
 	@GetMapping("/ranking")
-	public String ranking(HttpSession session) {
+	public String ranking(Model model) {
 		List<Player> allPlayers = this.playerService.getAllPlayersByWins();
-		session.setAttribute("allPlayers", allPlayers);
+		model.addAttribute("allPlayers", allPlayers);
 		return "allTime-ranking";
 	}
 	
 	@GetMapping("/ranking/top")
-	public String rankingTopTen(HttpSession session) {
+	public String rankingTopTen(Model model) {
 		List<Player> players = this.playerService.getTopTenPlayersByWins();
-		session.setAttribute("players", players);
+		model.addAttribute("players", players);
 		return "top-ranking";
 	}
 

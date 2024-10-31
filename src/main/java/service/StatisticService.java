@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import enums.GameStatus;
 import model.Game;
 import model.Statistic;
 import repository.StatisticRepository;
@@ -21,7 +22,7 @@ public class StatisticService {
 
 	public void createStatistic(Game game) {
 
-		String status = game.isFinished() && !game.getCurrentState().contains("_") ? "WON" : "LOSE";
+		String status = game.isFinished() && !game.getCurrentState().contains("_") ? GameStatus.GAME_STATUS_WON : GameStatus.GAME_STATUS_LOSE;
 
 		Statistic statistic = new Statistic();
 		statistic.setGame(game);

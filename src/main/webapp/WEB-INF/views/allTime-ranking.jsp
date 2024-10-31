@@ -12,7 +12,7 @@
 <body>
 
 	<%
-	List<Player> players = (List<Player>) session.getAttribute("allPlayers");
+	List<Player> players = (List<Player>) request.getAttribute("allPlayers");
 	%>
 	<form action="/welcome" method="get">
 		<button id="homeButton" type="submit" name="toHomePage">Home

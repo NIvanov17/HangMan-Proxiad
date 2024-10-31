@@ -7,6 +7,7 @@
 <%@ page isELIgnored="false"%>
 
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,53 +37,54 @@ body {
 </head>
 <body>
 
-	<%
-	Word word = (Word) session.getAttribute("word");
-	Game game = (Game) session.getAttribute("game");
-	String gameStatus = (String) session.getAttribute("gameStatus");
-	Long id = (Long)session.getAttribute("id");
-	%>
+		<%
+
+		Long id = (Long) request.getAttribute("id");
+		List<Character> letters = (List<Character>) request.getAttribute("letters");
+		Game game = (Game) request.getAttribute("game");
+
+		%>
 	<div class="container">
 
 		<h1>Word to Guess: ${game.getCurrentState()}</h1>
 		<h2 id="tries-left">Tries left: ${game.getTriesLeft()}</h2>
-		<h3>Category: ${word.getCategory().getCategoryName()}</h3>
+		<h3>Category: ${game.getWord().getCategory().getCategoryName()}</h3>
 		<h3>Mode: ${game.getMode()}</h3>
 		<h2>${gameStatus}</h2>
 		<div>
 			<%
-			for (char letter = 'A'; letter <= 'Z'; letter++) {
+			for (Character letter : letters) {
 				char lowerCaseLetter = Character.toLowerCase(letter);
 			%>
-			<form action="/hangMan" method="post">
+			<form action="/hangMan/<%= game.getId() %>" method="post">
 				<input type="hidden" name="guess" value="<%=lowerCaseLetter%>" />
 				<button type="submit" name="guess-btn" value="<%=lowerCaseLetter%>"
-					<%if (game.getUsedChars().contains(lowerCaseLetter) || game.isFinished() == true) {
-	//using out.print("disabled"); within the button element dynamically adds the disabled attribute to the HTML <button> element
-	out.print("disabled");
-}%>><%=letter%></button>
+                    <%= game.getUsedChars().contains(lowerCaseLetter) || game.isFinished() ? "disabled" : "" %>>
+                    <%= letter %>
+				</button>
 			</form>
 			<%
 			}
 			%>
 		</div>
-		<img src="/img/<%=game.getTriesLeft()%>.png" alt="Hangman State">
+		<img src="/img/${game.getTriesLeft()}.png" alt="Hangman State">
+
 		<%
 		if (game.isFinished()) {
 		%>
-
 		<%
-		if (game.getMode().equals("Single Player")) {
+		if ("Single Player".equals(game.getMode())) {
 		%>
 		<form action="/username" method="get">
-		 <input type="hidden" name="action" value="restart" />
+			<input type="hidden" name="action" value="restart" />
 			<button type="submit">Restart Single Player Game</button>
 		</form>
 		<%
 		} else {
 		%>
 		<form action="/multiPlayer" method="get">
-			<button type="submit" name="action" value="restart">Restart Multiplayer Game</button>
+			<button type="submit" name="action" value="restart">Restart
+				Multiplayer Game</button>
 		</form>
 		<%
 		}
@@ -90,6 +92,8 @@ body {
 		<%
 		}
 		%>
+
+
 		<form action="/welcome" method="get">
 			<button id="homeButton" type="submit" name="toHomePage">Home
 				Page</button>

@@ -40,9 +40,9 @@ button {
 <body>
 
 	<%
-	Boolean isValid = (Boolean) session.getAttribute("isValid");
-	Boolean areEqual = (Boolean) session.getAttribute("areEqual");
-	String errorMessage = (String) session.getAttribute("errorMsg");
+	Boolean isValid = (Boolean) request.getAttribute("isValid");
+	Boolean areEqual = (Boolean) request.getAttribute("areEqual");
+	String errorMessage = (String) request.getAttribute("errorMsg");
 	%>
 
 	<div class="container">

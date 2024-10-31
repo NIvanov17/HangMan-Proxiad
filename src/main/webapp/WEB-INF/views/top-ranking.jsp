@@ -13,7 +13,7 @@
 
 
 	<%
-	List<Player> players = (List<Player>) session.getAttribute("players");
+	List<Player> players = (List<Player>) request.getAttribute("players");
 	%>
 	<form action="/welcome" method="get">
 		<button id="homeButton" type="submit" name="toHomePage">Home

@@ -41,7 +41,7 @@ public class WordService {
 		this.objectMapper = objectMapper;
 	}
 
-	public void initWords() throws StreamReadException, DatabindException, IOException {
+	public void initWords() throws IOException {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		InputStream resourceAsStream = classLoader.getResourceAsStream("words.json");
@@ -140,11 +140,11 @@ public class WordService {
 	}
 
 	private boolean contains(String wordToSet) {
-		return wordRepository.findWordByName(wordToSet).isPresent();
+		return wordRepository.findByName(wordToSet).isPresent();
 	}
 
 	private Word getWordByName(String wordToSet) {
-		return wordRepository.findWordByName(wordToSet).orElseThrow(()->new IllegalArgumentException("Word with this name is not existing!"));
+		return wordRepository.findByName(wordToSet).orElseThrow(()->new IllegalArgumentException(Commands.WORD_NOT_EXISTING));
 	}
 
 	public boolean contains(Word wordToFind, char guess) {
