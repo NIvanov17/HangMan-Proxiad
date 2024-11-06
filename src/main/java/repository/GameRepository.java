@@ -15,9 +15,6 @@ import model.Game;
 public interface GameRepository extends JpaRepository<Game, Long>{
 
 	Optional<Game> findById(long id);
-
-//	@Query("SELECT g FROM Game g WHERE g.isFinished = true AND g.word.id IN (SELECT w.id FROM Game g JOIN g.word w WHERE g.isFinished = true GROUP BY w.id ORDER BY COUNT(g) DESC)")
-//	List<Game> findTopTenGames(Pageable pageable);
 	
 	@Query("SELECT g.word.id FROM Game g WHERE g.isFinished = true GROUP BY g.word.id ORDER BY COUNT(g) DESC")
 	List<Long> findTopUsedWordIds(Pageable pageable);

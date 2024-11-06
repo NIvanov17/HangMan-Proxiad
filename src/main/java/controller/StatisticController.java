@@ -1,6 +1,5 @@
 package controller;
 
-import java.lang.classfile.Attributes;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import enums.Commands;
 import enums.ErrorMessages;
 import enums.RoleName;
-import jakarta.servlet.http.HttpSession;
 import model.Game;
 import model.Player;
 import service.GameService;

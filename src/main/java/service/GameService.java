@@ -1,17 +1,16 @@
 package service;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,16 +20,16 @@ import enums.Commands;
 import enums.ErrorMessages;
 import enums.GameStatus;
 import enums.RoleName;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpSession;
 import model.Category;
 import model.Game;
 import model.GamePlayer;
 import model.Player;
 import model.Word;
+import model.DTOs.GameDTO;
+import model.DTOs.PlayerDTO;
+import model.DTOs.PlayersDTO;
 import repository.GamePlayerRepository;
 import repository.GameRepository;
-import repository.WordRepository;
 
 @Service
 public class GameService {
@@ -104,24 +103,24 @@ public class GameService {
 		return true;
 	}
 
-	public String resumeGame(Model model, Long gameId) {
+	public GameDTO resumeGame(Long gameId) {
 		Game game = getById(gameId);
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
 		Player guesser = getPlayerByRole(playerInGames, RoleName.GUESSER);
 		Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
+		PlayerDTO guesserDTO = new PlayerDTO(guesser.getId(), guesser.getUsername());
+		PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
 
-		model.addAttribute(Attributes.WORD, game.getWord());
-		model.addAttribute(Attributes.GAME, game);
-		model.addAttribute(Attributes.GUESSER_ID, guesser.getId());
-		model.addAttribute(Attributes.LETTERS, lettersForJSP());
-		model.addAttribute(Attributes.GAME_STATUS, "");
+		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
+				game.isFinished(), guesserDTO);
 
 		if (game.getMode().equals("Single Player")) {
-			return "gameStarted";
+			return dto;
 
 		} else {
-			model.addAttribute("giverId", giver.getId());
-			return "multiplayerStarted";
+			dto.setGiver(giverDTO);
+
+			return dto;
 
 		}
 
@@ -140,74 +139,62 @@ public class GameService {
 
 	private Game getById(long gameId) {
 
-		return gameRepository.findById(gameId)
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId)));
+		return gameRepository.findById(gameId).orElseThrow(
+				() -> new IllegalArgumentException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId)));
 	}
 
-	public String newGameStarted(Model model, String username) {
+	public GameDTO newGameStarted(String username) {
 		Word word = wordService.getRandomGame();
 		Player player = playerService.getPlayerByUsername(username);
-		Game game = createNewSinglePlayerGame(word, player.getId());
-
-		model.addAttribute(Attributes.WORD, word);
-		model.addAttribute(Attributes.GAME, game);
-		model.addAttribute(Attributes.IS_FINISHED, game.isFinished());
-		model.addAttribute(Attributes.MODE, game.getMode());
-		model.addAttribute(Attributes.ID, game.getId());
-		model.addAttribute(Attributes.GAME_STATUS, "");
-		model.addAttribute(Attributes.LETTERS, lettersForJSP());
-
-		return "gameStarted";
+		return createNewSinglePlayerGame(word, player.getId());
 	}
 
-	public String tryGuess(char guess, Model model, long gameId) throws IOException {
+	public GameDTO tryGuess(char guess, long gameId) {
 		Game game = getById(gameId);
 		Word wordToFind = game.getWord();
 		long id = playerService.getPlayerIdByGameId(gameId);
+		Player player = playerService.getPlayerById(id);
+
 		int triesLeft = game.getTriesLeft();
 
 		Set<Character> usedChars = game.getUsedChars();
 		usedChars.add(guess);
 		game.setUsedChars(usedChars);
+		PlayerDTO guesserDTO = new PlayerDTO(id, player.getUsername());
 
-		model.addAttribute("letters", lettersForJSP());
+		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), triesLeft, usedChars, false, guesserDTO);
 
 		if (wordService.contains(wordToFind, guess)) {
 			String wordToReturn = wordService.putLetterOnPlace(game, guess);
 			game.setCurrentState(wordToReturn);
-			model.addAttribute(Attributes.IS_FINISHED, game.isFinished());
-			model.addAttribute(Attributes.WORD, wordToFind);
-			model.addAttribute(Attributes.GAME, game);
-
+			dto.setWordProgress(wordToReturn);
 			gameRepository.save(game);
 
 			if (isWordGuessed(wordToFind, wordToReturn)) {
 				game.setFinished(true);
+				dto.setFinished(true);
 				playerService.incrementWins(id);
+				dto.setGameStatus(GameStatus.GAME_STATUS_WON);
 				gameRepository.save(game);
-				model.addAttribute(Attributes.GAME, game);
-				model.addAttribute(Attributes.IS_FINISHED, game.isFinished());
-				model.addAttribute(Attributes.GAME_STATUS, Commands.CONGRATULATIONS_YOU_WON);
 				statisticService.createStatistic(game);
 			}
-			return "gameStarted";
+			return dto;
 		} else {
 			triesLeft--;
 			game.setTriesLeft(triesLeft);
 			gameRepository.save(game);
-			model.addAttribute("isFinished", game.isFinished());
+			dto.setTriesLeft(triesLeft);
 
-			model.addAttribute(Attributes.GAME, game);
 			if (checkFailedTries(triesLeft)) {
 				game.setFinished(true);
 				game.setTriesLeft(0);
+				dto.setFinished(true);
+				dto.setTriesLeft(0);
+				dto.setGameStatus(GameStatus.GAME_STATUS_LOSE);
 				gameRepository.save(game);
-				model.addAttribute(Attributes.GAME, game);
-				model.addAttribute(Attributes.IS_FINISHED, game.isFinished());
-				model.addAttribute(Attributes.GAME_STATUS, Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
 				statisticService.createStatistic(game);
 			}
-			return "gameStarted";
+			return dto;
 		}
 	}
 
@@ -219,7 +206,7 @@ public class GameService {
 		return gameRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 	}
 
-	private Game createNewSinglePlayerGame(Word word, long id) {
+	private GameDTO createNewSinglePlayerGame(Word word, long id) {
 		char firstLetter = getFirstLetter(word.getName());
 		char lastLetter = getLastLetter(word.getName());
 		HashSet<Character> hashSet = new HashSet<>();
@@ -246,8 +233,11 @@ public class GameService {
 
 		gameRepository.save(game);
 		gamePlayerRepository.save(gamePlayer);
+		PlayerDTO guesserDTO = new PlayerDTO(id, player.getUsername());
 
-		return game;
+		GameDTO dto = new GameDTO(game.getId(), wordToReturn, game.getTriesLeft(), hashSet, false, guesserDTO);
+
+		return dto;
 	}
 
 	private Game createNewMultiPlayerGame(Word word) {
@@ -271,24 +261,23 @@ public class GameService {
 		return game;
 	}
 
-	public String prepareWordToBeDisplayed(Model model, String wordToGuess, String category, long giverId,
-			long guesserId) {
+	public GameDTO prepareWordToBeDisplayed(String wordToGuess, String category, long giverId, long guesserId) {
 		Category categoryByName = categoryservice.getCategoryByName(category);
 
 		Word word = wordService.createWord(wordToGuess, categoryByName);
 		Game game = createNewMultiPlayerGame(word);
 		createPlayer(giverId, game, RoleName.WORD_GIVER);
 		createPlayer(guesserId, game, RoleName.GUESSER);
+		Player guesser = playerService.getPlayerById(guesserId);
+		Player giver = playerService.getPlayerById(giverId);
+		PlayerDTO guessDto = new PlayerDTO(guesserId, guesser.getUsername());
+		PlayerDTO giverDto = new PlayerDTO(giverId, giver.getUsername());
 
-		model.addAttribute(Attributes.GAME_STATUS, "");
-		model.addAttribute(Attributes.WORD, word);
-		model.addAttribute(Attributes.GAME, game);
-		model.addAttribute(Attributes.LETTERS, lettersForJSP());
-		model.addAttribute(Attributes.GIVVER_ID, giverId);
-		model.addAttribute(Attributes.GUESSER_ID, guesserId);
-		model.addAttribute(Attributes.IS_WORD_VALID, true);
+		GameDTO dto = new GameDTO(game.getId(), game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
+				game.isFinished(), guessDto);
+		dto.setGiver(giverDto);
 
-		return "multiplayerStarted";
+		return dto;
 	}
 
 	private void createPlayer(long id, Game game, RoleName role) {
@@ -302,55 +291,53 @@ public class GameService {
 		gamePlayerRepository.save(gamePlayer);
 	}
 
-	public String tryGuessMultiplayer(char guess, RedirectAttributes redirectAttributes, long gameId)
-			throws IOException {
+	public GameDTO tryGuessMultiplayer(char guess, long gameId) throws IOException {
 		Game game = getById(gameId);
 		Word wordToFind = game.getWord();
 		Set<Character> usedChars = game.getUsedChars();
 		Long guesserId = getPlayerIdByRole(game, RoleName.GUESSER);
+		Player guesserById = playerService.getPlayerById(guesserId);
+		PlayerDTO guesserDTO = new PlayerDTO(guesserId, guesserById.getUsername());
 		Long giverId = getPlayerIdByRole(game, RoleName.WORD_GIVER);
+		Player giverById = playerService.getPlayerById(giverId);
+		PlayerDTO giverDTO = new PlayerDTO(giverId, giverById.getUsername());
 		usedChars.add(guess);
 		game.setUsedChars(usedChars);
-		redirectAttributes.addFlashAttribute(Attributes.LETTERS, lettersForJSP());
+		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), usedChars, game.isFinished(),
+				guesserDTO);
+		dto.setGiver(giverDTO);
 
 		if (wordService.contains(wordToFind, guess)) {
 			String wordToReturn = wordService.putLetterOnPlace(game, guess);
 			game.setCurrentState(wordToReturn);
-			redirectAttributes.addFlashAttribute(Attributes.IS_FINISHED, game.isFinished());
-			redirectAttributes.addFlashAttribute(Attributes.GAME, game);
+			dto.setWordProgress(wordToReturn);
 			gameRepository.save(game);
 
-			redirectAttributes.addFlashAttribute(Attributes.CURRENT_STATE, wordToReturn);
 			if (isWordGuessed(wordToFind, wordToReturn)) {
 				game.setFinished(true);
+				dto.setFinished(true);
 				playerService.incrementWins(guesserId);
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
-				redirectAttributes.addFlashAttribute(Attributes.GAME, game);
-				redirectAttributes.addFlashAttribute(Attributes.IS_FINISHED, true);
-				redirectAttributes.addFlashAttribute(Attributes.GAME_STATUS, Commands.CONGRATULATIONS_YOU_WON);
+				dto.setGameStatus(Commands.CONGRATULATIONS_YOU_WON);
 
 			}
-			return "redirect:/{giverId}/{guesserId}/multiplayer/game";
+			return dto;
 		} else {
 			int triesLeft = game.getTriesLeft();
 			triesLeft--;
 			game.setTriesLeft(triesLeft);
+			dto.setTriesLeft(triesLeft);
 			gameRepository.save(game);
-			redirectAttributes.addFlashAttribute(Attributes.GAME, game);
-			redirectAttributes.addFlashAttribute(Attributes.IS_FINISHED, game.isFinished());
-			redirectAttributes.addFlashAttribute(Attributes.TRIES_LEFT, triesLeft);
 			if (checkFailedTries(triesLeft)) {
 				game.setFinished(true);
+				dto.setFinished(true);
 				playerService.incrementWins(giverId);
-				redirectAttributes.addFlashAttribute(Attributes.GAME, game);
-				redirectAttributes.addFlashAttribute(Attributes.IS_FINISHED, true);
-				redirectAttributes.addFlashAttribute(Attributes.GAME_STATUS,
-						Commands.GAME_STATUS_LOSS + wordToFind.getName() + ".");
+				dto.setGameStatus(Commands.GAME_STATUS_LOSS);
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
 			}
-			return "redirect:/{giverId}/{guesserId}/multiplayer/game";
+			return dto;
 		}
 	}
 
@@ -395,8 +382,7 @@ public class GameService {
 
 	public double averageAttempts() {
 		List<Game> allGames = gameRepository.findByIsFinishedTrue();
-		double attempts = allGames.stream()
-		.mapToDouble(g->{
+		double attempts = allGames.stream().mapToDouble(g -> {
 			return Math.abs(g.getTriesLeft() - Commands.TOTAL_TRIES);
 		}).sum();
 
@@ -417,6 +403,39 @@ public class GameService {
 			}
 		}
 		return wins + "/" + loss;
+	}
+
+	public boolean isUsernameValid(String username) {
+		return playerService.isValid(username);
+	}
+
+	public PlayersDTO getPlayersWithIDs(long giverId, long guesserId) {
+		Player playerGiver = playerService.getPlayerById(giverId);
+		Player playerGuesser = playerService.getPlayerById(guesserId);
+		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
+		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(), playerGiver.getUsername());
+		return new PlayersDTO(dtoGuesser, dtoGiver);
+
+	}
+
+	public boolean isValid(long gameId) {
+		return gameRepository.findById(gameId).isPresent();
+	}
+
+	public GameDTO getGameCurrentState(long gameId) {
+		Game game = getById(gameId);
+		Long guesserId = getPlayerIdByRole(game, RoleName.GUESSER);
+		Long giverId = getPlayerIdByRole(game, RoleName.WORD_GIVER);
+		Player playerGiver = playerService.getPlayerById(giverId);
+		Player playerGuesser = playerService.getPlayerById(guesserId);
+		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
+		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(), playerGiver.getUsername());
+
+		GameDTO dto = new GameDTO(game.getId(), game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
+				game.isFinished(), dtoGuesser);
+		dto.setGiver(dtoGiver);
+		return dto;
+
 	}
 
 }

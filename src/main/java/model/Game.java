@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "game")
@@ -25,21 +27,26 @@ public class Game {
 	private long id;
 
 	@ManyToOne
+	@NotNull
 	private Word word;
 
 	@Column(name = "tries-left")
+	@PositiveOrZero
 	private int triesLeft;
 
 	@Column(name = "used-characters")
+	@NotNull
 	private Set<Character> usedChars;
 
 	@Column(name = "finished")
 	private boolean isFinished;
 
 	@Column(nullable = false)
+	@NotNull
 	private String mode;
 
 	@Column(name = "current-state")
+	@NotNull
 	private String currentState;
 
 	@OneToMany(mappedBy = "game", cascade = CascadeType.PERSIST)

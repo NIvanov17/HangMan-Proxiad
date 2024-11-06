@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import enums.Commands;
 import enums.ErrorMessages;
 import model.Player;
+import model.DTOs.PlayerDTO;
+import model.DTOs.PlayersDTO;
 import repository.PlayerRepository;
 
 @Service
@@ -82,5 +84,13 @@ public class PlayerService {
 
 	public long getPlayerIdByGameId(long gameId) {
 		return playerRepository.findByGameId(gameId);
+	}
+	
+	public PlayersDTO createPlayersDTO(long id, String guesserUsername) {
+		Player playerGuesser = getPlayerByUsername(guesserUsername);
+		Player playerGiver= getPlayerById(id);
+		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(),playerGuesser.getUsername());
+		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(),playerGiver.getUsername());
+		return new PlayersDTO(dtoGuesser,dtoGiver);
 	}
 }

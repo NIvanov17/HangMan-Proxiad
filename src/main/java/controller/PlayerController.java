@@ -1,22 +1,25 @@
 package controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RestController;
 
-import enums.Attributes;
-import enums.Commands;
-import enums.ErrorMessages;
-import jakarta.servlet.http.HttpSession;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import model.Player;
+import model.DTOs.PlayerDTO;
+import model.DTOs.PlayersDTO;
 import service.PlayerService;
 
-@Controller
+@RestController
+@Tag(name = "Player Controller")
 public class PlayerController {
 
 	private PlayerService playerService;
@@ -27,78 +30,75 @@ public class PlayerController {
 	}
 
 	@GetMapping("/username")
-	public String username() {
+	@Operation(summary = "Get username page for singlePlayer game", description = "Displaying username page for singlePlayer game")
+	public ResponseEntity<String> username() {
 		
-		return "player";
+		return ResponseEntity.ok("Username page for singlePlayer game");
 	}
 
 	@GetMapping("/word-giver")
-	public String wordGiver() {
-		return "word-giver";
+	@Operation(summary = "Get word-giver page for multiplayer game", description = "Displaying word-giver page for multiplayer game")
+	public ResponseEntity<?> wordGiver() {
+		return ResponseEntity.ok("Word giver page for multiplayer game");
 	}
 
 	@PostMapping("/word-giver")
-	public String createWordGiver(@RequestParam(required = true) String username, Model model) {
+	@Operation(summary = "Word-giver enters it's username for multiplayer game")
+	public ResponseEntity<?> createWordGiver(@RequestParam(required = true) String username) {
 		
 		if(!playerService.isValid(username)) {
-			model.addAttribute(Attributes.IS_VALID, playerService.isValid(username));
-			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
-			return "redirect:/word-giver";
+			return ResponseEntity.badRequest().body(Map.of(
+					"status","error",
+					"message", "Invalid username"));
 		}
-		model.addAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}
 		
 		Player player = playerService.getPlayerByUsername(username);
-
-		return "redirect:/" + player.getId() + "/word-guesser";
+		PlayerDTO dto = new PlayerDTO(player.getId(),player.getUsername());
+		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 
 	@GetMapping("/{id}/word-guesser")
-	public String wordGuesser(@PathVariable long id, Model model) {
+	@Operation(summary = "Get word-guesser page for multiplayer game", description = "Displaying word-guesser page for multiplayer game")
+	public ResponseEntity<String> wordGuesser(@PathVariable long id) {
 		
-		model.addAttribute("id", id);
-		return "word-guesser";
+		return ResponseEntity.ok("Word guesser page and word giver with ID: " + id);
 	}
 
 	@PostMapping("/{id}/word-guesser")
-	public String createWordGuesser(@PathVariable long id,
-			@RequestParam(required = true) String guesserUsername,Model model) {
+	@Operation(summary = "Word-guesser enters it's username for multiplayer game")
+	public ResponseEntity<?> createWordGuesser(@PathVariable long id,
+			@RequestParam(required = true) String guesserUsername) {
 		
 		if(!playerService.isValid(guesserUsername) || playerService.areUsernamesEqual(id,guesserUsername)) {
-			model.addAttribute(Attributes.IS_VALID, playerService.isValid(guesserUsername));
-			model.addAttribute(Attributes.ARE_EQUAL, playerService.areUsernamesEqual(id,guesserUsername));
-			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
-			return "redirect:/{id}/word-guesser";
+			return ResponseEntity.badRequest().body("The provided username is invalid or matches the word giver's username.");
 		}
 
 		if (!playerService.contains(guesserUsername)) {
 			playerService.register(guesserUsername);
 		}
 		
-		model.addAttribute("errorMsg","");
-		
-		Player playerGuesser = playerService.getPlayerByUsername(guesserUsername);
+		PlayersDTO playersDTO = playerService.createPlayersDTO(id, guesserUsername);
 
-		return "redirect:/" + id + "/" + playerGuesser.getId() + "/multiplayer";
+		return ResponseEntity.status(HttpStatus.CREATED).body(playersDTO);
 	}
 
 	@PostMapping("/username")
-	public String createPlayer(@RequestParam(required = true) String username, RedirectAttributes redirectAttributes,Model model) {
+	@Operation(summary = "User enters it's username for singlePlayer game")
+	public ResponseEntity<?> createPlayer(@RequestParam(required = true) String username) {
 		
 		if(!playerService.isValid(username)) {
-			model.addAttribute(Attributes.IS_VALID, playerService.isValid(username));
-			model.addAttribute("errorMsg",ErrorMessages.INVALID_USERNAME);
-			return "redirect:/username";
+			return ResponseEntity.badRequest().body("Invalid username!");
 		}
 
-		model.addAttribute("errorMsg","");
 		if (!playerService.contains(username)) {
 			playerService.register(username);
 		}
 
-		redirectAttributes.addFlashAttribute("username", username);
-		return "redirect:/game/hangMan";
+		Player player = playerService.getPlayerByUsername(username);
+		PlayerDTO dto = new PlayerDTO(player.getId(),player.getUsername());
+		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 }
