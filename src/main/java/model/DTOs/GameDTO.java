@@ -5,24 +5,25 @@ import java.util.Set;
 public class GameDTO {
 
 	private Long gameId;
-	
+
 	private String wordProgress;
-	
+
 	private int triesLeft;
-	
+
 	private Set<Character> usedChars;
-	
+
 	private boolean isFinished;
-	
+
 	private String gameStatus;
+
+	private String gameMode;
 
 	private PlayerDTO giver;
 
 	private PlayerDTO guesser;
-	
-	
 
-	public GameDTO(Long gameId, String wordProgress, int triesLeft, Set<Character> usedChars, boolean isFinished, PlayerDTO guesser) {
+	public GameDTO(Long gameId, String wordProgress, int triesLeft, Set<Character> usedChars, boolean isFinished,
+			PlayerDTO guesser) {
 		super();
 		this.gameId = gameId;
 		this.wordProgress = wordProgress;
@@ -78,6 +79,14 @@ public class GameDTO {
 
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
+	}
+
+	public String getGameMode() {
+		return gameMode;
+	}
+
+	public void setGameMode(String gameMode) {
+		this.gameMode = gameMode;
 	}
 
 	public PlayerDTO getGiver() {

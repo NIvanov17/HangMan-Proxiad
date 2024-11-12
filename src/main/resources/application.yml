@@ -7,6 +7,11 @@ spring:
       prefix: /WEB-INF/views/
       suffix: .jsp
     throw-exception-if-no-handler-found: true
+    contentnegotiation:
+      favor-path-extension: false
+      favor-parameter: false
+      ignore-unknown-path-extensions: true
+      default-media-type: application/json
 
   autoconfigure:
     exclude:

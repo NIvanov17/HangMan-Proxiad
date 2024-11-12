@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,14 +21,21 @@ import enums.Commands;
 import enums.ErrorMessages;
 import enums.GameStatus;
 import enums.RoleName;
+import exception.GameAlreadyFinishedException;
+import exception.InvalidGameIDException;
+import exception.InvalidUsernameException;
+import exception.MultiPlayerModeException;
+import exception.SinglePlayerModeException;
 import model.Category;
 import model.Game;
 import model.GamePlayer;
 import model.Player;
 import model.Word;
 import model.DTOs.GameDTO;
+import model.DTOs.MultiPlayerGameInputDTO;
 import model.DTOs.PlayerDTO;
 import model.DTOs.PlayersDTO;
+import model.DTOs.StatisticDTO;
 import repository.GamePlayerRepository;
 import repository.GameRepository;
 
@@ -103,21 +111,31 @@ public class GameService {
 		return true;
 	}
 
-	public GameDTO resumeGame(Long gameId) {
+	public GameDTO resumeSingleGame(Long gameId) {
+		if (!isValid(gameId)) {
+			throw new InvalidGameIDException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId));
+		}
 		Game game = getById(gameId);
+		if(game.isFinished()) {
+			throw new GameAlreadyFinishedException(String.format(ErrorMessages.GAME_IS_FINSHED, gameId));
+		}else if(!game.getMode().equals("Single Player")) {
+			throw new MultiPlayerModeException(ErrorMessages.GAME_IS_MULTIPLAYER);
+		}
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
 		Player guesser = getPlayerByRole(playerInGames, RoleName.GUESSER);
-		Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
 		PlayerDTO guesserDTO = new PlayerDTO(guesser.getId(), guesser.getUsername());
-		PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
 
 		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
 				game.isFinished(), guesserDTO);
+		dto.setGameStatus("Ongoing");
 
-		if (game.getMode().equals("Single Player")) {
+		if (game.getMode().equals(Commands.SINGLE_PLAYER_MODE)) {
+			dto.setGameMode(game.getMode());
 			return dto;
 
 		} else {
+			Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
+			PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
 			dto.setGiver(giverDTO);
 
 			return dto;
@@ -125,6 +143,34 @@ public class GameService {
 		}
 
 	}
+	
+	public GameDTO resumeMultiPlayerGame(Long gameId) {
+		if (!isValid(gameId)) {
+			throw new InvalidGameIDException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId));
+		}
+		Game game = getById(gameId);
+		if(game.isFinished()) {
+			throw new GameAlreadyFinishedException(String.format(ErrorMessages.GAME_IS_FINSHED, gameId));
+		}else if(!game.getMode().equals(Commands.MULTI_PLAYER_MODE)) {
+			throw new SinglePlayerModeException(ErrorMessages.GAME_IS_SINGLEPLAYER);
+		}
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player guesser = getPlayerByRole(playerInGames, RoleName.GUESSER);
+		PlayerDTO guesserDTO = new PlayerDTO(guesser.getId(), guesser.getUsername());
+
+		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
+				game.isFinished(), guesserDTO);
+		dto.setGameStatus("Ongoing");
+
+			Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
+			PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
+			dto.setGiver(giverDTO);
+
+			return dto;
+
+		}
+
+	
 
 	private Player getPlayerByRole(List<GamePlayer> playerInGames, RoleName role) {
 		Player player = null;
@@ -144,6 +190,9 @@ public class GameService {
 	}
 
 	public GameDTO newGameStarted(String username) {
+		if (username == null || username.isEmpty() || !isUsernameValid(username)) {
+			throw new InvalidUsernameException(String.format(ErrorMessages.USERNAME_IS_NOT_VALID, username));
+		}
 		Word word = wordService.getRandomGame();
 		Player player = playerService.getPlayerByUsername(username);
 		return createNewSinglePlayerGame(word, player.getId());
@@ -236,6 +285,8 @@ public class GameService {
 		PlayerDTO guesserDTO = new PlayerDTO(id, player.getUsername());
 
 		GameDTO dto = new GameDTO(game.getId(), wordToReturn, game.getTriesLeft(), hashSet, false, guesserDTO);
+		dto.setGameStatus("Ongoing");
+		dto.setGameMode("Singleplayer");
 
 		return dto;
 	}
@@ -261,21 +312,30 @@ public class GameService {
 		return game;
 	}
 
-	public GameDTO prepareWordToBeDisplayed(String wordToGuess, String category, long giverId, long guesserId) {
-		Category categoryByName = categoryservice.getCategoryByName(category);
+	public GameDTO prepareWordToBeDisplayed(MultiPlayerGameInputDTO multiplayerDTO) {
+		Category categoryByName = categoryservice.getCategoryByName(multiplayerDTO.getCatergory());
+		
+		if (multiplayerDTO.getWordToGuess().equals("")) {
+			throw new IllegalArgumentException(ErrorMessages.WORD_FIELD_IS_EMPTY);
 
-		Word word = wordService.createWord(wordToGuess, categoryByName);
+		} else if (!isWordValid(multiplayerDTO.getWordToGuess())) {
+			throw new IllegalArgumentException(ErrorMessages.WORD_FIELD_IS_LESS_SYMBOLS);
+		}
+
+		Word word = wordService.createWord(multiplayerDTO.getWordToGuess(), categoryByName);
 		Game game = createNewMultiPlayerGame(word);
-		createPlayer(giverId, game, RoleName.WORD_GIVER);
-		createPlayer(guesserId, game, RoleName.GUESSER);
-		Player guesser = playerService.getPlayerById(guesserId);
-		Player giver = playerService.getPlayerById(giverId);
-		PlayerDTO guessDto = new PlayerDTO(guesserId, guesser.getUsername());
-		PlayerDTO giverDto = new PlayerDTO(giverId, giver.getUsername());
+		createPlayer(multiplayerDTO.getGiverId(), game, RoleName.WORD_GIVER);
+		createPlayer(multiplayerDTO.getGuesserId(), game, RoleName.GUESSER);
+		Player guesser = playerService.getPlayerById(multiplayerDTO.getGuesserId());
+		Player giver = playerService.getPlayerById(multiplayerDTO.getGiverId());
+		PlayerDTO guessDto = new PlayerDTO(multiplayerDTO.getGuesserId(), guesser.getUsername());
+		PlayerDTO giverDto = new PlayerDTO(multiplayerDTO.getGiverId(), giver.getUsername());
 
 		GameDTO dto = new GameDTO(game.getId(), game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
 				game.isFinished(), guessDto);
 		dto.setGiver(giverDto);
+		dto.setGameStatus("Ongoing");
+		dto.setGameMode(Commands.MULTI_PLAYER_MODE);
 
 		return dto;
 	}
@@ -342,7 +402,9 @@ public class GameService {
 	}
 
 	private Long getPlayerIdByRole(Game game, RoleName role) {
-		return game.getPlayerInGames().stream().filter(gamePlayer -> gamePlayer.getRole() == role)
+		return game.getPlayerInGames()
+				.stream()
+				.filter(gamePlayer -> gamePlayer.getRole() == role)
 				.map(gamePlayer -> gamePlayer.getPlayer().getId()).findFirst().orElse(null);
 	}
 
@@ -435,6 +497,28 @@ public class GameService {
 				game.isFinished(), dtoGuesser);
 		dto.setGiver(dtoGiver);
 		return dto;
+
+	}
+
+	public List<GameDTO> getAllGamesDTOForPlayerByUsername(String username, RoleName role) {
+		List<Game> allGamesForPlayerByUsername = getAllGamesForPlayerByUsername(username, role);
+		Player guesser = playerService.getPlayerByUsername(username);
+
+		List<GameDTO> dtos = allGamesForPlayerByUsername.stream().map(g -> {
+			PlayerDTO guessDto = new PlayerDTO(guesser.getId(), username);
+			return new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),
+					guessDto);
+		}).collect(Collectors.toList());
+
+		return dtos;
+	}
+
+	public StatisticDTO getTopTenGamesAsDTO() {
+		List<String> topTenGames = getTopTenGames();
+		double averageAttempts = averageAttempts();
+		String calculateWinLossRatio = calculateWinLossRatio();
+
+		return new StatisticDTO(topTenGames, averageAttempts, calculateWinLossRatio);
 
 	}
 

@@ -19,7 +19,7 @@ public class CategoryService {
 
 	public Category getCategoryByName(String category) {
 		return categoryRepository.findByCategoryName(CategoryName.valueOf(category.toUpperCase()))
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessages.CATEGORY_NOT_FOUND, category)));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessages.CATEGORY_NOT_FOUND, category.toString())));
 
 	}
 

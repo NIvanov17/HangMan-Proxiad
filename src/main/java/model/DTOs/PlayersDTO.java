@@ -2,9 +2,9 @@ package model.DTOs;
 
 public class PlayersDTO {
 	
-	PlayerDTO guesser;
+	private PlayerDTO guesser;
 	
-	PlayerDTO giver;
+	private PlayerDTO giver;
 
 	public PlayersDTO(PlayerDTO guesser, PlayerDTO giver) {
 		super();

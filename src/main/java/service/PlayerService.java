@@ -1,6 +1,7 @@
 package service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import enums.Commands;
 import enums.ErrorMessages;
+import exception.InvalidUsernameException;
 import model.Player;
 import model.DTOs.PlayerDTO;
+import model.DTOs.PlayerRankingDTO;
 import model.DTOs.PlayersDTO;
 import repository.PlayerRepository;
 
@@ -35,7 +38,8 @@ public class PlayerService {
 	}
 
 	public Player getPlayerByUsername(String username) {
-		return playerRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException(username));
+		return playerRepository.findByUsername(username).orElseThrow(
+				() -> new InvalidUsernameException(String.format(ErrorMessages.USERNAME_IS_NOT_VALID, username)));
 	}
 
 	public void incrementWins(long id) {
@@ -73,24 +77,56 @@ public class PlayerService {
 	}
 
 	public Player getPlayerById(long id) {
-		return playerRepository.findById(id).orElseThrow(()->new IllegalArgumentException(ErrorMessages.PLAYER_NOT_EXISTING));
+		return playerRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException(ErrorMessages.PLAYER_NOT_EXISTING));
 	}
 
 	public boolean areUsernamesEqual(long id, String guesserUsername) {
 		Player player = getPlayerById(id);
-		
+
 		return player.getUsername().equals(guesserUsername);
 	}
 
 	public long getPlayerIdByGameId(long gameId) {
 		return playerRepository.findByGameId(gameId);
 	}
-	
+
 	public PlayersDTO createPlayersDTO(long id, String guesserUsername) {
 		Player playerGuesser = getPlayerByUsername(guesserUsername);
-		Player playerGiver= getPlayerById(id);
-		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(),playerGuesser.getUsername());
-		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(),playerGiver.getUsername());
-		return new PlayersDTO(dtoGuesser,dtoGiver);
+		Player playerGiver = getPlayerById(id);
+		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
+		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(), playerGiver.getUsername());
+		return new PlayersDTO(dtoGuesser, dtoGiver);
+	}
+
+	public List<PlayerRankingDTO> getAllPlayersDTOByWins() {
+		List<Player> allPlayersByWins = getAllPlayersByWins();
+
+		List<PlayerRankingDTO> playerRankingDTO = allPlayersByWins.stream().map(p -> {
+			PlayerRankingDTO dto = new PlayerRankingDTO();
+			dto.setId(p.getId());
+			dto.setUsername(p.getUsername());
+			dto.setTotalWins(p.getTotalWins());
+			return dto;
+		}).collect(Collectors.toList());
+		return playerRankingDTO;
+	}
+
+	public List<PlayerRankingDTO> getTopTenPlayersDTOByWins() {
+		List<Player> topTenPlayersByWins = getTopTenPlayersByWins();
+
+		List<PlayerRankingDTO> playerRankingDTO = topTenPlayersByWins.stream().map(p -> {
+			PlayerRankingDTO dto = new PlayerRankingDTO();
+			dto.setId(p.getId());
+			dto.setUsername(p.getUsername());
+			dto.setTotalWins(p.getTotalWins());
+			return dto;
+		}).collect(Collectors.toList());
+		return playerRankingDTO;
+	}
+
+	public void deleteByUsername(String username) {
+		Player player = getPlayerByUsername(username);
+		playerRepository.delete(player);
 	}
 }

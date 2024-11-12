@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "controller", "config", "service", "repository"})
+@ComponentScan(basePackages = { "controller", "config", "service", "repository","util" })
 @EntityScan("model")
 @EnableJpaRepositories(basePackages = "repository")
 public class HangManApp extends SpringBootServletInitializer {
