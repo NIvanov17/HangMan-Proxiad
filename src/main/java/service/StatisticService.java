@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import enums.GameStatus;
+import jakarta.transaction.Transactional;
 import model.Game;
 import model.Statistic;
 import repository.StatisticRepository;
 
 @Service
+@Transactional
 public class StatisticService {
 
 	private StatisticRepository statisticRepo;

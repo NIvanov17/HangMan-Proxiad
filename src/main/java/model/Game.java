@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.Fetch;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,7 +51,7 @@ public class Game {
 	@NotNull
 	private String currentState;
 
-	@OneToMany(mappedBy = "game", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
 	private List<GamePlayer> playerInGames;
 	
 	@OneToOne(mappedBy = "game")

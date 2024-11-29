@@ -1,19 +1,28 @@
 package model.DTOs;
 
 public class PlayerDTO {
-	
+
 	private long id;
-	
+
 	private String username;
 
 	public PlayerDTO() {
 		super();
 	}
+	
+	
+
+	public PlayerDTO(String username) {
+		super();
+		this.username = username;
+	}
+
+
 
 	public PlayerDTO(long id, String username) {
 		super();
-		this.setId(id);
-		this.setUsername(username);
+		this.id = id;
+		this.username = username;
 	}
 
 	public long getId() {
@@ -31,7 +40,6 @@ public class PlayerDTO {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	
+
 
 }

@@ -1,6 +1,9 @@
 package model.DTOs;
 
+import java.util.Objects;
 import java.util.Set;
+
+import enums.CategoryName;
 
 public class GameDTO {
 
@@ -21,6 +24,8 @@ public class GameDTO {
 	private PlayerDTO giver;
 
 	private PlayerDTO guesser;
+	
+	private String category; 
 
 	public GameDTO(Long gameId, String wordProgress, int triesLeft, Set<Character> usedChars, boolean isFinished,
 			PlayerDTO guesser) {
@@ -32,6 +37,12 @@ public class GameDTO {
 		this.isFinished = isFinished;
 		this.guesser = guesser;
 	}
+	
+
+	public GameDTO() {
+		super();
+	}
+
 
 	public Long getGameId() {
 		return gameId;
@@ -103,6 +114,33 @@ public class GameDTO {
 
 	public void setGuesser(PlayerDTO guesser) {
 		this.guesser = guesser;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(gameId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GameDTO other = (GameDTO) obj;
+		return Objects.equals(gameId, other.gameId);
 	}
 
 }

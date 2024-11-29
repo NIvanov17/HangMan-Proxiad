@@ -21,7 +21,7 @@ import service.PlayerService;
 
 @RestController
 @RequestMapping("/api/v1")
-@Tag(name = "Statistic Controller")
+@Tag(name = "Statistic API Controller")
 public class StatisticAPIController {
 	private GameService gameService;
 	private PlayerService playerService;

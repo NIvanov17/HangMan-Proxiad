@@ -1,41 +1,44 @@
 package model.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.validation.constraints.NotNull;
-
 public class MultiPlayerGameInputDTO {
 
-	private Long giverId;
+	private String giverUsername;
 
-	private Long guesserId;
+	private String guesserUsername;
 
 	private String wordToGuess;
 
-	private String catergory;
+	private String category;
+	
+	
 
-	public MultiPlayerGameInputDTO(long giverId, long guesserId, String wordToGuess, String catergory) {
+	public MultiPlayerGameInputDTO() {
 		super();
-		this.giverId = giverId;
-		this.guesserId = guesserId;
+	}
+
+	public MultiPlayerGameInputDTO(String giverUsername, String guesserUsername, String wordToGuess, String category) {
+		super();
+		this.giverUsername = giverUsername;
+		this.guesserUsername = guesserUsername;
 		this.wordToGuess = wordToGuess;
-		this.catergory = catergory;
+		this.category = category;
 	}
 
-	public Long getGiverId() {
-		return giverId;
+
+	public String getGiverUsername() {
+		return giverUsername;
 	}
 
-	public void setGiverId(Long giverId) {
-		this.giverId = giverId;
+	public void setGiverUsername(String giverUsername) {
+		this.giverUsername = giverUsername;
 	}
 
-	public Long getGuesserId() {
-		return guesserId;
+	public String getGuesserUsername() {
+		return guesserUsername;
 	}
 
-	public void setGuesserId(Long guesserId) {
-		this.guesserId = guesserId;
+	public void setGuesserUsername(String guesserUsername) {
+		this.guesserUsername = guesserUsername;
 	}
 
 	public String getWordToGuess() {
@@ -46,12 +49,12 @@ public class MultiPlayerGameInputDTO {
 		this.wordToGuess = wordToGuess;
 	}
 
-	public String getCatergory() {
-		return catergory;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setCatergory(String catergory) {
-		this.catergory = catergory;
+	public void setCatergory(String category) {
+		this.category = category;
 	}
 
 }

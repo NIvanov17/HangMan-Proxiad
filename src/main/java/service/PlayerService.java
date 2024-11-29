@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import enums.Commands;
 import enums.ErrorMessages;
 import exception.InvalidUsernameException;
+import jakarta.transaction.Transactional;
 import model.Player;
 import model.DTOs.PlayerDTO;
 import model.DTOs.PlayerRankingDTO;
@@ -18,6 +19,7 @@ import model.DTOs.PlayersDTO;
 import repository.PlayerRepository;
 
 @Service
+@Transactional
 public class PlayerService {
 
 	private PlayerRepository playerRepository;
@@ -91,9 +93,9 @@ public class PlayerService {
 		return playerRepository.findByGameId(gameId);
 	}
 
-	public PlayersDTO createPlayersDTO(long id, String guesserUsername) {
+	public PlayersDTO createPlayersDTO(String guesserUsername,String giverUsername) {
 		Player playerGuesser = getPlayerByUsername(guesserUsername);
-		Player playerGiver = getPlayerById(id);
+		Player playerGiver = getPlayerByUsername(giverUsername);
 		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
 		PlayerDTO dtoGiver = new PlayerDTO(playerGiver.getId(), playerGiver.getUsername());
 		return new PlayersDTO(dtoGuesser, dtoGiver);

@@ -1,17 +1,11 @@
 package config;
 
-import java.util.Properties;
-
-import javax.xml.namespace.QName;
-
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.config.annotation.EnableWs;
-import org.springframework.ws.soap.server.endpoint.SoapFaultDefinition;
-import org.springframework.ws.soap.server.endpoint.SoapFaultMappingExceptionResolver;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
@@ -39,7 +33,7 @@ public class WebServiceConfig {
     public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema playersSchema) {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("PlayersPort");
-        wsdl11Definition.setLocationUri("/ws");
+        wsdl11Definition.setLocationUri("/ws/players/games");
         wsdl11Definition.setTargetNamespace("http://www.example.org/players");
         wsdl11Definition.setSchema(playersSchema);
         return wsdl11Definition;

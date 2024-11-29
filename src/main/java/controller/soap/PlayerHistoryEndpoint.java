@@ -21,6 +21,7 @@ import service.PlayerService;
 public class PlayerHistoryEndpoint {
 
 	private static final String NAMESPACE_URI = "http://www.example.org/players";
+//	http://localhost:8080/ws/players.wsdl
 
 	private final GameService gameService;
 
@@ -41,7 +42,7 @@ public class PlayerHistoryEndpoint {
 		GetHistoryForPlayerResponse response = new GetHistoryForPlayerResponse();
 		List<GameDTO> games = gameService.getAllGamesDTOForPlayerByUsername(request.getUsername(), RoleName.GUESSER);
 		for (GameDTO game : games) {
-			response.getGames().add(game.toString());
+			response.getGames().add(game.getGameId().toString());
 		}
 
 		return response;

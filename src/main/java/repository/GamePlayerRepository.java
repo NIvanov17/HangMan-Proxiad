@@ -16,4 +16,6 @@ public interface GamePlayerRepository extends JpaRepository<GamePlayer, Long>{
 	@Query("SELECT gp FROM GamePlayer gp WHERE gp.player.id = :id AND gp.role = :role")
 	List<GamePlayer> findAllGamesForPlayerWithId(@Param("id") long id, @Param("role")RoleName guesser);
 
+	void deleteByGameId(long id);
+
 }

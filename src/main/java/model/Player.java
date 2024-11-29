@@ -22,7 +22,7 @@ public class Player {
 	@Column(nullable = false, unique = true)
 	private String username;
 
-	@OneToMany(mappedBy = "player",cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "player",cascade = CascadeType.ALL)
 	private List<GamePlayer> gamesWithRoles;
     
 	@Column(name = "total_wins")

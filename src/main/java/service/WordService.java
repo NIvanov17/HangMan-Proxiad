@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import enums.CategoryName;
 import enums.Commands;
 import enums.ErrorMessages;
+import jakarta.transaction.Transactional;
 import model.Category;
 import model.Game;
 import model.Word;
@@ -24,6 +25,7 @@ import repository.CategoryRepository;
 import repository.WordRepository;
 
 @Service
+@Transactional
 public class WordService {
 
 	private WordRepository wordRepository;
@@ -130,8 +132,6 @@ public class WordService {
 			word = new Word();
 			word.setName(wordToSet);
 			word.setCategory(category);
-			String wordWithoutSpaces = new String(wordToReturn(wordToSet));
-			String wordToReturn = wordWithSpaces(wordWithoutSpaces);
 			wordRepository.save(word);
 		}else {
 			word = getWordByName(wordToSet);

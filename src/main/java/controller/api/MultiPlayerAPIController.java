@@ -22,9 +22,7 @@ import model.DTOs.MultiPlayerGameInputDTO;
 import model.DTOs.PlayersDTO;
 import service.GameService;
 
-@RestController
-@Tag(name = "MultiPlayer Controller")
-@RequestMapping("/api/v1/")
+
 public class MultiPlayerAPIController {
 
 	private GameService gameService;
@@ -53,7 +51,7 @@ public class MultiPlayerAPIController {
 	@PutMapping("/multi-player/games/{game}")
 	@Operation(summary = "Update multiplayer game.")
 	protected ResponseEntity<GameDTO> multiPlayerGameGuess(@PathVariable long game, @RequestParam long giverId,
-			@RequestParam long guesserId, @RequestParam char letter, HttpServletRequest request) throws IOException {
+			@RequestParam long guesserId, @RequestParam char letter) throws IOException {
 		GameDTO dto = gameService.tryGuessMultiplayer(letter, game);
 		return ResponseEntity.ok(dto);
 	}

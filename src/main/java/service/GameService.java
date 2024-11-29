@@ -1,6 +1,5 @@
 package service;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -11,12 +10,8 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import enums.Attributes;
 import enums.Commands;
 import enums.ErrorMessages;
 import enums.GameStatus;
@@ -26,12 +21,14 @@ import exception.InvalidGameIDException;
 import exception.InvalidUsernameException;
 import exception.MultiPlayerModeException;
 import exception.SinglePlayerModeException;
+import jakarta.transaction.Transactional;
 import model.Category;
 import model.Game;
 import model.GamePlayer;
 import model.Player;
 import model.Word;
 import model.DTOs.GameDTO;
+import model.DTOs.LoginDTO;
 import model.DTOs.MultiPlayerGameInputDTO;
 import model.DTOs.PlayerDTO;
 import model.DTOs.PlayersDTO;
@@ -40,6 +37,7 @@ import repository.GamePlayerRepository;
 import repository.GameRepository;
 
 @Service
+@Transactional
 public class GameService {
 	private GameRepository gameRepository;
 	private PlayerService playerService;
@@ -116,9 +114,9 @@ public class GameService {
 			throw new InvalidGameIDException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId));
 		}
 		Game game = getById(gameId);
-		if(game.isFinished()) {
+		if (game.isFinished()) {
 			throw new GameAlreadyFinishedException(String.format(ErrorMessages.GAME_IS_FINSHED, gameId));
-		}else if(!game.getMode().equals("Single Player")) {
+		} else if (!game.getMode().equals("Single Player")) {
 			throw new MultiPlayerModeException(ErrorMessages.GAME_IS_MULTIPLAYER);
 		}
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
@@ -143,15 +141,15 @@ public class GameService {
 		}
 
 	}
-	
+
 	public GameDTO resumeMultiPlayerGame(Long gameId) {
 		if (!isValid(gameId)) {
 			throw new InvalidGameIDException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, gameId));
 		}
 		Game game = getById(gameId);
-		if(game.isFinished()) {
+		if (game.isFinished()) {
 			throw new GameAlreadyFinishedException(String.format(ErrorMessages.GAME_IS_FINSHED, gameId));
-		}else if(!game.getMode().equals(Commands.MULTI_PLAYER_MODE)) {
+		} else if (!game.getMode().equals(Commands.MULTI_PLAYER_MODE)) {
 			throw new SinglePlayerModeException(ErrorMessages.GAME_IS_SINGLEPLAYER);
 		}
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
@@ -161,16 +159,16 @@ public class GameService {
 		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
 				game.isFinished(), guesserDTO);
 		dto.setGameStatus("Ongoing");
+		dto.setGameMode(Commands.MULTI_PLAYER_MODE);
 
-			Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
-			PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
-			dto.setGiver(giverDTO);
+		Player giver = getPlayerByRole(playerInGames, RoleName.WORD_GIVER);
+		PlayerDTO giverDTO = new PlayerDTO(giver.getId(), giver.getUsername());
+		dto.setGiver(giverDTO);
+		dto.setCategory(game.getWord().getCategory().getCategoryName().name());
 
-			return dto;
+		return dto;
 
-		}
-
-	
+	}
 
 	private Player getPlayerByRole(List<GamePlayer> playerInGames, RoleName role) {
 		Player player = null;
@@ -198,7 +196,7 @@ public class GameService {
 		return createNewSinglePlayerGame(word, player.getId());
 	}
 
-	public GameDTO tryGuess(char guess, long gameId) {
+	public GameDTO tryGuessSinglePlayer(char guess, long gameId) {
 		Game game = getById(gameId);
 		Word wordToFind = game.getWord();
 		long id = playerService.getPlayerIdByGameId(gameId);
@@ -212,6 +210,7 @@ public class GameService {
 		PlayerDTO guesserDTO = new PlayerDTO(id, player.getUsername());
 
 		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), triesLeft, usedChars, false, guesserDTO);
+		dto.setGameMode(Commands.SINGLE_PLAYER_MODE);
 
 		if (wordService.contains(wordToFind, guess)) {
 			String wordToReturn = wordService.putLetterOnPlace(game, guess);
@@ -239,11 +238,12 @@ public class GameService {
 				game.setTriesLeft(0);
 				dto.setFinished(true);
 				dto.setTriesLeft(0);
-				dto.setGameStatus(GameStatus.GAME_STATUS_LOSE);
+				dto.setGameStatus(String.format(GameStatus.GAME_STATUS_LOSE, game.getWord().getName()));
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
 			}
 			return dto;
+			
 		}
 	}
 
@@ -251,8 +251,9 @@ public class GameService {
 		return IntStream.rangeClosed('A', 'Z').mapToObj(c -> (char) c).collect(Collectors.toList());
 	}
 
-	private Game findById(long id) {
-		return gameRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+	public Game findById(long id) {
+		return gameRepository.findById(id)
+				.orElseThrow(() -> new InvalidGameIDException(String.format(ErrorMessages.GAME_ID_NOT_FOUND, id)));
 	}
 
 	private GameDTO createNewSinglePlayerGame(Word word, long id) {
@@ -313,8 +314,8 @@ public class GameService {
 	}
 
 	public GameDTO prepareWordToBeDisplayed(MultiPlayerGameInputDTO multiplayerDTO) {
-		Category categoryByName = categoryservice.getCategoryByName(multiplayerDTO.getCatergory());
-		
+		Category categoryByName = categoryservice.getCategoryByName(multiplayerDTO.getCategory());
+
 		if (multiplayerDTO.getWordToGuess().equals("")) {
 			throw new IllegalArgumentException(ErrorMessages.WORD_FIELD_IS_EMPTY);
 
@@ -324,25 +325,27 @@ public class GameService {
 
 		Word word = wordService.createWord(multiplayerDTO.getWordToGuess(), categoryByName);
 		Game game = createNewMultiPlayerGame(word);
-		createPlayer(multiplayerDTO.getGiverId(), game, RoleName.WORD_GIVER);
-		createPlayer(multiplayerDTO.getGuesserId(), game, RoleName.GUESSER);
-		Player guesser = playerService.getPlayerById(multiplayerDTO.getGuesserId());
-		Player giver = playerService.getPlayerById(multiplayerDTO.getGiverId());
-		PlayerDTO guessDto = new PlayerDTO(multiplayerDTO.getGuesserId(), guesser.getUsername());
-		PlayerDTO giverDto = new PlayerDTO(multiplayerDTO.getGiverId(), giver.getUsername());
+		createPlayer(multiplayerDTO.getGiverUsername(), game, RoleName.WORD_GIVER);
+		createPlayer(multiplayerDTO.getGuesserUsername(), game, RoleName.GUESSER);
+		Player guesser = playerService.getPlayerByUsername(multiplayerDTO.getGuesserUsername());
+		Player giver = playerService.getPlayerByUsername(multiplayerDTO.getGiverUsername());
+		PlayerDTO guessDto = new PlayerDTO( guesser.getUsername());
+		PlayerDTO giverDto = new PlayerDTO( giver.getUsername());
 
 		GameDTO dto = new GameDTO(game.getId(), game.getCurrentState(), game.getTriesLeft(), game.getUsedChars(),
 				game.isFinished(), guessDto);
 		dto.setGiver(giverDto);
 		dto.setGameStatus("Ongoing");
 		dto.setGameMode(Commands.MULTI_PLAYER_MODE);
+		dto.setCategory(categoryByName.getCategoryName().name());
+		
 
 		return dto;
 	}
 
-	private void createPlayer(long id, Game game, RoleName role) {
+	private void createPlayer(String username, Game game, RoleName role) {
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
-		Player player = playerService.getPlayerById(id);
+		Player player = playerService.getPlayerByUsername(username);
 		GamePlayer gamePlayer = new GamePlayer();
 		gamePlayer.setPlayer(player);
 		gamePlayer.setGame(game);
@@ -351,7 +354,7 @@ public class GameService {
 		gamePlayerRepository.save(gamePlayer);
 	}
 
-	public GameDTO tryGuessMultiplayer(char guess, long gameId) throws IOException {
+	public GameDTO tryGuessMultiplayer(char guess, long gameId) {
 		Game game = getById(gameId);
 		Word wordToFind = game.getWord();
 		Set<Character> usedChars = game.getUsedChars();
@@ -366,6 +369,7 @@ public class GameService {
 		GameDTO dto = new GameDTO(gameId, game.getCurrentState(), game.getTriesLeft(), usedChars, game.isFinished(),
 				guesserDTO);
 		dto.setGiver(giverDTO);
+		dto.setGameMode(Commands.MULTI_PLAYER_MODE);
 
 		if (wordService.contains(wordToFind, guess)) {
 			String wordToReturn = wordService.putLetterOnPlace(game, guess);
@@ -393,9 +397,11 @@ public class GameService {
 				game.setFinished(true);
 				dto.setFinished(true);
 				playerService.incrementWins(giverId);
-				dto.setGameStatus(Commands.GAME_STATUS_LOSS);
+				dto.setGameStatus(String.format(Commands.GAME_STATUS_LOSS, game.getWord().getName()));
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
+				dto.setGameMode(Commands.MULTI_PLAYER_MODE);
+
 			}
 			return dto;
 		}
@@ -405,7 +411,9 @@ public class GameService {
 		return game.getPlayerInGames()
 				.stream()
 				.filter(gamePlayer -> gamePlayer.getRole() == role)
-				.map(gamePlayer -> gamePlayer.getPlayer().getId()).findFirst().orElse(null);
+				.map(gamePlayer -> gamePlayer.getPlayer().getId())
+				.findFirst()
+				.orElse(null);
 	}
 
 	public static String generateRandomString(int length) {
@@ -423,8 +431,9 @@ public class GameService {
 
 		Player playerByUsername = playerService.getPlayerByUsername(username);
 		long id = playerByUsername.getId();
-		return findAllGamesForPlayerById(id, guesser).stream().map(GamePlayer::getGame).collect(Collectors.toList());
-
+		return findAllGamesForPlayerById(id, guesser).stream()
+				.map(GamePlayer::getGame)
+				.collect(Collectors.toList());
 	}
 
 	private List<GamePlayer> findAllGamesForPlayerById(long id, RoleName guesser) {
@@ -504,10 +513,10 @@ public class GameService {
 		List<Game> allGamesForPlayerByUsername = getAllGamesForPlayerByUsername(username, role);
 		Player guesser = playerService.getPlayerByUsername(username);
 
-		List<GameDTO> dtos = allGamesForPlayerByUsername.stream().map(g -> {
+		List<GameDTO> dtos = allGamesForPlayerByUsername.stream()
+				.map(g -> {
 			PlayerDTO guessDto = new PlayerDTO(guesser.getId(), username);
-			return new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),
-					guessDto);
+			return new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),guessDto);
 		}).collect(Collectors.toList());
 
 		return dtos;
@@ -519,6 +528,16 @@ public class GameService {
 		String calculateWinLossRatio = calculateWinLossRatio();
 
 		return new StatisticDTO(topTenGames, averageAttempts, calculateWinLossRatio);
+
+	}
+
+	public boolean isPlayerGuesser(Game game, LoginDTO playerDTO) {
+		List<GamePlayer> playerInGames = game.getPlayerInGames();
+		Player player = getPlayerByRole(playerInGames, RoleName.GUESSER);
+		if (playerDTO.getUsername().equals(player.getUsername())) {
+			return true;
+		}
+		throw new InvalidUsernameException(String.format(ErrorMessages.INAVLID_GUESSER, playerDTO.getUsername()));
 
 	}
 
