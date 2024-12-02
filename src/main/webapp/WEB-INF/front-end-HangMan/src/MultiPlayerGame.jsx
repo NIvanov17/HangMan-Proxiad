@@ -13,7 +13,7 @@ const MultiPlayerGame = () => {
     const letters = "abcdefghijklmnopqrstuvwxyz".split("");
     const images = [img0, img1, img2, img3, img4, img5, img6];
     const location = useLocation();
-    const { gameDTO } = location.state || {};
+    const { gameDTO, gameId } = location.state || {};
     const [game, setGame] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
@@ -21,7 +21,8 @@ const MultiPlayerGame = () => {
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/games?id=${gameDTO.gameId}`)
+        const id = gameDTO ? gameDTO.gameId : gameId;
+        fetch(`http://localhost:8080/api/v1/games?id=${id}`)
             .then(res => {
                 return res.json();
             })

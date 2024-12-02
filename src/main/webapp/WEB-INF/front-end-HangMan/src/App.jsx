@@ -11,6 +11,9 @@ import WordToGuess from './WordsToGuess';
 import History from './History';
 import { useState } from "react";
 import HistoryLogIn from './HistoryLogIn';
+import MostUsedWords from './MostUsedWords';
+import Ranking from './Ranking';
+import TopTenRankings from './TopTenRanking';
 
 function App() {
 
@@ -31,6 +34,9 @@ function App() {
             <Route path='/multi-player/games' element={<MultiPlayerGame />} />
             <Route path='/history/log-in' element={<HistoryLogIn />} />
             <Route path='/history' element={<History />} />
+            <Route path='/statistics' element={<MostUsedWords />} />
+            <Route path='/rankings' element={<Ranking />} />
+            <Route path='/rankings/top-ten' element={<TopTenRankings />} />
           </Routes>
         </div>
         <Footer />

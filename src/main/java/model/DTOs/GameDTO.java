@@ -25,7 +25,9 @@ public class GameDTO {
 
 	private PlayerDTO guesser;
 	
-	private String category; 
+	private String category;
+	
+	private String word;
 
 	public GameDTO(Long gameId, String wordProgress, int triesLeft, Set<Character> usedChars, boolean isFinished,
 			PlayerDTO guesser) {
@@ -123,6 +125,16 @@ public class GameDTO {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+
+	public String getWord() {
+		return word;
+	}
+
+
+	public void setWord(String word) {
+		this.word = word;
 	}
 
 

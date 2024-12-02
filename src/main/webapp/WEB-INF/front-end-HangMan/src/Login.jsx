@@ -7,9 +7,26 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
+    const [game, setGame] = useState(null);
 
     const navigateToSinglePlayerGame = () => {
-        navigate('/single-player/games', { state: { username } });
+        fetch('http://localhost:8080/api/v1/games', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                playerDTO: {
+                    username: username
+                }
+            })
+        })
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setGame(data);
+                navigate('/single-player/games', { state: { gameId: data.gameId } });
+            })
     }
 
     const handleSubmit = (e) => {

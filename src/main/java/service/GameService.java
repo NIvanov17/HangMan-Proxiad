@@ -222,7 +222,7 @@ public class GameService {
 				game.setFinished(true);
 				dto.setFinished(true);
 				playerService.incrementWins(id);
-				dto.setGameStatus(GameStatus.GAME_STATUS_WON);
+				dto.setGameStatus(Commands.CONGRATULATIONS_YOU_WON);
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
 			}
@@ -238,7 +238,7 @@ public class GameService {
 				game.setTriesLeft(0);
 				dto.setFinished(true);
 				dto.setTriesLeft(0);
-				dto.setGameStatus(String.format(GameStatus.GAME_STATUS_LOSE, game.getWord().getName()));
+				dto.setGameStatus(String.format(Commands.GAME_STATUS_LOSS,game.getWord().getName()));
 				gameRepository.save(game);
 				statisticService.createStatistic(game);
 			}
@@ -286,8 +286,9 @@ public class GameService {
 		PlayerDTO guesserDTO = new PlayerDTO(id, player.getUsername());
 
 		GameDTO dto = new GameDTO(game.getId(), wordToReturn, game.getTriesLeft(), hashSet, false, guesserDTO);
-		dto.setGameStatus("Ongoing");
 		dto.setGameMode("Singleplayer");
+		dto.setCategory(game.getWord().getCategory().getCategoryName().name());
+		
 
 		return dto;
 	}
@@ -516,7 +517,11 @@ public class GameService {
 		List<GameDTO> dtos = allGamesForPlayerByUsername.stream()
 				.map(g -> {
 			PlayerDTO guessDto = new PlayerDTO(guesser.getId(), username);
-			return new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),guessDto);
+			GameDTO gameDTO = new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),guessDto);
+			gameDTO.setCategory(g.getWord().getCategory().getCategoryName().name());
+			gameDTO.setGameMode(g.getMode());
+			gameDTO.setWord(g.getWord().getName());
+			return gameDTO;
 		}).collect(Collectors.toList());
 
 		return dtos;

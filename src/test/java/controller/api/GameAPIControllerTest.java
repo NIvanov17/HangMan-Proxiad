@@ -35,6 +35,7 @@ import model.Word;
 import model.DTOs.CreateGameInputDTO;
 import model.DTOs.GameDTO;
 import model.DTOs.GuessDTO;
+import model.DTOs.LoginDTO;
 import model.DTOs.MultiPlayerGameInputDTO;
 import model.DTOs.PlayerDTO;
 import model.DTOs.UpdateGameDTO;
@@ -90,7 +91,7 @@ public class GameAPIControllerTest {
 		RestAssured.port = port;
 
 		category = categoryRepository.findByCategoryName(CategoryName.TOOLS).orElseGet(()->{
-			Category category = new Category();
+			category = new Category();
 			category.setCategoryName(CategoryName.TOOLS);
 			return categoryRepository.save(category);
 		});
@@ -192,7 +193,7 @@ public class GameAPIControllerTest {
 
 		expectedGameDTO.setWordProgress("t e _ t _ _ g");
 		Response response = given().contentType(ContentType.JSON)
-				.body(new UpdateGameDTO(new GuessDTO('e'), new PlayerDTO(guesser.getId(), guesser.getUsername())))
+				.body(new UpdateGameDTO(new GuessDTO('e'), new LoginDTO(guesser.getUsername())))
 				.pathParam("gameId", testGame.getId()).when().put("/api/v1/games/{gameId}");
 
 		assertThat(expectedGameDTO).isEqualTo(toDTO(response.getBody().asString()));
@@ -224,7 +225,7 @@ public class GameAPIControllerTest {
 		expectedGameDTO.setGiver(new PlayerDTO(giver.getId(), giver.getUsername()));
 		expectedGameDTO.setGameMode(Commands.MULTI_PLAYER_MODE);
 		Response response = given().contentType(ContentType.JSON)
-				.body(new UpdateGameDTO(new GuessDTO('e'), new PlayerDTO(guesser.getId(), guesser.getUsername())))
+				.body(new UpdateGameDTO(new GuessDTO('e'), new LoginDTO(guesser.getUsername())))
 				.pathParam("gameId", testGame.getId()).when().put("/api/v1/games/{gameId}");
 
 		String responseBody = response.getBody().asString();
@@ -243,7 +244,7 @@ public class GameAPIControllerTest {
 
 	@Test
 	void createSinglePlayerGame() {
-		PlayerDTO dto = new PlayerDTO(guesser.getId(), guesser.getUsername());
+		LoginDTO dto = new LoginDTO(guesser.getUsername());
 		CreateGameInputDTO inputDTO = new CreateGameInputDTO();
 		inputDTO.setPlayerDTO(dto);
 
@@ -271,7 +272,7 @@ public class GameAPIControllerTest {
 			newPlayer.setUsername("testovVtori");
 			return playerRepository.save(newPlayer);
 		});
-		MultiPlayerGameInputDTO dto = new MultiPlayerGameInputDTO(giver.getId(), guesser.getId(), "testfromassure", testGame.getWord().getCategory().getCategoryName().name());
+		MultiPlayerGameInputDTO dto = new MultiPlayerGameInputDTO(giver.getUsername(), guesser.getUsername(), "testfromassure", testGame.getWord().getCategory().getCategoryName().name());
 		
 		CreateGameInputDTO inputDTO = new CreateGameInputDTO();
 		inputDTO.setMultiPlayerGameInputDTO(dto);

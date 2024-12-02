@@ -13,34 +13,24 @@ const Game = () => {
     const letters = "abcdefghijklmnopqrstuvwxyz".split("");
     const images = [img0, img1, img2, img3, img4, img5, img6];
     const location = useLocation();
-    const { username, giver } = location.state || {};
+    const { gameId } = location.state || {};
     const [game, setGame] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
 
-    const dto = {
-        playerDTO: {
-            username: username
-        }
-    };
 
     const restartSinglePlayerGame = () => navigate('/single-player/username');
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/games', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dto)
-        })
+        console.log(gameId);
+        fetch(`http://localhost:8080/api/v1/games?id=${gameId}`)
             .then(res => {
                 return res.json();
             }).then(data => {
                 setGame(data);
             })
-    }, []);
+    }, [gameId]);
 
     if (!game) {
         return <Loader />;
@@ -52,7 +42,7 @@ const Game = () => {
 
         const handleGuessDTO = {
             playerDTO: {
-                username: username
+                username: game.guesser.username
             },
             guessDTO: {
                 guess: letter
@@ -104,7 +94,7 @@ const Game = () => {
                         <button onClick={restartSinglePlayerGame}>Restart Game</button>
                     </div> :
                     <div className="restart-btn">
-                        <button onClick={restartMultiPlayerGame}>Restart Game</button>)
+                        <button onClick={restartMultiPlayerGame}>Restart Game</button>
                     </div>)
             }
         </div >
