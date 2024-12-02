@@ -1,6 +1,7 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import "./History.css";
 
 const History = () => {
     const navigate = useNavigate();
@@ -30,7 +31,6 @@ const History = () => {
     return (
         <div className="history">
             <h2>History</h2>
-            <p>{username}</p>
             <table>
                 <thead>
                     <tr>

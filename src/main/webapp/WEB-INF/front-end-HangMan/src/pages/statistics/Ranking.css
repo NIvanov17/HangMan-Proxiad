@@ -1,0 +1,9 @@
+.ranking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ranking button {
+    margin-bottom: 1em;
+}

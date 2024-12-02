@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./Ranking.css";
 
 
 const TopTenRankings = () => {
@@ -27,9 +28,9 @@ const TopTenRankings = () => {
                 </thead>
                 <tbody>
                     {
-                        playerData.map((player) => (
-                            <tr key={player.id}>
-                                <td>{player.id}</td>
+                        playerData.map((player, index) => (
+                            <tr key={index}>
+                                <td>{++index}</td>
                                 <td>{player.username}</td>
                                 <td>{player.totalWins}</td>
                             </tr>

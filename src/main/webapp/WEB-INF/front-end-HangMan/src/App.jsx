@@ -8,12 +8,12 @@ import MultiPlayerGame from './pages/Game/MultiPlayerGame';
 import LoginGiver from './pages/Login/LoginGiver';
 import LoginGuesser from './pages/Login/LoginGuesser';
 import WordToGuess from './pages/WordToGuess/WordsToGuess';
-import History from './pages/statistics/History';
+import History from './pages/Statistics/History';
 import { useState } from "react";
 import HistoryLogIn from './pages/Login/HistoryLogIn';
-import MostUsedWords from './pages/statistics/MostUsedWords';
-import Ranking from './pages/statistics/Ranking';
-import TopTenRankings from './pages/statistics/TopTenRanking';
+import MostUsedWords from './pages/Statistics/MostUsedWords';
+import Ranking from './pages/Statistics/Ranking';
+import TopTenRankings from './pages/Statistics/TopTenRanking';
 
 function App() {
 

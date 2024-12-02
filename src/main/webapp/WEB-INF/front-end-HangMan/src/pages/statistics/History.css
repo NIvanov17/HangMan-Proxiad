@@ -1,0 +1,95 @@
+.history {
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    text-align: center;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 20px auto;
+
+}
+
+thead tr th {
+    background-color: #02027a;
+    color: whitesmoke;
+}
+
+
+th,
+td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tr:hover {
+    background-color: #d4e2f7;
+}
+
+button {
+    width: auto;
+    align-self: center;
+    padding: 0.3em 0.8em;
+    border: 2px solid #02027a;
+    letter-spacing: 0.1em;
+    background-color: #02027a;
+    color: #7CB9E8;
+    cursor: pointer;
+}
+
+button:hover {
+    padding: 0.3em 0.8em;
+    border: 2px solid white;
+    background-color: #7CB9E8;
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+    color: #02027a;
+    cursor: pointer;
+    transition: 500ms;
+}
+
+button:disabled {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+    cursor: default;
+}
+
+.attempts {
+    padding-bottom: 1em;
+}
+
+.attempts-number {
+    color: #02027a;
+    font-weight: bold;
+}
+
+.ratio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ratio h2 {
+    margin-bottom: 0.2em;
+
+}
+
+.ratio p {
+    font-weight: bold;
+    color: #02027a;
+    font-size: 20px;
+}
