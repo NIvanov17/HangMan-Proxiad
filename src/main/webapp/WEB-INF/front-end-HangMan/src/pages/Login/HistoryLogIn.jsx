@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import hangmanImage from './images/hangman.png';
+import hangmanImage from '../../images/hangman.png';
+import "./Login.css";
 
-
-const LoginGiver = () => {
+const HistoryLogIn = () => {
 
     const [username, setUsername] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
 
-    const navigateToGuesserUsername = () => {
-        navigate('/multi-player/guesser', { state: { giver: username } });
+    const navigateToHistory = () => {
+        navigate('/history', { state: { username } });
     }
-
 
     const handleSubmit = (e) => {
         setIsPending(true);
@@ -22,7 +21,7 @@ const LoginGiver = () => {
                 method: 'POST'
             }).then(() => {
                 setIsPending(false);
-                navigateToGuesserUsername();
+                navigateToHistory();
             })
         }, 500)
     }
@@ -30,8 +29,7 @@ const LoginGiver = () => {
     return (
         <div className="login">
             <div className="login-form">
-                <h2>Multi-Player Game</h2>
-                <p>Welcome, Word Giver!</p>
+                <h2>History</h2>
                 <img src={hangmanImage} alt="" />
                 <form onSubmit={handleSubmit}>
                     <label>Enter username:</label>
@@ -49,4 +47,4 @@ const LoginGiver = () => {
     );
 }
 
-export default LoginGiver;
+export default HistoryLogIn;

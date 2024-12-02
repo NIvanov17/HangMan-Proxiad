@@ -1,33 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import hangmanImage from './images/hangman.png';
+import hangmanImage from '../../images/hangman.png';
+import "./Login.css";
 
-const Login = () => {
+
+const LoginGiver = () => {
 
     const [username, setUsername] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
-    const [game, setGame] = useState(null);
 
-    const navigateToSinglePlayerGame = () => {
-        fetch('http://localhost:8080/api/v1/games', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                playerDTO: {
-                    username: username
-                }
-            })
-        })
-            .then(res => {
-                return res.json();
-            }).then(data => {
-                setGame(data);
-                navigate('/single-player/games', { state: { gameId: data.gameId } });
-            })
+    const navigateToGuesserUsername = () => {
+        navigate('/multi-player/guesser', { state: { giver: username } });
     }
+
 
     const handleSubmit = (e) => {
         setIsPending(true);
@@ -37,7 +23,7 @@ const Login = () => {
                 method: 'POST'
             }).then(() => {
                 setIsPending(false);
-                navigateToSinglePlayerGame();
+                navigateToGuesserUsername();
             })
         }, 500)
     }
@@ -45,7 +31,8 @@ const Login = () => {
     return (
         <div className="login">
             <div className="login-form">
-                <h2>Single-Player Game</h2>
+                <h2>Multi-Player Game</h2>
+                <p>Welcome, Word Giver!</p>
                 <img src={hangmanImage} alt="" />
                 <form onSubmit={handleSubmit}>
                     <label>Enter username:</label>
@@ -63,4 +50,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default LoginGiver;

@@ -1,19 +1,19 @@
-import Navbar from './Navbar';
-import Home from './Home';
-import Footer from './Footer';
+import Navbar from './Components/Navbar/Navbar';
+import Home from './pages/Home/Home';
+import Footer from './Components/Footer/Footer';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './Login';
-import SinglePlayerGame from './Single-PlayerGame';
-import MultiPlayerGame from './MultiPlayerGame';
-import LoginGiver from './LoginGiver';
-import LoginGuesser from './LoginGuesser';
-import WordToGuess from './WordsToGuess';
-import History from './History';
+import Login from './pages/Login/Login';
+import SinglePlayerGame from './pages/Game/Single-PlayerGame';
+import MultiPlayerGame from './pages/Game/MultiPlayerGame';
+import LoginGiver from './pages/Login/LoginGiver';
+import LoginGuesser from './pages/Login/LoginGuesser';
+import WordToGuess from './pages/WordToGuess/WordsToGuess';
+import History from './pages/statistics/History';
 import { useState } from "react";
-import HistoryLogIn from './HistoryLogIn';
-import MostUsedWords from './MostUsedWords';
-import Ranking from './Ranking';
-import TopTenRankings from './TopTenRanking';
+import HistoryLogIn from './pages/Login/HistoryLogIn';
+import MostUsedWords from './pages/statistics/MostUsedWords';
+import Ranking from './pages/statistics/Ranking';
+import TopTenRankings from './pages/statistics/TopTenRanking';
 
 function App() {
 

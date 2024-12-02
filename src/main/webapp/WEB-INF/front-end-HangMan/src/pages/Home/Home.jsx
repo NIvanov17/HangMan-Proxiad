@@ -1,5 +1,6 @@
-import hangmanImage from './images/hangman.png';
+import hangmanImage from '../../images/hangman.png';
 import { useNavigate } from 'react-router-dom';
+import "./Home.css"
 
 const Home = () => {
     const navigate = useNavigate();

@@ -1,15 +1,33 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import hangmanImage from './images/hangman.png';
+import hangmanImage from '../../images/hangman.png';
+import "./Login.css";
 
-const HistoryLogIn = () => {
+const Login = () => {
 
     const [username, setUsername] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
+    const [game, setGame] = useState(null);
 
-    const navigateToHistory = () => {
-        navigate('/history', { state: { username } });
+    const navigateToSinglePlayerGame = () => {
+        fetch('http://localhost:8080/api/v1/games', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                playerDTO: {
+                    username: username
+                }
+            })
+        })
+            .then(res => {
+                return res.json();
+            }).then(data => {
+                setGame(data);
+                navigate('/single-player/games', { state: { gameId: data.gameId } });
+            })
     }
 
     const handleSubmit = (e) => {
@@ -20,7 +38,7 @@ const HistoryLogIn = () => {
                 method: 'POST'
             }).then(() => {
                 setIsPending(false);
-                navigateToHistory();
+                navigateToSinglePlayerGame();
             })
         }, 500)
     }
@@ -28,7 +46,7 @@ const HistoryLogIn = () => {
     return (
         <div className="login">
             <div className="login-form">
-                <h2>History</h2>
+                <h2>Single-Player Game</h2>
                 <img src={hangmanImage} alt="" />
                 <form onSubmit={handleSubmit}>
                     <label>Enter username:</label>
@@ -46,4 +64,4 @@ const HistoryLogIn = () => {
     );
 }
 
-export default HistoryLogIn;
+export default Login;

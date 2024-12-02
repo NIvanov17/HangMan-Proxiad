@@ -1,3 +1,5 @@
+import "./Footer.css";
+
 const Footer = () => {
 
     const link = 'https://gitlab.sc.proxiad.bg/n.ivanov/hangman-niki-ivanov';

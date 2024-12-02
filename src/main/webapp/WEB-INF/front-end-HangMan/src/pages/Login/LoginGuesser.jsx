@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import hangmanImage from './images/hangman.png';
+import hangmanImage from '../../images/hangman.png';
+import "./Login.css";
 
 
 const LoginGuesser = () => {

@@ -1,0 +1,64 @@
+.word-giving {
+    padding: 5em;
+    background-color: #00004B;
+    border-radius: 20px;
+    border: 2px solid lightblue;
+    box-shadow: 0 4px 8px rgba(22, 73, 145, 0.5);
+}
+
+.word-giving form {
+    display: flex;
+    flex-direction: column;
+}
+
+.word-giving form label {
+    align-self: center;
+    color: whitesmoke;
+    margin-bottom: 0.5em;
+    font-size: 20px;
+}
+
+.word-giving input {
+    display: block;
+    padding: 0.5em;
+    border: 2px solid white;
+    border-radius: 5px;
+    border-color: white;
+    font-size: 15px;
+    margin-bottom: 1em;
+}
+
+.word-giving select {
+    padding: 0.5em;
+    border: 2px solid white;
+    border-radius: 5px;
+    border-color: white;
+    margin-bottom: 1em;
+}
+
+.word-giving button {
+    margin-top: 1em;
+    width: auto;
+    align-self: center;
+    padding: 0.6em 1.2em;
+    border: 2px solid #02027a;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #7CB9E8;
+    color: #02027a;
+    cursor: pointer;
+}
+
+.word-giving button:hover {
+    margin-top: 1em;
+    width: auto;
+    align-self: center;
+    padding: 0.6em 1.2em;
+    border: 2px solid #02027a;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #7CB9E8;
+    color: white;
+    cursor: pointer;
+    transition: 500ms;
+}

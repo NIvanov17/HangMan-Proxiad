@@ -1,44 +1,42 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import img0 from './images/0.png';
-import img1 from './images/1.png';
-import img2 from './images/2.png';
-import img3 from './images/3.png';
-import img4 from './images/4.png';
-import img5 from './images/5.png';
-import img6 from './images/6.png';
-import Loader from "./Loader";
+import img0 from '../../images/0.png';
+import img1 from '../../images/1.png';
+import img2 from '../../images/2.png';
+import img3 from '../../images/3.png';
+import img4 from '../../images/4.png';
+import img5 from '../../images/5.png';
+import img6 from '../../images/6.png';
+import Loader from "../../Components/Loader/Loader";
+import "./Game.css";
 
-const Game = () => {
+const MultiPlayerGame = () => {
     const letters = "abcdefghijklmnopqrstuvwxyz".split("");
     const images = [img0, img1, img2, img3, img4, img5, img6];
     const location = useLocation();
-    const { gameId } = location.state || {};
+    const { gameDTO, gameId } = location.state || {};
     const [game, setGame] = useState(null);
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
-
-
     const restartSinglePlayerGame = () => navigate('/single-player/username');
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
 
     useEffect(() => {
-        console.log(gameId);
-        fetch(`http://localhost:8080/api/v1/games?id=${gameId}`)
+        const id = gameDTO ? gameDTO.gameId : gameId;
+        fetch(`http://localhost:8080/api/v1/games?id=${id}`)
             .then(res => {
                 return res.json();
-            }).then(data => {
-                setGame(data);
             })
-    }, [gameId]);
-
-    if (!game) {
-        return <Loader />;
-    }
+            .then(data => {
+                setGame(data);
+                console.log(data);
+            })
+    }, [])
 
     const handleGuess = (e, letter) => {
         e.preventDefault();
         setIsPending(true);
+        console.log(gameDTO);
 
         const handleGuessDTO = {
             playerDTO: {
@@ -48,7 +46,6 @@ const Game = () => {
                 guess: letter
             }
         }
-
         fetch(`http://localhost:8080/api/v1/games/${game.gameId}`, {
             method: 'PUT',
             headers: {
@@ -101,4 +98,4 @@ const Game = () => {
     );
 }
 
-export default Game;
+export default MultiPlayerGame;

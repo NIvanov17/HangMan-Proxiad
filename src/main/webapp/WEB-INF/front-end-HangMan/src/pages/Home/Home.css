@@ -1,0 +1,43 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5em 0;
+}
+
+.home img {
+    width: 100px;
+    height: auto;
+    margin: 2em auto;
+}
+
+.home h1 {
+    text-align: center;
+}
+
+.start-gameButtons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.start-gameButtons button {
+    margin-bottom: 2em;
+    padding: 0.8em 0.5em;
+    border-radius: 0.5em;
+    border-color: #010142;
+    background-color: whitesmoke;
+    color: #00004B;
+    cursor: pointer;
+}
+
+.start-gameButtons button:hover {
+    margin-bottom: 2em;
+    padding: 0.8em 0.5em;
+    border-radius: 0.5em;
+    border-color: whitesmoke;
+    background-color: #00004B;
+    color: whitesmoke;
+    cursor: pointer;
+}

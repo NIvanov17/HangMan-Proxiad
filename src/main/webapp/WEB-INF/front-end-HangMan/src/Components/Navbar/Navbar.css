@@ -1,0 +1,24 @@
+.nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2em;
+    border-bottom: 3px solid #333;
+    background-color: #00004B;
+}
+
+.nav-bar .nav-title {
+    text-decoration: none;
+}
+
+.nav-bar h1 {
+    margin-left: 1em;
+    color: white;
+    cursor: pointer;
+}
+
+.nav-bar .links a {
+    margin-left: 2em;
+    color: white;
+    text-decoration: none;
+}

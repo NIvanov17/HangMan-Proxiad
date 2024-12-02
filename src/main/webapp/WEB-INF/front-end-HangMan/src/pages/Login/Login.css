@@ -1,0 +1,87 @@
+.login {
+    display: flex;
+    padding: 3em 1em;
+    border: 2px solid black;
+    border-radius: 15px;
+    background-color: #00004B;
+    justify-content: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form img {
+    filter: invert(1);
+    width: 20%;
+    margin-bottom: 1em;
+}
+
+.login-form h2 {
+    color: whitesmoke;
+    padding-bottom: 0.5em;
+}
+
+.login-form label {
+    display: block;
+    color: whitesmoke;
+}
+
+.login-form input {
+    display: block;
+    padding: 0.5em;
+    border: 2px solid white;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.login-form form {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.login-form p {
+    color: whitesmoke;
+    margin-bottom: 1em;
+}
+
+.login-form form button {
+    justify-content: center;
+}
+
+.login-form input:focus {
+    border-color: #87ceeb;
+    box-shadow: 0 0 5px rgba(135, 206, 235, 0.7);
+}
+
+.login-form button {
+    margin-top: 1em;
+    width: auto;
+    align-self: center;
+    padding: 0.6em 1.2em;
+    border: 2px solid #02027a;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #7CB9E8;
+    color: #02027a;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    margin-top: 1em;
+    padding: 0.6em 1.2em;
+    border: 2px solid white;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #02027a;
+    color: whitesmoke;
+    cursor: pointer;
+    transition: 500ms;
+}
+
+.login-form label {
+    padding-bottom: 0.5em;
+}

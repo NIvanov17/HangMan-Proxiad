@@ -1,0 +1,23 @@
+.footer {
+    text-align: center;
+    background-color: #00004B;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 2px solid white;
+    padding: 1em;
+}
+
+.footer p {
+    color: white;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: solid;
+}
