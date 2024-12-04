@@ -85,3 +85,9 @@
 .login-form label {
     padding-bottom: 0.5em;
 }
+
+.validation-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}

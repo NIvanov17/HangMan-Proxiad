@@ -20,6 +20,7 @@ const MultiPlayerGame = () => {
     const navigate = useNavigate();
     const restartSinglePlayerGame = () => navigate('/single-player/username');
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const id = gameDTO ? gameDTO.gameId : gameId;
@@ -29,8 +30,7 @@ const MultiPlayerGame = () => {
             })
             .then(data => {
                 setGame(data);
-                console.log(data);
-            })
+            }).catch(err => setError(err));
     }, [])
 
     const handleGuess = (e, letter) => {
@@ -56,7 +56,7 @@ const MultiPlayerGame = () => {
             .then((updatedGame) => {
                 setGame(updatedGame);
                 setIsPending(false);
-            });
+            }).catch(err => setError(err));
     }
 
     if (!game) {

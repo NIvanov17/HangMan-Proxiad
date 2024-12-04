@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,11 +52,11 @@ public class PlayerService {
 
 	}
 
-	public List<Player> getAllPlayersByWins() {
-		return playerRepository.findAllByOrderByTotalWinsDesc();
+	public Page<Player> getAllPlayersByWins(Pageable pageable) {
+		return playerRepository.findAllByOrderByTotalWinsDesc(pageable);
 	}
 
-	public List<Player> getTopTenPlayersByWins() {
+	public Page<Player> getTopTenPlayersByWins() {
 		Pageable topTen = PageRequest.of(0, 10);
 		return playerRepository.findAllByOrderByTotalWinsDesc(topTen);
 	}
@@ -101,22 +102,26 @@ public class PlayerService {
 		return new PlayersDTO(dtoGuesser, dtoGiver);
 	}
 
-	public List<PlayerRankingDTO> getAllPlayersDTOByWins() {
-		List<Player> allPlayersByWins = getAllPlayersByWins();
+	public Page<PlayerRankingDTO> getAllPlayersDTOByWins(Pageable pageable) {
+		return getAllPlayersByWins(pageable)
+				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 
-		List<PlayerRankingDTO> playerRankingDTO = allPlayersByWins.stream().map(p -> {
-			PlayerRankingDTO dto = new PlayerRankingDTO();
-			dto.setId(p.getId());
-			dto.setUsername(p.getUsername());
-			dto.setTotalWins(p.getTotalWins());
-			return dto;
-		}).collect(Collectors.toList());
-		return playerRankingDTO;
+//		Page<PlayerRankingDTO> playerRankingDTO = allPlayersByWins.stream().map(p -> {
+//			PlayerRankingDTO dto = new PlayerRankingDTO();
+//			dto.setId(p.getId());
+//			dto.setUsername(p.getUsername());
+//			dto.setTotalWins(p.getTotalWins());
+//			return dto;
+//		});
+//		return playerRankingDTO;
 	}
 
 	public List<PlayerRankingDTO> getTopTenPlayersDTOByWins() {
-		List<Player> topTenPlayersByWins = getTopTenPlayersByWins();
+//		return getTopTenPlayersByWins()
+//				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 
+		Page<Player> topTenPlayersByWins = getTopTenPlayersByWins();
+		
 		List<PlayerRankingDTO> playerRankingDTO = topTenPlayersByWins.stream().map(p -> {
 			PlayerRankingDTO dto = new PlayerRankingDTO();
 			dto.setId(p.getId());

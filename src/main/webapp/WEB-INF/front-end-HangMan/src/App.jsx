@@ -9,15 +9,13 @@ import LoginGiver from './pages/Login/LoginGiver';
 import LoginGuesser from './pages/Login/LoginGuesser';
 import WordToGuess from './pages/WordToGuess/WordsToGuess';
 import History from './pages/Statistics/History';
-import { useState } from "react";
 import HistoryLogIn from './pages/Login/HistoryLogIn';
 import MostUsedWords from './pages/Statistics/MostUsedWords';
 import Ranking from './pages/Statistics/Ranking';
 import TopTenRankings from './pages/Statistics/TopTenRanking';
+import Error from './pages/Errors/Error';
 
 function App() {
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <Router>
@@ -37,6 +35,7 @@ function App() {
             <Route path='/statistics' element={<MostUsedWords />} />
             <Route path='/rankings' element={<Ranking />} />
             <Route path='/rankings/top-ten' element={<TopTenRankings />} />
+            <Route path='/error' element={<Error />} />
           </Routes>
         </div>
         <Footer />

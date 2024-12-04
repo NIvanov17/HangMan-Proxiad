@@ -24,7 +24,6 @@ const Game = () => {
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
 
     useEffect(() => {
-        console.log(gameId);
         fetch(`http://localhost:8080/api/v1/games?id=${gameId}`)
             .then(res => {
                 return res.json();

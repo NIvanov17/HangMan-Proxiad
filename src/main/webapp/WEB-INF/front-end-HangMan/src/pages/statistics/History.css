@@ -8,10 +8,10 @@ h2 {
 }
 
 table {
-    width: 90%;
+    width: 100%;
+    max-width: 99%;
     border-collapse: collapse;
-    margin: 20px auto;
-
+    margin: 0 auto;
 }
 
 thead tr th {
@@ -22,7 +22,8 @@ thead tr th {
 
 th,
 td {
-    padding: 8px 12px;
+    font-size: 16px;
+    padding: 5px 12px;
     border: 1px solid #ccc;
     text-align: center;
 }
@@ -42,19 +43,20 @@ table tr:hover {
 button {
     width: auto;
     align-self: center;
-    padding: 0.3em 0.8em;
+    padding: 0.2em 0.4em;
     border: 2px solid #02027a;
-    letter-spacing: 0.1em;
     background-color: #02027a;
     color: #7CB9E8;
     cursor: pointer;
 }
 
 button:hover {
-    padding: 0.3em 0.8em;
+    width: auto;
+    align-self: center;
+    padding: 0.2em 0.4em;
     border: 2px solid white;
     background-color: #7CB9E8;
-    border-radius: 3px;
+    border-radius: 2px;
     letter-spacing: 0.1em;
     color: #02027a;
     cursor: pointer;

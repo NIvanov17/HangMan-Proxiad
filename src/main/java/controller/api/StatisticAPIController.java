@@ -3,6 +3,9 @@ package controller.api;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,18 +37,16 @@ public class StatisticAPIController {
 		this.playerService = playerService;
 	}
 
-
 	@GetMapping("/games/history")
 	@Operation(summary = "Get games for player")
 	public ResponseEntity<List<GameDTO>> getHistoryForPlayer(@RequestParam(required = true) String username) {
 
 		if (!playerService.isValid(username)) {
-			throw new IllegalArgumentException(String.format(ErrorMessages.USERNAME_NOT_EXISTING,username));
+			throw new IllegalArgumentException(String.format(ErrorMessages.USERNAME_NOT_EXISTING, username));
 		}
 
 		return ResponseEntity.ok(gameService.getAllGamesDTOForPlayerByUsername(username, RoleName.GUESSER));
 	}
-
 
 	@GetMapping("/games/statistic")
 	@Operation(summary = "Get Top 10 games")
@@ -56,8 +57,12 @@ public class StatisticAPIController {
 
 	@GetMapping("/players/ranking")
 	@Operation(summary = "Get All time player ranking")
-	public ResponseEntity<List<PlayerRankingDTO>> ranking() {
-		return ResponseEntity.ok(playerService.getAllPlayersDTOByWins());
+	public ResponseEntity<Page<PlayerRankingDTO>> ranking(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "15") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<PlayerRankingDTO> dtoPage = playerService.getAllPlayersDTOByWins(pageable);
+
+		return ResponseEntity.ok(dtoPage);
 	}
 
 	@GetMapping("/players/ranking/top-ten")
