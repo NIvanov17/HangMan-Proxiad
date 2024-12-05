@@ -16,8 +16,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>22</maven.compiler.source>
-		<maven.compiler.target>22</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>6.2.0</version>
+			<version>6.1.12</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -39,27 +39,27 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.11.3</version>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>5.14.2</version>
+			<version>5.13.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.bytebuddy</groupId>
 			<artifactId>byte-buddy</artifactId>
-			<version>1.15.10</version>
+			<version>1.15.1</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>5.14.2</version>
+			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>4.27.0</version>
+			<version>4.24.0</version>
 		</dependency>
 
 
@@ -94,19 +94,19 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.18.2</version>
+			<version>2.17.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>6.2.0</version>
+			<version>6.1.12</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
-			<version>5.11.3</version>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -119,14 +119,14 @@
 					<artifactId>log4j-to-slf4j</artifactId>
 				</exclusion>
 			</exclusions>
-			<version>3.4.0</version>
+			<version>3.3.4</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.4.0</version>
+			<version>3.3.4</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -140,25 +140,25 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
-			<version>11.0.1</version>
+			<version>11.0.0-M26</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-			<version>3.4.0</version>
+			<version>3.3.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>3.4.0</version>
+			<version>3.3.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>3.5.1</version>
+			<version>3.4.1</version>
 		</dependency>
 
 		<dependency>
@@ -171,13 +171,13 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>11.0.1</version>
+			<version>10.20.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
-			<version>11.0.1</version>
+			<version>10.20.0</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -185,19 +185,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>2.1.0-alpha1</version>
+			<version>2.0.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.5.12</version>
+			<version>1.5.11</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.36</version>
+			<version>1.16.18</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -205,19 +205,19 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>1.5.12</version>
+			<version>1.5.11</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.7.0</version>
+			<version>2.6.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>9.0.0.Beta3</version>
+			<version>8.0.1.Final</version>
 		</dependency>
 
 		<dependency>
@@ -247,25 +247,25 @@
 		<dependency>
 			<groupId>wsdl4j</groupId>
 			<artifactId>wsdl4j</artifactId>
-			<version>1.6.3</version>
+			<version>1.6.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
-			<version>3.4.0</version>
+			<version>3.3.3</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
-			<version>3.4.0</version>
+			<version>3.3.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>5.5.0</version>
+			<version>5.4.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -286,26 +286,22 @@
 					<version>3.0.2</version>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.11.0</version>
 					<configuration>
-						<source>22</source>
-						<target>22</target>
-						<release>22</release>
+						<source>21</source> <!-- Adjust Java version based on
+						your project -->
+						<target>21</target>
 						<compilerArgs>
-							<arg>--enable-preview</arg>
-							<arg>-parameters</arg>
+							<arg>--add-opens</arg>
+							<arg>
+								jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
 						</compilerArgs>
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0</version>
-					<configuration>
-						<argLine>--enable-preview</argLine>
-					</configuration>
+					<version>2.22.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
@@ -319,14 +315,6 @@
 				<plugin>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.8.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0</version>
-					<configuration>
-						<argLine>--enable-preview</argLine>
-					</configuration>
 				</plugin>
 
 
