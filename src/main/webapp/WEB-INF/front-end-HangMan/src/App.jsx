@@ -14,6 +14,7 @@ import MostUsedWords from './pages/Statistics/MostUsedWords';
 import Ranking from './pages/Statistics/Ranking';
 import TopTenRankings from './pages/Statistics/TopTenRanking';
 import Error from './pages/Errors/Error';
+import Register from './pages/Register/Register';
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/single-player/username" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path='/single-player/games' element={<SinglePlayerGame />} />
             <Route path="/multi-player/guesser" element={<LoginGuesser />} />
             <Route path="/multi-player/giver" element={<LoginGiver />} />
@@ -36,6 +37,9 @@ function App() {
             <Route path='/rankings' element={<Ranking />} />
             <Route path='/rankings/top-ten' element={<TopTenRankings />} />
             <Route path='/error' element={<Error />} />
+            {/* <Route path='/logout' element={<Logout />} /> */}
+            {/* <Route path='/admin' element={<Admin />} /> */}
+            <Route path='/register' element={<Register />} />
           </Routes>
         </div>
         <Footer />

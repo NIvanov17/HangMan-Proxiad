@@ -1,0 +1,2 @@
+ALTER TABLE player
+ADD COLUMN password VARCHAR(255) NOT NULL;

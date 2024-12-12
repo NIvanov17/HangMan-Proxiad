@@ -8,11 +8,13 @@ import { validateUsername } from "../../utils/ValidationUtils";
 const Login = () => {
 
     const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
     const [game, setGame] = useState(null);
     const [error, setError] = useState(null);
     const [validationError, setValidationError] = useState('');
+
 
     const navigateToSinglePlayerGame = () => {
 
@@ -74,7 +76,7 @@ const Login = () => {
     return (
         <div className="login">
             <div className="login-form">
-                <h2>Single-Player Game</h2>
+                <h2>User Log In</h2>
                 <img src={hangmanImage} alt="" />
                 <form onSubmit={handleSubmit}>
                     <label>Enter username:</label>
@@ -83,6 +85,13 @@ const Login = () => {
                         required
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                    ></input>
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     ></input>
                     {validationError && <p className="validation-error">{validationError}</p>}
                     {!validationError && <p className="validation-error"></p>}

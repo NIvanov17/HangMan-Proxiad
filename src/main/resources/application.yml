@@ -1,7 +1,10 @@
-server:
+server: 
   port: 8080
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
+
   mvc:
     view:
       prefix: /WEB-INF/views/
@@ -16,6 +19,7 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
+      - org.apache.shiro.spring.config.web.autoconfigure.ShiroWebAutoConfiguration
 
   datasource:
     url: jdbc:postgresql://localhost:5432/hangman?createDatabaseIfNotExist=true
