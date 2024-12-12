@@ -1,0 +1,5 @@
+CREATE TABLE player (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    total_wins INT NOT NULL
+);
