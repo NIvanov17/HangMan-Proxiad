@@ -9,6 +9,7 @@ import org.springframework.web.client.HttpServerErrorException.InternalServerErr
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.example.exception.GameAlreadyFinishedException;
+import com.example.exception.InavlidPasswordException;
 import com.example.exception.InvalidGameIDException;
 import com.example.exception.InvalidUsernameException;
 import com.example.exception.MultiPlayerModeException;
@@ -71,6 +72,14 @@ public class GlobalExHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleBadRequestException(SinglePlayerModeException ex) {
 		ErrorResponse error = new ErrorResponse("Bad request", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(InavlidPasswordException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorResponse> handleBadRequestException(InavlidPasswordException ex){
+		
+		ErrorResponse error = new ErrorResponse("Bad request",ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 }

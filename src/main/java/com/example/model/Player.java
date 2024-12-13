@@ -24,7 +24,7 @@ public class Player {
 
 	@Column(nullable = false, unique = true)
 	private String username;
-	
+
 	@Column(nullable = false)
 	private String password;
 
@@ -35,10 +35,11 @@ public class Player {
 	private int totalWins;
 
 	@ManyToMany()
-	@JoinTable(name = "player_role",
-	joinColumns = @JoinColumn(name = "player_id"),
-	inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@JoinTable(name = "player_role", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<Role> roles;
+
+	@Column(nullable = false)
+	private String salt;
 
 	public Player() {
 
@@ -59,8 +60,6 @@ public class Player {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
-	
 
 	public String getPassword() {
 		return password;
@@ -92,6 +91,14 @@ public class Player {
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 }

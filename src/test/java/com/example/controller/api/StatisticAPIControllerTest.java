@@ -48,6 +48,7 @@ class StatisticAPIControllerTest {
 		guesser = playerRepository.findByUsername("testov").orElseGet(() -> {
 			Player newPlayer = new Player();
 			newPlayer.setUsername("testov");
+			newPlayer.setPassword("test");
 			return playerRepository.save(newPlayer);
 		});
 		List<GameDTO> gamesHistory = Collections.singletonList(new GameDTO());
@@ -66,6 +67,7 @@ class StatisticAPIControllerTest {
 	void testGetHistoryWithInvalidUsrname() {
 		guesser = new Player();
 		guesser.setUsername("invalid");
+		guesser.setPassword("test");
 		
 		given()
 		.queryParam("username", guesser.getUsername())

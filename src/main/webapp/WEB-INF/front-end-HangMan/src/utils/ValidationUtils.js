@@ -8,3 +8,13 @@ export const validateUsername = (username) => {
     }
     return null;
 };
+
+export const validatePasswords = (password, confirmPasswords) => {
+    if (password.length < 6) {
+        return "Password should be at least 6 characters long!";
+    }
+    if (password !== confirmPasswords) {
+        return "Passwords should match!"
+    }
+    return null;
+}

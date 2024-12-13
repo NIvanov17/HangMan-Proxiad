@@ -17,6 +17,7 @@ import com.example.model.Player;
 import com.example.model.DTOs.LoginDTO;
 import com.example.model.DTOs.PlayerDTO;
 import com.example.model.DTOs.PlayersDTO;
+import com.example.model.DTOs.RegisterDTO;
 import com.example.service.PlayerService;
 import com.example.util.Validator;
 
@@ -79,5 +80,13 @@ public class PlayerAPIController {
 		validator.isValid(username, String.format(ErrorMessages.USERNAME_IS_NOT_VALID, username));
 		playerService.deleteByUsername(username);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+	
+	@PostMapping("api/v1/players/registration")
+	public ResponseEntity<String> registerUser(@RequestBody() RegisterDTO dto){
+		
+		playerService.registerDTO(dto);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration");
 	}
 }

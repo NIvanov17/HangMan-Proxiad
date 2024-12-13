@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import hangmanImage from '../../images/hangman.png';
-import { validateUsername } from "../../utils/ValidationUtils";
+import { validatePasswords, validateUsername } from "../../utils/ValidationUtils";
 import "./Register.css";
 
 const Register = () => {
@@ -10,17 +10,27 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isPending, setIsPending] = useState(false);
-    const [validationError, setValidationError] = useState('');
+    const [usernameErr, setUsernameErr] = useState('');
+    const [passwordErr, setPasswordErr] = useState('');
 
     const handleSubmit = (e) => {
         setIsPending(true);
         e.preventDefault();
-        const validationMessage = validateUsername(username);
-        if (validationMessage) {
-            setValidationError(validationMessage);
+        const usernameErr = validateUsername(username);
+        if (usernameErr) {
+            setUsernameErr(usernameErr);
             setIsPending(false);
             return;
         }
+
+        setUsernameErr('');
+        const passwordErr = validatePasswords(password, confirmPassword);
+        if (passwordErr) {
+            setPasswordErr(validatePasswords);
+            setIsPending(false);
+            return;
+        }
+        setPasswordErr('');
     }
 
     return (
@@ -49,10 +59,10 @@ const Register = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 ></input>
-                {validationError && <p className="validation-error">{validationError}</p>}
-                {!validationError && <p className="validation-error"></p>}
-                {!isPending && <button>Submit</button>}
-                {isPending && <button disabled>Submitting...</button>}
+                {validateUsername && <p className="validation-error">{usernameErr}</p>}
+                {validatePasswords && <p className="validation-error">{passwordErr}</p>}
+                {!isPending && <button>Register</button>}
+                {isPending && <button disabled>Registering...</button>}
             </form>
         </div>
     );

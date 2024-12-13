@@ -22,6 +22,10 @@ import com.example.security.CustomRealm;
 @Configuration
 public class SecurityConfig {
 
+	/*
+	 The Authenticator is responsible for authenticating users.
+	 It determines whether the provided credentials (username, password..) are valid.
+	 */
 	@Bean
 	public Authenticator authenticator(Realm customRealm) {
 		ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
@@ -29,6 +33,9 @@ public class SecurityConfig {
 		return authenticator;
 	}
 
+	/*
+	It acts as the bridge between Shiro and your user database.
+	It defines how users are authenticated and authorized.*/
 	@Bean
 	public Realm customRealm() {
 		return new CustomRealm();
@@ -52,6 +59,7 @@ public class SecurityConfig {
 		return securityManager;
 	}
 
+	//whether a user has a specific role or permission.
 	@Bean
 	public Authorizer authorizer() {
 		return new ModularRealmAuthorizer();

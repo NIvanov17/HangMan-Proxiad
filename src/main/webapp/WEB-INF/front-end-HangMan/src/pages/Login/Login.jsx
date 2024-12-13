@@ -94,7 +94,6 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     ></input>
                     {validationError && <p className="validation-error">{validationError}</p>}
-                    {!validationError && <p className="validation-error"></p>}
                     {!isPending && <button>Submit</button>}
                     {isPending && <button disabled>Submitting...</button>}
                 </form>

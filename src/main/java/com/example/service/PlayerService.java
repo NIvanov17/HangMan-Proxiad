@@ -10,12 +10,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.enums.ErrorMessages;
+import com.example.enums.PlayerRole;
+import com.example.exception.InavlidPasswordException;
 import com.example.exception.InvalidUsernameException;
 import com.example.model.Player;
+import com.example.model.Role;
 import com.example.model.DTOs.PlayerDTO;
 import com.example.model.DTOs.PlayerRankingDTO;
 import com.example.model.DTOs.PlayersDTO;
+import com.example.model.DTOs.RegisterDTO;
 import com.example.repository.PlayerRepository;
+import com.example.security.ShiroPasswordEncoder;
 
 import jakarta.transaction.Transactional;
 
@@ -24,10 +29,12 @@ import jakarta.transaction.Transactional;
 public class PlayerService {
 
 	private PlayerRepository playerRepository;
+	private RoleService roleService;
 
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository) {
+	public PlayerService(PlayerRepository playerRepository, RoleService roleService) {
 		this.playerRepository = playerRepository;
+		this.roleService = roleService;
 	}
 
 	public boolean contains(String username) {
@@ -135,5 +142,36 @@ public class PlayerService {
 	public void deleteByUsername(String username) {
 		Player player = getPlayerByUsername(username);
 		playerRepository.delete(player);
+	}
+
+	public void registerDTO(RegisterDTO dto) {
+		if(dto.getUsername().length() < 3) {
+			throw new InvalidUsernameException("Username should be at least 3 symbols!");
+		}else if(contains(dto.getUsername())) {
+			throw new InvalidUsernameException("Username is already taken!");
+		}
+		
+		if(dto.getPassword().length() < 6 || dto.getConfirmPassword().length() < 6) {
+			throw new InavlidPasswordException("Password should be at least 6 characters!");
+		}
+		
+		
+		if(!dto.getPassword().equals(dto.getConfirmPassword())) {
+			throw new InavlidPasswordException("Passwords should match!");
+		}
+		Role deafultRole = roleService.getRoleByName(PlayerRole.USER);
+		String password = dto.getPassword();
+		String salt = ShiroPasswordEncoder.generateSalt();
+		String hashPassword = ShiroPasswordEncoder.hashPassword(password, salt);
+		
+		Player player = new Player();
+		player.setRoles(List.of(deafultRole));
+		player.setUsername(dto.getUsername());
+		player.setPassword(dto.getPassword());
+		player.setPassword(hashPassword);
+		player.setSalt(salt);
+		
+		playerRepository.save(player);
+		
 	}
 }

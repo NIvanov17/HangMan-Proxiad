@@ -102,6 +102,7 @@ class GameAPIControllerTest {
 		guesser = playerRepository.findByUsername("testov").orElseGet(() -> {
 			Player newPlayer = new Player();
 			newPlayer.setUsername("testov");
+			newPlayer.setPassword("test");
 			return playerRepository.save(newPlayer);
 		});
 
@@ -156,8 +157,10 @@ class GameAPIControllerTest {
 		giver = playerRepository.findByUsername("testovVtori").orElseGet(() -> {
 			Player newPlayer = new Player();
 			newPlayer.setUsername("testovVtori");
+			newPlayer.setPassword("test");
 			return playerRepository.save(newPlayer);
 		});
+		
 
 		gamePlayerGiver = new GamePlayer();
 		gamePlayerGiver.setGame(testGame);
@@ -203,6 +206,7 @@ class GameAPIControllerTest {
 		giver = playerRepository.findByUsername("testovVtori").orElseGet(() -> {
 			Player newPlayer = new Player();
 			newPlayer.setUsername("testovVtori");
+			newPlayer.setPassword("test");
 			return playerRepository.save(newPlayer);
 		});
 
@@ -268,6 +272,7 @@ class GameAPIControllerTest {
 		giver = playerRepository.findByUsername("testovVtori").orElseGet(() -> {
 			Player newPlayer = new Player();
 			newPlayer.setUsername("testovVtori");
+			newPlayer.setPassword("test");
 			return playerRepository.save(newPlayer);
 		});
 		MultiPlayerGameInputDTO dto = new MultiPlayerGameInputDTO(giver.getUsername(), guesser.getUsername(), "testfromassure", testGame.getWord().getCategory().getCategoryName().name());
