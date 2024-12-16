@@ -17,30 +17,8 @@ const Login = () => {
 
 
 
-    const navigateToHome = () => {
-        navigate('/');
-        // fetch('http://localhost:8080/api/v1/games', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         playerDTO: {
-        //             username: username
-        //         }
-        //     })
-        // })
-        //     .then(res => {
-        //         if (!res.ok) {
-        //             return res.json().then((errorData) => {
-        //                 throw new Error(errorData.message);
-        //             });
-        //         }
-        //         return res.json();
-        //     }).then(data => {
-        //         setGame(data);
-        //         navigate('/single-player/games', { state: { gameId: data.gameId } });
-        //     }).catch(err => setError(err))
+    const navigateWelcome = () => {
+        navigate('/welcome');
     }
 
     const handleSubmit = (e) => {
@@ -75,7 +53,7 @@ const Login = () => {
                         throw { message: errorData.message, ...errorData };
                     });
                 }
-                navigateToHome();
+                navigateWelcome();
             }).catch(err => {
                 setError(err)
             })

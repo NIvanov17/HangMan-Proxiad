@@ -15,6 +15,7 @@ import Ranking from './pages/Statistics/Ranking';
 import TopTenRankings from './pages/Statistics/TopTenRanking';
 import Error from './pages/Errors/Error';
 import Register from './pages/Register/Register';
+import Welcome from './pages/Home/Welcome';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/welcome" element={<Welcome />} />
             <Route path="/login" element={<Login />} />
             <Route path='/single-player/games' element={<SinglePlayerGame />} />
             <Route path="/multi-player/guesser" element={<LoginGuesser />} />
