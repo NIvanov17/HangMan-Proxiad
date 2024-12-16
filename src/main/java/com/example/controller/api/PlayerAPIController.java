@@ -1,5 +1,8 @@
 package com.example.controller.api;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +49,13 @@ public class PlayerAPIController {
 
 		validator.isValid(username, String.format(ErrorMessages.USERNAME_IS_NOT_VALID, username));
 
-		if (playerDTO != null ) {
+		if (playerDTO != null) {
 			validator.areEqual(username, playerDTO.getUsername(),
 					String.format(ErrorMessages.USERNAMES_ARE_EQUAL, username));
 			if (!playerService.contains(username)) {
 				playerService.register(username);
 			}
-			PlayersDTO playersDTO = playerService.createPlayersDTO(username,playerDTO.getUsername());
+			PlayersDTO playersDTO = playerService.createPlayersDTO(username, playerDTO.getUsername());
 			return ResponseEntity.status(HttpStatus.CREATED).body(playersDTO);
 		}
 		if (!playerService.contains(username)) {
@@ -81,12 +84,22 @@ public class PlayerAPIController {
 		playerService.deleteByUsername(username);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-	
+
 	@PostMapping("api/v1/players/registration")
-	public ResponseEntity<String> registerUser(@RequestBody() RegisterDTO dto){
-		
+	public ResponseEntity<String> registerUser(@RequestBody() RegisterDTO dto) {
+
 		playerService.registerDTO(dto);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body("Successful Registration!");
+	}
+
+	@PostMapping("api/v1/players/login")
+	public ResponseEntity<String> login(@RequestBody() LoginDTO dto) {
+		Subject currentUser = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(dto.getUsername(), dto.getPassword());
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body("Successful registration");
+		currentUser.login(token);
+		
+		return ResponseEntity.status(HttpStatus.OK).body("Log in succesfully!");
 	}
 }

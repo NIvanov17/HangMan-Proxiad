@@ -11,58 +11,71 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
-    const [game, setGame] = useState(null);
+    // const [game, setGame] = useState(null);
     const [error, setError] = useState(null);
     const [validationError, setValidationError] = useState('');
 
 
-    const navigateToSinglePlayerGame = () => {
 
-        fetch('http://localhost:8080/api/v1/games', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                playerDTO: {
-                    username: username
-                }
-            })
-        })
-            .then(res => {
-                if (!res.ok) {
-                    return res.json().then((errorData) => {
-                        throw new Error(errorData.message);
-                    });
-                }
-                return res.json();
-            }).then(data => {
-                setGame(data);
-                navigate('/single-player/games', { state: { gameId: data.gameId } });
-            }).catch(err => setError(err))
+    const navigateToHome = () => {
+        navigate('/');
+        // fetch('http://localhost:8080/api/v1/games', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         playerDTO: {
+        //             username: username
+        //         }
+        //     })
+        // })
+        //     .then(res => {
+        //         if (!res.ok) {
+        //             return res.json().then((errorData) => {
+        //                 throw new Error(errorData.message);
+        //             });
+        //         }
+        //         return res.json();
+        //     }).then(data => {
+        //         setGame(data);
+        //         navigate('/single-player/games', { state: { gameId: data.gameId } });
+        //     }).catch(err => setError(err))
     }
 
     const handleSubmit = (e) => {
         setIsPending(true);
         e.preventDefault();
-        const validationMessage = validateUsername(username);
-        if (validationMessage) {
-            setValidationError(validationMessage);
-            setIsPending(false);
-            return;
-        }
+        // const validationMessage = isUsernameValid(username);
+        // if (validationMessage) {
+        //     setValidationError(validationMessage);
+        //     setIsPending(false);
+        //     return;
+        // }
+
+        const loginDTO = {
+            username: username,
+            password: password
+        };
 
         setTimeout(() => {
-            fetch('http://localhost:8080/api/v1/players/' + username, {
-                method: 'POST'
-            }).then((res) => {
+            fetch('http://localhost:8080/api/v1/players/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginDTO)
+            },
+
+            ).then((res) => {
                 setIsPending(false);
+                console.log(loginDTO);
                 if (!res.ok) {
                     return res.json().then((errorData) => {
                         throw { message: errorData.message, ...errorData };
                     });
                 }
-                navigateToSinglePlayerGame();
+                navigateToHome();
             }).catch(err => {
                 setError(err)
             })
