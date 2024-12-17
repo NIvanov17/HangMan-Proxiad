@@ -5,6 +5,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.enums.ErrorMessages;
 import com.example.model.Player;
+import com.example.model.DTOs.JwtResponse;
 import com.example.model.DTOs.LoginDTO;
 import com.example.model.DTOs.PlayerDTO;
 import com.example.model.DTOs.PlayersDTO;
 import com.example.model.DTOs.RegisterDTO;
 import com.example.service.PlayerService;
+import com.example.util.JwtUtils;
 import com.example.util.Validator;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,11 +38,14 @@ public class PlayerAPIController {
 	private final PlayerService playerService;
 
 	private final Validator validator;
+	
+	private final JwtUtils jwt;
 
 	@Autowired
-	public PlayerAPIController(PlayerService playerService, Validator validator) {
+	public PlayerAPIController(PlayerService playerService, Validator validator, JwtUtils jwt) {
 		this.playerService = playerService;
 		this.validator = validator;
+		this.jwt = jwt;
 	}
 
 	@PostMapping("api/v1/players/{username}")
@@ -94,12 +100,18 @@ public class PlayerAPIController {
 	}
 
 	@PostMapping("api/v1/players/login")
-	public ResponseEntity<String> login(@RequestBody() LoginDTO dto) {
+	public ResponseEntity<JwtResponse> login(@RequestBody() LoginDTO dto) {
 		Subject currentUser = SecurityUtils.getSubject();
 		UsernamePasswordToken token = new UsernamePasswordToken(dto.getUsername(), dto.getPassword());
 		
-		currentUser.login(token);
-		
-		return ResponseEntity.status(HttpStatus.OK).body("Log in succesfully!");
+		try {
+			currentUser.login(token);
+			String authToken = jwt.generateToken(dto.getUsername());
+			
+			return ResponseEntity.ok(new JwtResponse(authToken, dto.getUsername()));
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
 	}
 }

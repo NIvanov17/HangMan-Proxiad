@@ -53,10 +53,20 @@ const Login = () => {
                         throw { message: errorData.message, ...errorData };
                     });
                 }
+                return res.json();
+                localStorage.setItem("token", res.token);
+                localStorage.setItem("username", res.username);
                 navigateWelcome();
-            }).catch(err => {
-                setError(err)
             })
+                .then((data) => {
+                    console.log(data);
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("username", data.username);
+                    navigateWelcome();
+                })
+                .catch(err => {
+                    setError(err)
+                })
         }, 500)
     }
 
