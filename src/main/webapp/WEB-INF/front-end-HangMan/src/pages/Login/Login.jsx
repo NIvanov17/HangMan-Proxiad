@@ -54,9 +54,6 @@ const Login = () => {
                     });
                 }
                 return res.json();
-                localStorage.setItem("token", res.token);
-                localStorage.setItem("username", res.username);
-                navigateWelcome();
             })
                 .then((data) => {
                     console.log(data);
