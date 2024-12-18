@@ -1,6 +1,8 @@
 package com.example.config;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.Authenticator;
@@ -11,6 +13,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -20,7 +23,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.example.security.CustomRealm;
+import com.example.security.JwtAuthenticationFilter;
 import com.example.service.PlayerService;
+
+import jakarta.servlet.Filter;
 
 @Configuration
 public class SecurityConfig {
@@ -86,14 +92,24 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public ShiroFilterChainDefinition shiroFilterChainDefinition() {
+	public ShiroFilterChainDefinition shiroFilterChainDefinition(SecurityManager securityManager, CorsFilter corsFilter, JwtAuthenticationFilter jwtAuthenticationFilter) {
 		DefaultShiroFilterChainDefinition definition = new DefaultShiroFilterChainDefinition();
+		
+		ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+        factoryBean.setSecurityManager(securityManager);
+
+        // Register custom filters
+        Map<String, Filter> filters = new LinkedHashMap<>();
+        filters.put("cors", corsFilter); // CORS filter
+        filters.put("jwt", jwtAuthenticationFilter); // JWT filter
+        factoryBean.setFilters(filters);
 
 		// Define your URL filter chains
 		definition.addPathDefinition("/login", "anon");
 		definition.addPathDefinition("/logout", "logout"); // Logout path
 		definition.addPathDefinition("/**", "anon"); // Allow anonymous access to all other paths
 
+		definition.addPathDefinition("/**", "cors");
 		return definition;
 	}
 

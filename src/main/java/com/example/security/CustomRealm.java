@@ -69,21 +69,10 @@ public class CustomRealm extends JdbcRealm {
 
 		UsernamePasswordToken userToken = (UsernamePasswordToken) token;
 		Player player = playerService.getPlayerByUsername(userToken.getUsername());
-		String inputPassword = new String(userToken.getPassword()); // Password entered during login
-		String providedSalt = player.getSalt(); // Stored salt from database
-		String calculatedHash = ShiroPasswordEncoder.hashPassword(inputPassword, providedSalt);
-
-		System.out.println("Input Password: " + inputPassword);
-		System.out.println("Stored Salt: " + providedSalt);
-		System.out.println("Calculated Hash: " + calculatedHash);
-		System.out.println("Stored Hash: " + player.getPassword());
 
 		if (player != null) {
 			byte[] decodedSalt = Base64.getDecoder().decode(player.getSalt());
-			
-			System.out.println("Stored Username: " + player.getUsername());
-	        System.out.println("Stored Salt (Base64): " + player.getSalt());
-			System.out.println("Stored Hashed Password: " + player.getPassword());
+
 
 			return new SimpleAuthenticationInfo(player.getUsername(), player.getPassword(),
 					ByteSource.Util.bytes(decodedSalt), getName());

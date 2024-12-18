@@ -29,6 +29,7 @@ import com.example.util.Validator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @Tag(name = "Player API Controller")
@@ -114,4 +115,17 @@ public class PlayerAPIController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
 	}
-}
+	
+	@PostMapping("api/v1/players/logout")
+	public ResponseEntity<String> logout(){
+
+			Subject currentUser = SecurityUtils.getSubject();
+			
+			if(currentUser.isAuthenticated()) {
+				currentUser.logout();
+				return ResponseEntity.ok("Logged out successfully!");
+			}
+			return ResponseEntity.badRequest().body("Invalid or missing!");
+		}
+	}
+	

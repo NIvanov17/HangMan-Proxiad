@@ -57,8 +57,8 @@ const Login = () => {
             })
                 .then((data) => {
                     console.log(data);
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("username", data.username);
+                    sessionStorage.setItem("token", data.token);
+                    sessionStorage.setItem("username", data.username);
                     navigateWelcome();
                 })
                 .catch(err => {
