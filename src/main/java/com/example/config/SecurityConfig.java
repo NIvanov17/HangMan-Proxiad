@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import com.example.security.CustomRealm;
 import com.example.security.JwtAuthenticationFilter;
 import com.example.service.PlayerService;
+import com.example.util.JwtUtils;
 
 import jakarta.servlet.Filter;
 
@@ -105,8 +106,8 @@ public class SecurityConfig {
         factoryBean.setFilters(filters);
 
 		// Define your URL filter chains
-		definition.addPathDefinition("/login", "anon");
-		definition.addPathDefinition("/logout", "logout"); // Logout path
+		definition.addPathDefinition("api/v1/players/login", "anon");
+		definition.addPathDefinition("api/v1/players/logout", "logout"); // Logout path
 		definition.addPathDefinition("/**", "anon"); // Allow anonymous access to all other paths
 
 		definition.addPathDefinition("/**", "cors");
