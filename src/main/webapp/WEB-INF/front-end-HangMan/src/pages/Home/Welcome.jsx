@@ -8,15 +8,15 @@ const Welcome = () => {
     const [username, setUsername] = useState("");
 
     const startSinglePlayerGame = () => {
-        navigate('/single-player/username');
+        navigate('/single-player/games');
     }
 
     const startMultiPlayerGame = () => {
-        navigate('/multi-player/giver')
+        navigate('/multi-player/words');
     }
 
     useEffect(() => {
-        const storedUsername = localStorage.getItem("username");
+        const storedUsername = sessionStorage.getItem("username");
 
         if (storedUsername) {
             setUsername(storedUsername);

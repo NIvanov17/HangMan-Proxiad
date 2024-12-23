@@ -117,9 +117,12 @@ public class PlayerAPIController {
 	}
 	
 	@PostMapping("api/v1/players/logout")
-	public ResponseEntity<String> logout(){
+	public ResponseEntity<String> logout(HttpServletRequest request){
 
+		String token = jwt.getTokenFromRequest(request);
+		String username = jwt.extractUsername(token);
 			Subject currentUser = SecurityUtils.getSubject();
+			System.out.println(username+" token: "+token);
 			
 			if(currentUser.isAuthenticated()) {
 				currentUser.logout();

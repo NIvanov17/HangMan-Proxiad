@@ -112,15 +112,6 @@ public class PlayerService {
 	public Page<PlayerRankingDTO> getAllPlayersDTOByWins(Pageable pageable) {
 		return getAllPlayersByWins(pageable)
 				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
-
-//		Page<PlayerRankingDTO> playerRankingDTO = allPlayersByWins.stream().map(p -> {
-//			PlayerRankingDTO dto = new PlayerRankingDTO();
-//			dto.setId(p.getId());
-//			dto.setUsername(p.getUsername());
-//			dto.setTotalWins(p.getTotalWins());
-//			return dto;
-//		});
-//		return playerRankingDTO;
 	}
 
 	public List<PlayerRankingDTO> getTopTenPlayersDTOByWins() {

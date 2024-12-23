@@ -1,5 +1,6 @@
 package com.example.config;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.example.security.CustomRealm;
 import com.example.security.JwtAuthenticationFilter;
+import com.example.security.JwtRealm;
 import com.example.service.PlayerService;
 import com.example.util.JwtUtils;
 
@@ -33,11 +35,14 @@ import jakarta.servlet.Filter;
 public class SecurityConfig {
 
 	private final PlayerService playerService;
+	
+	private final JwtUtils jwt;
 
 	@Autowired
-	public SecurityConfig(PlayerService playerService) {
+	public SecurityConfig(PlayerService playerService, JwtUtils jwt) {
 		super();
 		this.playerService = playerService;
+		this.jwt = jwt;
 	}
 
 	/*
@@ -59,6 +64,12 @@ public class SecurityConfig {
 	public Realm customRealm() {
 		return new CustomRealm(playerService);
 	}
+	
+	@Bean
+    public Realm jwtRealm() {
+        return new JwtRealm(jwt);
+    }
+
 
 	// central point managing all security related operations
 	// authentication, authorization, session management, and cryptographic
@@ -70,8 +81,9 @@ public class SecurityConfig {
 		// Responsible for authenticating users and authorizing them by roles and
 		// permissions.
 		// You pass this realm to the SecurityManager so it can delegate tasks to it.
+		List<Realm> realms = Arrays.asList(customRealm(),jwtRealm());
 		securityManager.setAuthenticator(authenticator);
-		securityManager.setRealm(customRealm);
+		securityManager.setRealms(realms);
 		securityManager.setAuthorizer(authorizer);
 		securityManager.setSessionManager(sessionManager);
 		SecurityUtils.setSecurityManager(securityManager);
@@ -105,12 +117,9 @@ public class SecurityConfig {
         filters.put("jwt", jwtAuthenticationFilter); // JWT filter
         factoryBean.setFilters(filters);
 
-		// Define your URL filter chains
-		definition.addPathDefinition("api/v1/players/login", "anon");
-		definition.addPathDefinition("api/v1/players/logout", "logout"); // Logout path
-		definition.addPathDefinition("/**", "anon"); // Allow anonymous access to all other paths
-
-		definition.addPathDefinition("/**", "cors");
+        definition.addPathDefinition("api/v1/players/login", "anon, cors");
+        definition.addPathDefinition("api/v1/players/logout", "cors, jwt");
+        definition.addPathDefinition("/**", "cors, jwt");
 		return definition;
 	}
 

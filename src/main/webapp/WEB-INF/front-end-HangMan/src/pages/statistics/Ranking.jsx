@@ -9,7 +9,7 @@ const Ranking = () => {
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
-    const [itemsPerPage] = useState(12);
+    const [itemsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
 
     const handlePageChange = (page) => {

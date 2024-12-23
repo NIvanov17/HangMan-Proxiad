@@ -4,10 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -429,6 +431,14 @@ public class GameService {
 		return result.toString();
 	}
 
+	public Page<Game> getAllGamesForPlayerByUsername(String username, RoleName guesser,Pageable pageable) {
+
+		Player playerByUsername = playerService.getPlayerByUsername(username);
+		long id = playerByUsername.getId();
+		return findAllGamesForPlayerById(id, guesser,pageable)
+				.map(GamePlayer::getGame);
+	}
+	
 	public List<Game> getAllGamesForPlayerByUsername(String username, RoleName guesser) {
 
 		Player playerByUsername = playerService.getPlayerByUsername(username);
@@ -438,6 +448,10 @@ public class GameService {
 				.collect(Collectors.toList());
 	}
 
+	private Page<GamePlayer> findAllGamesForPlayerById(long id, RoleName guesser,Pageable pageable) {
+		return gamePlayerRepository.findAllGamesForPlayerWithId(id, guesser,pageable);
+	}
+	
 	private List<GamePlayer> findAllGamesForPlayerById(long id, RoleName guesser) {
 		return gamePlayerRepository.findAllGamesForPlayerWithId(id, guesser);
 	}
@@ -511,6 +525,23 @@ public class GameService {
 
 	}
 
+	public Page<GameDTO> getAllGamesDTOForPlayerByUsername(String username, RoleName role,Pageable pageable) {
+		Page<Game> allGamesForPlayerByUsername = getAllGamesForPlayerByUsername(username, role,pageable);
+		Player guesser = playerService.getPlayerByUsername(username);
+
+		Page<GameDTO> dtos = allGamesForPlayerByUsername
+				.map(g -> {
+			PlayerDTO guessDto = new PlayerDTO(guesser.getId(), username);
+			GameDTO gameDTO = new GameDTO(g.getId(), g.getCurrentState(), g.getTriesLeft(), g.getUsedChars(), g.isFinished(),guessDto);
+			gameDTO.setCategory(g.getWord().getCategory().getCategoryName().name());
+			gameDTO.setGameMode(g.getMode());
+			gameDTO.setWord(g.getWord().getName());
+			return gameDTO;
+		});
+
+		return dtos;
+	}
+	
 	public List<GameDTO> getAllGamesDTOForPlayerByUsername(String username, RoleName role) {
 		List<Game> allGamesForPlayerByUsername = getAllGamesForPlayerByUsername(username, role);
 		Player guesser = playerService.getPlayerByUsername(username);
@@ -537,13 +568,13 @@ public class GameService {
 
 	}
 
-	public boolean isPlayerGuesser(Game game, LoginDTO playerDTO) {
+	public boolean isPlayerGuesser(Game game, String username) {
 		List<GamePlayer> playerInGames = game.getPlayerInGames();
 		Player player = getPlayerByRole(playerInGames, RoleName.GUESSER);
-		if (playerDTO.getUsername().equals(player.getUsername())) {
+		if (username.equals(player.getUsername())) {
 			return true;
 		}
-		throw new InvalidUsernameException(String.format(ErrorMessages.INAVLID_GUESSER, playerDTO.getUsername()));
+		throw new InvalidUsernameException(String.format(ErrorMessages.INAVLID_GUESSER, username));
 
 	}
 

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./History.css";
 import Loader from "../../Components/Loader/Loader";
+import PaginationComponent from "../../Components/Pagination/PaginationComponent";
+
 
 
 
@@ -12,9 +14,13 @@ const History = () => {
     const [isPending, setIsPending] = useState(false);
     const { username } = location.state || {};
     const [historyData, setHistoryData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage] = useState(6);
+    const [totalPages, setTotalPages] = useState(0);
 
     const resumeSinglePlayer = (gameId) => {
-        navigate('/single-player/games', { state: { gameId } });
+        sessionStorage.setItem("gameId", gameId);
+        navigate('/single-player/games');
     }
 
     const resumeMultiPlayer = (gameId) => {
@@ -23,13 +29,25 @@ const History = () => {
 
     useEffect(() => {
         setIsPending(true);
-        fetch(`http://localhost:8080/api/v1/games/history?username=${username}`)
-            .then(res => res.json())
+        fetch(`http://localhost:8080/api/v1/games/history?page=${currentPage}&size=${itemsPerPage}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            },
+        })
+            .then((res) => {
+                if (res.status === 401) {
+                    navigate('/login', { replace: true });
+                    return Promise.reject('User is not authenticated');
+                };
+                return res.json();
+            })
             .then(data => {
                 setIsPending(false);
-                setHistoryData(data);
+                setHistoryData(data.content);
+                setTotalPages(data.totalPages || 1);
             })
-    }, []);
+    }, [currentPage]);
 
 
     return (
@@ -83,8 +101,16 @@ const History = () => {
                             ))}
                         </tbody>
                     </table>
+
                 </>
+
             )}
+            <>
+                <PaginationComponent currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)} />
+            </>
+
         </div>
     );
 }

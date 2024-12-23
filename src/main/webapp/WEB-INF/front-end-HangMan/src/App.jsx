@@ -33,13 +33,11 @@ function App() {
             <Route path="/multi-player/giver" element={<LoginGiver />} />
             <Route path='/multi-player/words' element={<WordToGuess />} />
             <Route path='/multi-player/games' element={<MultiPlayerGame />} />
-            <Route path='/history/log-in' element={<HistoryLogIn />} />
             <Route path='/history' element={<History />} />
             <Route path='/statistics' element={<MostUsedWords />} />
             <Route path='/rankings' element={<Ranking />} />
             <Route path='/rankings/top-ten' element={<TopTenRankings />} />
             <Route path='/error' element={<Error />} />
-            {/* <Route path='/logout' element={<Logout />} /> */}
             {/* <Route path='/admin' element={<Admin />} /> */}
             <Route path='/register' element={<Register />} />
           </Routes>

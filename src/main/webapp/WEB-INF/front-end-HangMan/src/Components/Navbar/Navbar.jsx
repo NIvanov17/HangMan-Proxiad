@@ -53,10 +53,10 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
                 <Link to="/statistics">Statistics</Link>
                 <Link to="/rankings">Rankings</Link>
+                <Link to="/history">History</Link>
+                <Link to="/admin">Admin</Link>
                 {!token && (
                     <>
-                        <Link to="/history/log-in">History</Link>
-                        <Link to="/admin">Admin</Link>
                         <Link to="/register" className="btn">Register</Link>
                         <Link to="/login" className="btn">Log In</Link>
                     </>

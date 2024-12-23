@@ -20,17 +20,61 @@ const Game = () => {
     const navigate = useNavigate();
 
 
-    const restartSinglePlayerGame = () => navigate('/single-player/username');
+    const restartSinglePlayerGame = () => {
+        fetchNewGame();
+    };
     const restartMultiPlayerGame = () => navigate('/multi-player/giver');
 
-    useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/games?id=${gameId}`)
+    const fetchNewGame = () => {
+        const token = sessionStorage.getItem("token");
+
+
+        fetch(`http://localhost:8080/api/v2/games`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        })
             .then(res => {
                 return res.json();
             }).then(data => {
                 setGame(data);
             })
-    }, [gameId]);
+    }
+
+    const resumeGame = (id) => {
+        const token = sessionStorage.getItem("token");
+        fetch(`http://localhost:8080/api/v1/games/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }).then((res) => {
+            if (!res.ok) {
+                throw new Error('Failed to resume game');
+            }
+            return res.json();
+        })
+            .then((data) => {
+                sessionStorage.removeItem("gameId");
+                console.log('Game data:', data);
+                setGame(data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
+    useEffect(() => {
+        const id = sessionStorage.getItem("gameId");
+        if (id === null) {
+            fetchNewGame();
+        } else {
+            resumeGame(id);
+        }
+    }, []);
 
     if (!game) {
         return <Loader />;
@@ -40,21 +84,18 @@ const Game = () => {
         e.preventDefault();
         setIsPending(true);
 
-        const handleGuessDTO = {
-            playerDTO: {
-                username: game.guesser.username
-            },
-            guessDTO: {
-                guess: letter
-            }
+        const guessDTO = {
+
+            guess: letter
         }
 
         fetch(`http://localhost:8080/api/v1/games/${game.gameId}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
             },
-            body: JSON.stringify(handleGuessDTO)
+            body: JSON.stringify(guessDTO)
         }).then(res => res.json())
             .then((updatedGame) => {
                 setGame(updatedGame);

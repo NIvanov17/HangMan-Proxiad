@@ -2,7 +2,10 @@ package com.example.config;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.example.util.JwtUtils;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -14,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CorsFilter implements Filter {
+	
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -27,6 +31,7 @@ public class CorsFilter implements Filter {
 		res.setHeader("Access-Control-Allow-Credentials", "true");
 
 		if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+			System.out.println("JWT Filter: Preflight request allowed");
 			res.setStatus(HttpServletResponse.SC_OK);
 			return;
 		}

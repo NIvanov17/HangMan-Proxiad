@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "com.example.repository")
 public class HangManApp extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {    
 		SpringApplication.run(HangManApp.class, args);
 	}
 

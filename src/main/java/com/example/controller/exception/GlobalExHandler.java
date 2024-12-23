@@ -13,6 +13,7 @@ import com.example.exception.InavlidPasswordException;
 import com.example.exception.InvalidGameIDException;
 import com.example.exception.InvalidUsernameException;
 import com.example.exception.MultiPlayerModeException;
+import com.example.exception.SessionExpiredException;
 import com.example.exception.SinglePlayerModeException;
 import com.example.model.ErrorResponse;
 
@@ -78,6 +79,14 @@ public class GlobalExHandler {
 	@ExceptionHandler(InavlidPasswordException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleBadRequestException(InavlidPasswordException ex){
+		
+		ErrorResponse error = new ErrorResponse("Bad request",ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+	
+	@ExceptionHandler(SessionExpiredException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorResponse> handleBadRequestException(SessionExpiredException ex){
 		
 		ErrorResponse error = new ErrorResponse("Bad request",ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);

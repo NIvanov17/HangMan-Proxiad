@@ -2,10 +2,13 @@ package com.example.controller.api;
 
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +23,11 @@ import com.example.model.DTOs.PlayerRankingDTO;
 import com.example.model.DTOs.StatisticDTO;
 import com.example.service.GameService;
 import com.example.service.PlayerService;
+import com.example.util.JwtUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -31,22 +36,30 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class StatisticAPIController {
 	private GameService gameService;
 	private PlayerService playerService;
+	private final JwtUtils jwt;
 
 	@Autowired
-	public StatisticAPIController(GameService gameService, PlayerService playerService) {
+	public StatisticAPIController(GameService gameService, PlayerService playerService, JwtUtils jwt) {
 		this.gameService = gameService;
 		this.playerService = playerService;
+		this.jwt = jwt;
 	}
 
 	@GetMapping("/games/history")
 	@Operation(summary = "Get games for player")
-	public ResponseEntity<List<GameDTO>> getHistoryForPlayer(@RequestParam(required = true) String username) {
+	public ResponseEntity<Page<GameDTO>> getHistoryForPlayer(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "6") int size, HttpServletRequest request) {
 
-		if (!playerService.isValid(username)) {
-			throw new IllegalArgumentException(String.format(ErrorMessages.USERNAME_NOT_EXISTING, username));
+		String token = jwt.getTokenFromRequest(request);
+		String username = jwt.extractUsername(token);
+		Subject currentUser = SecurityUtils.getSubject();
+		Pageable pageable = PageRequest.of(page, size);
+
+		if (!currentUser.isAuthenticated()) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		return ResponseEntity.ok(gameService.getAllGamesDTOForPlayerByUsername(username, RoleName.GUESSER));
+		return ResponseEntity.ok(gameService.getAllGamesDTOForPlayerByUsername(username, RoleName.GUESSER,pageable));
 	}
 
 	@GetMapping("/games/statistic")
@@ -59,7 +72,7 @@ public class StatisticAPIController {
 	@GetMapping("/players/ranking")
 	@Operation(summary = "Get All time player ranking")
 	public ResponseEntity<Page<PlayerRankingDTO>> ranking(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "15") int size) {
+			@RequestParam(defaultValue = "6") int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<PlayerRankingDTO> dtoPage = playerService.getAllPlayersDTOByWins(pageable);
 

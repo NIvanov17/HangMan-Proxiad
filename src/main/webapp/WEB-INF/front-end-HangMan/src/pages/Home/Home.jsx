@@ -1,17 +1,36 @@
 import hangmanImage from '../../images/hangman.png';
 import { useNavigate } from 'react-router-dom';
 import "./Home.css"
+import { useEffect, useState } from 'react';
 
 const Home = () => {
     const navigate = useNavigate();
+    const [token, setToken] = useState(null);
 
     const startSinglePlayerGame = () => {
-        navigate('/single-player/username');
+        if (token) {
+            navigate('/single-player/games');
+        } else {
+            navigate('/login');
+        }
     }
 
     const startMultiPlayerGame = () => {
-        navigate('/multi-player/giver')
+        if (token) {
+            navigate('/multi-player/words');
+        } else {
+            navigate('/login');
+        }
     }
+
+    useEffect(() => {
+        const storedToken = sessionStorage.getItem("token");
+        if (storedToken) {
+            setToken(storedToken);
+        } else {
+            setToken(null);
+        }
+    }, [])
 
     return (
         <div className="home">

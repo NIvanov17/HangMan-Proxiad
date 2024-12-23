@@ -17,5 +17,6 @@ public class ErrorMessages {
 	public static final String GAME_IS_SINGLEPLAYER = "Game you're trying to reach is in SinglePlayer mode!";
 	public static final String GAME_IS_MULTIPLAYER = "Game you're trying to reach is in MultiPlayer mode!";
 	public static final String INAVLID_GUESSER = "%s is not the guesser for this game!";
+	public static final String NOT_AUTHENTICATED = "%s is not authenticated!";
 
 }

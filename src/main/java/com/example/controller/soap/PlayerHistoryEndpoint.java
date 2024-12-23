@@ -3,6 +3,7 @@ package com.example.controller.soap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -16,6 +17,7 @@ import com.example.model.soap.GetHistoryForPlayerRequest;
 import com.example.model.soap.GetHistoryForPlayerResponse;
 import com.example.service.GameService;
 import com.example.service.PlayerService;
+import org.springframework.data.domain.Pageable;
 
 @Endpoint
 public class PlayerHistoryEndpoint {
