@@ -24,12 +24,6 @@ const Login = () => {
     const handleSubmit = (e) => {
         setIsPending(true);
         e.preventDefault();
-        // const validationMessage = isUsernameValid(username);
-        // if (validationMessage) {
-        //     setValidationError(validationMessage);
-        //     setIsPending(false);
-        //     return;
-        // }
 
         const loginDTO = {
             username: username,

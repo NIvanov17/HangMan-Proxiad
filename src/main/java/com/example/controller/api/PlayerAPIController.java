@@ -124,11 +124,9 @@ public class PlayerAPIController {
 			Subject currentUser = SecurityUtils.getSubject();
 			System.out.println(username+" token: "+token);
 			
-			if(currentUser.isAuthenticated()) {
 				currentUser.logout();
 				return ResponseEntity.ok("Logged out successfully!");
-			}
-			return ResponseEntity.badRequest().body("Invalid or missing!");
+		
 		}
 	}
 	

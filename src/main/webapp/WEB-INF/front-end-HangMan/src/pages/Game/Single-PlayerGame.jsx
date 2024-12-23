@@ -8,6 +8,7 @@ import img4 from '../../images/4.png';
 import img5 from '../../images/5.png';
 import img6 from '../../images/6.png';
 import Loader from "../../Components/Loader/Loader";
+import { validateToken } from "../../utils/TokenValidation";
 import "./Game.css";
 
 const Game = () => {
@@ -37,7 +38,7 @@ const Game = () => {
             }
         })
             .then(res => {
-                return res.json();
+                return validateToken(res, navigate);
             }).then(data => {
                 setGame(data);
             })
@@ -52,10 +53,11 @@ const Game = () => {
                 Authorization: `Bearer ${token}`
             }
         }).then((res) => {
-            if (!res.ok) {
-                throw new Error('Failed to resume game');
-            }
-            return res.json();
+            return validateToken(res, navigate);
+            // if (!res.ok) {
+            //     throw new Error('Failed to resume game');
+            // }
+            // return res;
         })
             .then((data) => {
                 sessionStorage.removeItem("gameId");

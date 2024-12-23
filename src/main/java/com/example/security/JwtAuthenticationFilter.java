@@ -14,6 +14,7 @@ import com.example.model.DTOs.JwtResponse;
 import com.example.model.DTOs.JwtToken;
 import com.example.util.JwtUtils;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,9 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		String username = jwtUtils.extractUsername(jwt);
 		try {
-
+			String username = jwtUtils.extractUsername(jwt);
 			System.out.println("Current server time: " + new Date());
 			System.out.println("Token expiration time: " + jwtUtils.extractExpiration(jwt));
 			Subject subject = SecurityUtils.getSubject();
@@ -62,13 +62,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 					AuthenticationToken token = new JwtToken(username, jwt);
 					subject.login(token);
 					System.out.println("JWT Filter: Subject logged in for username: " + username);
-				}else {
+				} else {
 					throw new SessionExpiredException("Session expired!");
 				}
 			}
+		} catch (ExpiredJwtException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("{\"error\": \"TokenExpired\", \"message\": \"Token has expired.\"}");
+			return;
+		} catch (SessionExpiredException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("{\"error\": \"SessionExpired\", \"message\": \"Token expired.\"}");
+			return;
 		} catch (Exception e) {
-			System.out.println(
-					"JWT Filter: Invalid or expired token for " + request.getRequestURI() + " username: " + username);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"Invalid or expired token.\"}");
 			return;

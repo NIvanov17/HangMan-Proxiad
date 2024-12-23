@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import "./History.css";
 import Loader from "../../Components/Loader/Loader";
 import PaginationComponent from "../../Components/Pagination/PaginationComponent";
-
-
+import { validateToken } from "../../utils/TokenValidation";
 
 
 const History = () => {
@@ -36,17 +35,17 @@ const History = () => {
             },
         })
             .then((res) => {
-                if (res.status === 401) {
-                    navigate('/login', { replace: true });
-                    return Promise.reject('User is not authenticated');
-                };
-                return res.json();
+                return validateToken(res, navigate);
             })
             .then(data => {
+                console.log(data);
                 setIsPending(false);
                 setHistoryData(data.content);
                 setTotalPages(data.totalPages || 1);
             })
+            .catch((err) => {
+                setIsPending(false);
+            });
     }, [currentPage]);
 
 
