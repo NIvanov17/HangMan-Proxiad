@@ -118,7 +118,10 @@ public class SecurityConfig {
         factoryBean.setFilters(filters);
 
         definition.addPathDefinition("api/v1/players/login", "anon, cors");
+        definition.addPathDefinition("api/v1/players/registration", "anon, cors");
         definition.addPathDefinition("api/v1/players/logout", "cors, jwt");
+        definition.addPathDefinition("api/v1/games/history", "cors, jwt");
+        definition.addPathDefinition("api/v1/admin", "cors, jwt, roles[admin]");
         definition.addPathDefinition("/**", "cors, jwt");
 		return definition;
 	}

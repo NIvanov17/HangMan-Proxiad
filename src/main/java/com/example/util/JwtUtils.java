@@ -50,12 +50,10 @@ public class JwtUtils {
 	 
 	 public String getTokenFromRequest(HttpServletRequest request) {
 		 String header = request.getHeader("Authorization");
-		 System.out.println("JwtUtils: Authorization header: " + header);
 		    String bearerToken = request.getHeader("Authorization");
 		    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
 		        return bearerToken.substring(7); // Remove "Bearer " prefix
 		    }
-		    System.out.println("JwtUtils: Missing or malformed Authorization header");
 		    return null;
 		}
 	 

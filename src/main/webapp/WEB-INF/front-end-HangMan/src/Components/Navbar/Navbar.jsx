@@ -53,8 +53,6 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
                 <Link to="/statistics">Statistics</Link>
                 <Link to="/rankings">Rankings</Link>
-                <Link to="/history">History</Link>
-                <Link to="/admin">Admin</Link>
                 {!token && (
                     <>
                         <Link to="/register" className="btn">Register</Link>
@@ -63,6 +61,8 @@ const Navbar = () => {
                 )}
                 {token && (
                     <>
+                        <Link to="/admin">Admin</Link>
+                        <Link to="/history">History</Link>
                         <button onClick={handleLogOut} className="btn">Log Out</button>
                     </>
                 )}
