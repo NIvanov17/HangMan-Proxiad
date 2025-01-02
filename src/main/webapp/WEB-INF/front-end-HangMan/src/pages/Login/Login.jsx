@@ -11,7 +11,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
-    // const [game, setGame] = useState(null);
     const [error, setError] = useState(null);
     const [validationError, setValidationError] = useState('');
 
@@ -55,14 +54,8 @@ const Login = () => {
                     sessionStorage.setItem("username", data.username);
                     navigateWelcome();
                 })
-                .catch(err => {
-                    setError(err)
-                })
+                .catch(err => setValidationError("Wrong credentials!"))
         }, 500)
-    }
-
-    if (error) {
-        return <Error error={error} />;
     }
 
     return (
@@ -85,7 +78,7 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     ></input>
-                    {validationError && <p className="validation-error">{validationError}</p>}
+                    {validationError && <p id="validation-error">{validationError}</p>}
                     {!isPending && <button>Submit</button>}
                     {isPending && <button disabled>Submitting...</button>}
                 </form>

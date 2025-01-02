@@ -17,7 +17,7 @@ const Home = () => {
 
     const startMultiPlayerGame = () => {
         if (token) {
-            navigate('/multi-player/words');
+            navigate('/multi-player');
         } else {
             navigate('/login');
         }

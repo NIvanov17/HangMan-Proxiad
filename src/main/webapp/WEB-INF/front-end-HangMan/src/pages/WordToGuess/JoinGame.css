@@ -1,0 +1,53 @@
+.join-game {
+    display: flex;
+    flex-direction: column;
+    background-color: #02027a;
+    padding: 2em;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+
+.join-game h2 {
+    margin-bottom: 1em;
+    color: white;
+}
+
+.join-game label {
+    display: block;
+    margin-bottom: 0.5em;
+    color: white;
+}
+
+.join-game input {
+    display: block;
+    padding: 0.5em;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-bottom: 1em;
+}
+
+.join-game button {
+    margin-top: 1em;
+    width: auto;
+    align-self: center;
+    padding: 0.6em 1.2em;
+    border: 2px solid #02027a;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #7CB9E8;
+    color: #02027a;
+    cursor: pointer;
+}
+
+.join-game button:hover {
+    margin-top: 1em;
+    padding: 0.6em 1.2em;
+    border: 2px solid white;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+    background-color: #02027a;
+    color: whitesmoke;
+    cursor: pointer;
+    transition: 500ms;
+}

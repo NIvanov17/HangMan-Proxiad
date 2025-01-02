@@ -12,7 +12,7 @@ const Welcome = () => {
     }
 
     const startMultiPlayerGame = () => {
-        navigate('/multi-player/words');
+        navigate('/multi-player');
     }
 
     useEffect(() => {

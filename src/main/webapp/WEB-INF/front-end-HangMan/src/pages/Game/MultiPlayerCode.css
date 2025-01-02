@@ -1,0 +1,8 @@
+.code {
+    display: flex;
+    flex-direction: column;
+}
+
+.code h2 {
+    margin-bottom: 2em;
+}

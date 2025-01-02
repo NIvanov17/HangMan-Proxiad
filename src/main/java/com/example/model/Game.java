@@ -46,6 +46,8 @@ public class Game {
 	@Column(nullable = false)
 	@NotNull
 	private String mode;
+	
+	private String token;
 
 	@Column(name = "current-state")
 	@NotNull
@@ -110,6 +112,16 @@ public class Game {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 
 	public List<GamePlayer> getPlayerInGames() {
 		return playerInGames;

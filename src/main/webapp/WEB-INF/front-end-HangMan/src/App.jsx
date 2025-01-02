@@ -9,13 +9,15 @@ import LoginGiver from './pages/Login/LoginGiver';
 import LoginGuesser from './pages/Login/LoginGuesser';
 import WordToGuess from './pages/WordToGuess/WordsToGuess';
 import History from './pages/Statistics/History';
-import HistoryLogIn from './pages/Login/HistoryLogIn';
 import MostUsedWords from './pages/Statistics/MostUsedWords';
 import Ranking from './pages/Statistics/Ranking';
 import TopTenRankings from './pages/Statistics/TopTenRanking';
 import Error from './pages/Errors/Error';
 import Register from './pages/Register/Register';
 import Welcome from './pages/Home/Welcome';
+import JoinCreateGame from './pages/WordToGuess/JoinCreateGame';
+import JoinGame from './pages/WordToGuess/JoinGame';
+import MultiPlayerCode from './pages/Game/MultiPlayerCode';
 
 function App() {
 
@@ -33,11 +35,14 @@ function App() {
             <Route path="/multi-player/giver" element={<LoginGiver />} />
             <Route path='/multi-player/words' element={<WordToGuess />} />
             <Route path='/multi-player/games' element={<MultiPlayerGame />} />
+            <Route path='/multi-player/code' element={<MultiPlayerCode />} />
             <Route path='/history' element={<History />} />
             <Route path='/statistics' element={<MostUsedWords />} />
             <Route path='/rankings' element={<Ranking />} />
             <Route path='/rankings/top-ten' element={<TopTenRankings />} />
             <Route path='/error' element={<Error />} />
+            <Route path='/multi-player' element={<JoinCreateGame />} />
+            <Route path='/multi-player/join' element={<JoinGame />} />
             {/* <Route path='/admin' element={<Admin />} /> */}
             <Route path='/register' element={<Register />} />
           </Routes>

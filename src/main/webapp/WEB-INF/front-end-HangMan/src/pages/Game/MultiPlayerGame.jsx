@@ -19,13 +19,23 @@ const MultiPlayerGame = () => {
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
     const restartSinglePlayerGame = () => navigate('/single-player/username');
-    const restartMultiPlayerGame = () => navigate('/multi-player/giver');
+    const restartMultiPlayerGame = () => navigate('/multi-player');
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const id = gameDTO ? gameDTO.gameId : gameId;
-        fetch(`http://localhost:8080/api/v1/games?id=${id}`)
+        fetch(`http://localhost:8080/api/v1/games/${id}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                }
+            })
             .then(res => {
+                if (!res.ok) {
+                    throw new Error('Failed to fetch game data');
+                }
                 return res.json();
             })
             .then(data => {
@@ -36,11 +46,10 @@ const MultiPlayerGame = () => {
     const handleGuess = (e, letter) => {
         e.preventDefault();
         setIsPending(true);
-        console.log(gameDTO);
 
         const handleGuessDTO = {
             playerDTO: {
-                username: game.guesser.username
+                username: sessionStorage.getItem("username")
             },
             guessDTO: {
                 guess: letter
@@ -49,9 +58,10 @@ const MultiPlayerGame = () => {
         fetch(`http://localhost:8080/api/v1/games/${game.gameId}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
             },
-            body: JSON.stringify(handleGuessDTO)
+            body: JSON.stringify(handleGuessDTO.guessDTO)
         }).then(res => res.json())
             .then((updatedGame) => {
                 setGame(updatedGame);

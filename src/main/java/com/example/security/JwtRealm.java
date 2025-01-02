@@ -44,12 +44,10 @@ public class JwtRealm extends AuthorizingRealm{
 	        String username = (String) jwtToken.getPrincipal();
 	        String jwt = (String) jwtToken.getCredentials();
 
-	        // Validate the JWT
 	        if (!this.jwt.isTokenValid(jwt, username)) {
 	            throw new AuthenticationException("Invalid or expired token");
 	        }
-
-	        // Return a simple authentication info object
+	        
 	        return new SimpleAuthenticationInfo(username, jwt, getName());
 	}
 

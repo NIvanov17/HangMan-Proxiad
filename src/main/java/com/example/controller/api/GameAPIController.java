@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +23,12 @@ import com.example.enums.Commands;
 import com.example.model.Game;
 import com.example.model.DTOs.CreateGameInputDTO;
 import com.example.model.DTOs.GameDTO;
+import com.example.model.DTOs.GameTokenDTO;
 import com.example.model.DTOs.GuessDTO;
 import com.example.model.DTOs.JwtMessage;
 import com.example.model.DTOs.LoginDTO;
 import com.example.model.DTOs.MultiPlayerGameInputDTO;
+import com.example.model.DTOs.MultiPlayerTokenDTO;
 import com.example.model.DTOs.UpdateGameDTO;
 import com.example.service.GameService;
 import com.example.util.JwtUtils;
@@ -53,12 +56,12 @@ public class GameAPIController {
 	@GetMapping("/v1/games/{id}")
 	@Operation(summary = "Get game")
 	public ResponseEntity<EntityModel<GameDTO>> resumeGame(@PathVariable long id, HttpServletRequest request) {
-		
+
 		String token = jwt.getTokenFromRequest(request);
 		String username = jwt.extractUsername(token);
 		Game game = gameService.findById(id);
 		GameDTO gameDTO = game.getMode().equals(Commands.SINGLE_PLAYER_MODE) ? gameService.resumeSingleGame(id)
-				: gameService.resumeMultiPlayerGame(id);
+				: gameService.getGameDTOWithId(id,username);
 		EntityModel<GameDTO> entityModel = EntityModel.of(gameDTO);
 
 		entityModel
@@ -66,14 +69,12 @@ public class GameAPIController {
 
 		entityModel.add(WebMvcLinkBuilder
 				.linkTo(methodOn(GameAPIController.class).createGame(new CreateGameInputDTO(
-						new LoginDTO(gameDTO.getGuesser().getUsername()), new MultiPlayerGameInputDTO())))
+						new LoginDTO(gameDTO.getGuesser().getUsername()), new MultiPlayerTokenDTO()), request))
 				.withRel("startNewGame"));
 
-		entityModel.add(WebMvcLinkBuilder.linkTo(
-			    WebMvcLinkBuilder.methodOn(GameAPIController.class).makeGameGuess(id,
-			        new GuessDTO(), 
-			        request))
-			    .withRel("makeGuess"));
+		entityModel.add(WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder.methodOn(GameAPIController.class).makeGameGuess(id, new GuessDTO(), request))
+				.withRel("makeGuess"));
 
 		return ResponseEntity.ok(entityModel);
 
@@ -81,18 +82,23 @@ public class GameAPIController {
 
 	@PostMapping("/v1/games")
 	@Operation(summary = "Start new MultiPlayer or Singleplayer game")
-	public ResponseEntity<GameDTO> createGame(@RequestBody CreateGameInputDTO dto) {
+	public ResponseEntity<Object> createGame(@RequestBody CreateGameInputDTO dto, HttpServletRequest req) {
 
-		MultiPlayerGameInputDTO multiplayerDTO = dto.getMultiPlayerGameInputDTO();
-		LoginDTO playerDTO = dto.getPlayerDTO();
-		GameDTO gameDTO = null;
+		MultiPlayerTokenDTO multiplayerDTO = dto.getMultiPlayerTokenDTO();
+//		LoginDTO playerDTO = dto.getPlayerDTO();
+		Object gameDTO = null;
+		Object codeDTO = null;
+		String token = jwt.getTokenFromRequest(req);
+		String username = jwt.extractUsername(token);
 		if (multiplayerDTO == null) {
-			gameDTO = gameService.newGameStarted(playerDTO.getUsername());
+			gameDTO = gameService.newGameStarted(username);
+			return ResponseEntity.status(HttpStatus.CREATED).body(gameDTO);
 		} else {
-			gameDTO = gameService.prepareWordToBeDisplayed(multiplayerDTO);
-		}
+			// gameDTO = gameService.prepareWordToBeDisplayed(multiplayerDTO,username);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(gameDTO);
+			codeDTO = gameService.createMultiPlayerGameWithCode(multiplayerDTO, username);
+			return ResponseEntity.status(HttpStatus.CREATED).body(codeDTO);
+		}
 	}
 
 	@PutMapping("/v1/games/{gameId}")
@@ -105,13 +111,11 @@ public class GameAPIController {
 		String username = jwt.extractUsername(token);
 
 		GameDTO dto = null;
-		if (gameService.isPlayerGuesser(game, username)) {
 			if (Commands.SINGLE_PLAYER_MODE.equals(game.getMode())) {
 				dto = gameService.tryGuessSinglePlayer(guessDTO.getGuess(), gameId);
 			} else {
-				dto = gameService.tryGuessMultiplayer(guessDTO.getGuess(), gameId);
+				dto = gameService.tryGuessMultiplayer(guessDTO.getGuess(), gameId,username);
 			}
-		}
 		return ResponseEntity.ok(dto);
 
 	}
@@ -122,14 +126,24 @@ public class GameAPIController {
 			HttpServletRequest request) {
 		String token = jwt.getTokenFromRequest(request);
 		String username = jwt.extractUsername(token);
-		GameDTO gameDTO = null;
+		Object gameDTO = null;
 		if (dto == null) {
 			gameDTO = gameService.newGameStarted(username);
 		} else {
-			MultiPlayerGameInputDTO multiplayerDTO = dto.getMultiPlayerGameInputDTO();
-			gameDTO = gameService.prepareWordToBeDisplayed(multiplayerDTO);
+			MultiPlayerTokenDTO multiplayerTokenDTO = dto.getMultiPlayerTokenDTO();
+			gameDTO = gameService.prepareWordToBeDisplayed(multiplayerTokenDTO, username);
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(gameDTO);
 
+	}
+
+	@PostMapping("/v2/games/game")
+	@Operation(summary = "Get game with code")
+	public ResponseEntity<GameDTO> getGameWithCode(@RequestBody GameTokenDTO dto, HttpServletRequest request) {
+		String token = jwt.getTokenFromRequest(request);
+		String username = jwt.extractUsername(token);
+		GameDTO gameDTO = gameService.getGameWithCode(dto, username);
+
+		return ResponseEntity.ok(gameDTO);
 	}
 }

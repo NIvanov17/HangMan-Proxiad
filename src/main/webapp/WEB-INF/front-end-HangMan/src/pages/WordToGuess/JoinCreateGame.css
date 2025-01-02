@@ -1,0 +1,19 @@
+.joinCreateGame button {
+    margin-left: 1em;
+    padding: 0.8em 0.5em;
+    border-radius: 0.5em;
+    border-color: #010142;
+    background-color: whitesmoke;
+    color: #00004B;
+    cursor: pointer;
+}
+
+.joinCreateGame button:hover {
+    margin-left: 1em;
+    padding: 0.8em 0.5em;
+    border-radius: 0.5em;
+    border-color: whitesmoke;
+    background-color: #00004B;
+    color: whitesmoke;
+    cursor: pointer;
+}

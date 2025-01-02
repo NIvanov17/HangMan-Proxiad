@@ -10,8 +10,6 @@ const WordToGuess = () => {
     const [word, setWord] = useState('');
     const [category, setCategory] = useState('');
     const [categories, setCategories] = useState([]);
-    const location = useLocation();
-    const { giver, guesser } = location.state || {};
     const [game, setGame] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -19,9 +17,7 @@ const WordToGuess = () => {
     const [validationError, setValidationError] = useState('');
 
     const dto = {
-        multiPlayerGameInputDTO: {
-            giverUsername: giver,
-            guesserUsername: guesser,
+        multiPlayerTokenDTO: {
             wordToGuess: word,
             category: category
         }
@@ -51,7 +47,8 @@ const WordToGuess = () => {
         fetch('http://localhost:8080/api/v1/games', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify(dto)
         })
@@ -63,11 +60,7 @@ const WordToGuess = () => {
                 }
                 return res.json();
             }).then(data => {
-                navigate('/multi-player/games', {
-                    state: {
-                        gameDTO: data
-                    }
-                });
+                navigate('/multi-player/code', { state: { gameCode: data.token } });
             }).catch(err => setError(err));
     }
 

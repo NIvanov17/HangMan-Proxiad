@@ -35,20 +35,11 @@ public class MultiPlayerAPIController {
 		return ResponseEntity.ok(gameService.resumeMultiPlayerGame(id));
 	}
 
-	@PostMapping("/multi-player/games")
-	@Operation(summary = "Create multiplayer game")
-	public ResponseEntity<GameDTO> createMultiplayerGame(@RequestBody MultiPlayerGameInputDTO multiplayerDTO) {
-
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(gameService.prepareWordToBeDisplayed(multiplayerDTO));
-
-	}
-
 	@PutMapping("/multi-player/games/{game}")
 	@Operation(summary = "Update multiplayer game.")
 	protected ResponseEntity<GameDTO> multiPlayerGameGuess(@PathVariable long game, @RequestParam long giverId,
 			@RequestParam long guesserId, @RequestParam char letter) throws IOException {
-		GameDTO dto = gameService.tryGuessMultiplayer(letter, game);
+		GameDTO dto = gameService.tryGuessMultiplayer(letter, game,null);
 		return ResponseEntity.ok(dto);
 	}
 

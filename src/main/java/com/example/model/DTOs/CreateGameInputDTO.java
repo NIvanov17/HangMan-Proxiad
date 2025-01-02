@@ -4,16 +4,16 @@ public class CreateGameInputDTO {
 
 	private  LoginDTO loginDTO;
 	
-	private MultiPlayerGameInputDTO multiPlayerGameInputDTO;
+	private MultiPlayerTokenDTO multiPlayerTokenDTO;
 
 	public CreateGameInputDTO() {
 		super();
 	}
 
-	public CreateGameInputDTO(LoginDTO loginDTO, MultiPlayerGameInputDTO multiPlayerGameInputDTO) {
+	public CreateGameInputDTO(LoginDTO loginDTO, MultiPlayerTokenDTO multiPlayerTokenDTO) {
 		super();
 		this.loginDTO = loginDTO;
-		this.multiPlayerGameInputDTO = multiPlayerGameInputDTO;
+		this.multiPlayerTokenDTO = multiPlayerTokenDTO;
 	}
 
 	public LoginDTO getPlayerDTO() {
@@ -24,13 +24,15 @@ public class CreateGameInputDTO {
 		this.loginDTO = loginDTO;
 	}
 
-	public MultiPlayerGameInputDTO getMultiPlayerGameInputDTO() {
-		return multiPlayerGameInputDTO;
+	public MultiPlayerTokenDTO getMultiPlayerTokenDTO() {
+		return multiPlayerTokenDTO;
 	}
 
-	public void setMultiPlayerGameInputDTO(MultiPlayerGameInputDTO multiPlayerGameInputDTO) {
-		this.multiPlayerGameInputDTO = multiPlayerGameInputDTO;
+	public void setMultiPlayerTokenDTO(MultiPlayerTokenDTO multiPlayerTokenDTO) {
+		this.multiPlayerTokenDTO = multiPlayerTokenDTO;
 	}
+
+
 	
 	
 }

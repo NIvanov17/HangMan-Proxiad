@@ -86,8 +86,9 @@
     padding-bottom: 0.5em;
 }
 
-.validation-error {
+#validation-error {
     color: red;
     font-size: 14px;
     margin-top: 5px;
+    text-align: center;
 }

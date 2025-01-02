@@ -25,6 +25,8 @@ public interface GameRepository extends JpaRepository<Game, Long>{
 
 	List<Game> findByIsFinishedTrue();
 
+	Optional<Game> findByToken(String token);
+
 
 	
 

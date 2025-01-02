@@ -99,8 +99,8 @@ const Register = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 ></input>
-                {validateUsername && <p className="validation-error">{usernameErr}</p>}
-                {validatePasswords && <p className="validation-error">{passwordErr}</p>}
+                {validateUsername && <p id="validation-error">{usernameErr}</p>}
+                {validatePasswords && <p id="validation-error">{passwordErr}</p>}
                 {error && (
 
                     <p className="validation-error">{error}</p>
