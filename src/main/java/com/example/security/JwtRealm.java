@@ -31,19 +31,13 @@ public class JwtRealm extends AuthorizingRealm{
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		String username = (String) principals.getPrimaryPrincipal();
+		
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         
-        String jwtToken = (String) SecurityUtils.getSubject().getSession().getAttribute("jwtToken");
-        
-        if (jwtToken != null) {
-            List<String> roles = jwt.extractRoles(jwtToken);
-            authorizationInfo.addRoles(roles);
-        }
+        JwtToken jwtToken = (JwtToken) SecurityUtils.getSubject().getPrincipal();
+        List<String> roles = jwtToken.getRoles();
 
-        // Add roles or permissions if required (fetch from database or cache)
-        // For example:
-        // authorizationInfo.addRole("USER");
+        authorizationInfo.addRoles(roles);
 
         return authorizationInfo;
 	}

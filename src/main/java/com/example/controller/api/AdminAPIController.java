@@ -1,7 +1,7 @@
 package com.example.controller.api;
 
-
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminAPIController {
 
-	@GetMapping("api/v1/admin")
+	@GetMapping("api/v1/admin/users")
+	@RequiresRoles("ADMIN")
 	public ResponseEntity<String> adminAccess() {
-	    Subject subject = SecurityUtils.getSubject();
+		Subject subject = SecurityUtils.getSubject();
 
-	    if (subject.hasRole("ADMIN")) {
-	        return ResponseEntity.ok("Welcome, Admin!");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
-	    }
+		return ResponseEntity.ok("Welcome, Admin!");
 	}
 }

@@ -56,9 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if (username != null && !subject.isAuthenticated()) {
 				if (jwtUtils.isTokenValid(jwt, username)) {
 					List<String> roles = jwtUtils.extractRoles(jwt);
-					subject.getSession().setAttribute("roles", roles);
-					subject.getSession().setAttribute("jwtToken", jwt);
-					AuthenticationToken token = new JwtToken(username, jwt);
+					AuthenticationToken token = new JwtToken(username, jwt, roles);
 					subject.login(token);
 				} else {
 					throw new SessionExpiredException("Session expired!");
