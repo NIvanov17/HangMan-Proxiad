@@ -1,5 +1,8 @@
 package com.example.security;
 
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -30,6 +33,13 @@ public class JwtRealm extends AuthorizingRealm{
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		String username = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        
+        String jwtToken = (String) SecurityUtils.getSubject().getSession().getAttribute("jwtToken");
+        
+        if (jwtToken != null) {
+            List<String> roles = jwt.extractRoles(jwtToken);
+            authorizationInfo.addRoles(roles);
+        }
 
         // Add roles or permissions if required (fetch from database or cache)
         // For example:

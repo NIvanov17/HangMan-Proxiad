@@ -20,6 +20,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -37,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-			System.out.println("JWT Filter: OPTIONS request bypassed for " + request.getRequestURI());
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -45,23 +45,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String jwt = jwtUtils.getTokenFromRequest(request);
 
 		if (jwt == null) {
-			System.out.println("JWT Filter: No token found for " + request.getRequestURI());
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		try {
 			String username = jwtUtils.extractUsername(jwt);
-			System.out.println("Current server time: " + new Date());
-			System.out.println("Token expiration time: " + jwtUtils.extractExpiration(jwt));
 			Subject subject = SecurityUtils.getSubject();
 
 			if (username != null && !subject.isAuthenticated()) {
 				if (jwtUtils.isTokenValid(jwt, username)) {
-					System.out.println("JWT Filter: Token valid for " + username);
+					List<String> roles = jwtUtils.extractRoles(jwt);
+					subject.getSession().setAttribute("roles", roles);
+					subject.getSession().setAttribute("jwtToken", jwt);
 					AuthenticationToken token = new JwtToken(username, jwt);
 					subject.login(token);
-					System.out.println("JWT Filter: Subject logged in for username: " + username);
 				} else {
 					throw new SessionExpiredException("Session expired!");
 				}

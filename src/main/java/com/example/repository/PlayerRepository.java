@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.model.Player;
+import com.example.model.Role;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
@@ -23,6 +24,11 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 
 	@Query("SELECT p.id FROM Player p JOIN GamePlayer gp ON p.id = gp.player.id WHERE gp.game.id = :gameId")
 	long findByGameId(@Param("gameId")long id);
+
+	 @Query("SELECT p.roles FROM Player p WHERE p.username = :username")
+	List<Role> getRolesByPlayerUsername(@Param("username") String username);
+
+
 	
 
 }

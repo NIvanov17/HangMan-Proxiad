@@ -40,7 +40,6 @@ const Login = () => {
 
             ).then((res) => {
                 setIsPending(false);
-                console.log(loginDTO);
                 if (!res.ok) {
                     return res.json().then((errorData) => {
                         throw { message: errorData.message, ...errorData };
@@ -49,9 +48,11 @@ const Login = () => {
                 return res.json();
             })
                 .then((data) => {
-                    console.log(data);
                     sessionStorage.setItem("token", data.token);
                     sessionStorage.setItem("username", data.username);
+                    sessionStorage.setItem("role", data.roles);
+
+                    window.dispatchEvent(new Event('authChange'));
                     navigateWelcome();
                 })
                 .catch(err => setValidationError("Wrong credentials!"))

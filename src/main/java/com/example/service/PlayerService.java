@@ -101,7 +101,7 @@ public class PlayerService {
 		return playerRepository.findByGameId(gameId);
 	}
 
-	public PlayersDTO createPlayersDTO(String guesserUsername,String giverUsername) {
+	public PlayersDTO createPlayersDTO(String guesserUsername, String giverUsername) {
 		Player playerGuesser = getPlayerByUsername(guesserUsername);
 		Player playerGiver = getPlayerByUsername(giverUsername);
 		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
@@ -111,7 +111,7 @@ public class PlayerService {
 
 	public Page<PlayerRankingDTO> getAllPlayersDTOByWins(Pageable pageable) {
 		return getAllPlayersByWins(pageable)
-				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
+				.map(player -> new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 	}
 
 	public List<PlayerRankingDTO> getTopTenPlayersDTOByWins() {
@@ -119,7 +119,7 @@ public class PlayerService {
 //				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 
 		Page<Player> topTenPlayersByWins = getTopTenPlayersByWins();
-		
+
 		List<PlayerRankingDTO> playerRankingDTO = topTenPlayersByWins.stream().map(p -> {
 			PlayerRankingDTO dto = new PlayerRankingDTO();
 			dto.setId(p.getId());
@@ -136,33 +136,36 @@ public class PlayerService {
 	}
 
 	public void registerDTO(RegisterDTO dto) {
-		if(dto.getUsername().length() < 3) {
+		if (dto.getUsername().length() < 3) {
 			throw new InvalidUsernameException("Username should be at least 3 symbols!");
-		}else if(contains(dto.getUsername())) {
+		} else if (contains(dto.getUsername())) {
 			throw new InvalidUsernameException("Username is already taken!");
 		}
-		
-		if(dto.getPassword().length() < 6 || dto.getConfirmPassword().length() < 6) {
+
+		if (dto.getPassword().length() < 6 || dto.getConfirmPassword().length() < 6) {
 			throw new InavlidPasswordException("Password should be at least 6 characters!");
 		}
-		
-		
-		if(!dto.getPassword().equals(dto.getConfirmPassword())) {
+
+		if (!dto.getPassword().equals(dto.getConfirmPassword())) {
 			throw new InavlidPasswordException("Passwords should match!");
 		}
 		Role deafultRole = roleService.getRoleByName(PlayerRole.USER);
 		String password = dto.getPassword();
 		String salt = ShiroPasswordEncoder.generateSalt();
 		String hashPassword = ShiroPasswordEncoder.hashPassword(password, salt);
-		
+
 		Player player = new Player();
 		player.setRoles(List.of(deafultRole));
 		player.setUsername(dto.getUsername());
 		player.setPassword(dto.getPassword());
 		player.setPassword(hashPassword);
 		player.setSalt(salt);
-		
+
 		playerRepository.save(player);
-		
+
+	}
+
+	public List<Role> getPlayerRoles(String username) {
+		return playerRepository.getRolesByPlayerUsername(username);
 	}
 }
