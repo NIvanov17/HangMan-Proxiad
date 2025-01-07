@@ -52,12 +52,7 @@ public class StatisticAPIController {
 
 		String token = jwt.getTokenFromRequest(request);
 		String username = jwt.extractUsername(token);
-		Subject currentUser = SecurityUtils.getSubject();
 		Pageable pageable = PageRequest.of(page, size);
-
-		if (!currentUser.isAuthenticated()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
 
 		return ResponseEntity.ok(gameService.getAllGamesDTOForPlayerByUsername(username, RoleName.GUESSER,pageable));
 	}

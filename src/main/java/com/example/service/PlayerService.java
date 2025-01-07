@@ -15,10 +15,12 @@ import com.example.exception.InavlidPasswordException;
 import com.example.exception.InvalidUsernameException;
 import com.example.model.Player;
 import com.example.model.Role;
+import com.example.model.DTOs.AdminRolesDTO;
 import com.example.model.DTOs.PlayerDTO;
 import com.example.model.DTOs.PlayerRankingDTO;
 import com.example.model.DTOs.PlayersDTO;
 import com.example.model.DTOs.RegisterDTO;
+import com.example.model.DTOs.RoleDTO;
 import com.example.repository.PlayerRepository;
 import com.example.security.ShiroPasswordEncoder;
 
@@ -167,5 +169,44 @@ public class PlayerService {
 
 	public List<Role> getPlayerRoles(String username) {
 		return playerRepository.getRolesByPlayerUsername(username);
+	}
+
+	public Page<AdminRolesDTO> getAllUserRolesDTO(String username, Pageable pageable) {
+		Page<Player> allPlayersExpectCurrent = getAllPlayersExpectCurrent(username, pageable);
+	return 	allPlayersExpectCurrent.map(p->{
+		
+			AdminRolesDTO adminRolesDTO = new AdminRolesDTO();
+			adminRolesDTO.setUsername(p.getUsername());
+			List<Role> roles = p.getRoles();
+			
+			List<String> rolesAsStrings = roles.stream()
+					.map(r -> r.getName().name())
+					.collect(Collectors.toList());
+			
+			adminRolesDTO.setRole(rolesAsStrings);
+			return adminRolesDTO;
+		});
+	}
+
+	private Page<Player> getAllPlayersExpectCurrent(String username, Pageable pageable) {
+		return playerRepository.findAllExpectCurrent(username,pageable);
+	}
+
+	public void addRole(RoleDTO dto) {
+		
+		Player player = getPlayerByUsername(dto.getUsername());
+		List<Role> roles = player.getRoles();
+		Role role = roleService.getRoleByName(PlayerRole.valueOf(dto.getRole()));
+		roles.add(role);
+		playerRepository.save(player);
+	}
+
+	public void removeRole(RoleDTO dto) {
+		Player player = getPlayerByUsername(dto.getUsername());
+		List<Role> roles = player.getRoles();
+		Role role = roleService.getRoleByName(PlayerRole.valueOf(dto.getRole()));
+		roles.remove(role);
+		playerRepository.save(player);
+		
 	}
 }

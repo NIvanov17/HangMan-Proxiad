@@ -12,10 +12,6 @@ const Ranking = () => {
     const [itemsPerPage] = useState(5);
     const [totalPages, setTotalPages] = useState(0);
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
     useEffect(() => {
         setIsPending(true);
         fetch(`http://localhost:8080/api/v1/players/ranking?page=${currentPage}&size=${itemsPerPage}`)

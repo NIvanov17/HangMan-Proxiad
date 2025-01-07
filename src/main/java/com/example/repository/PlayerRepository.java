@@ -28,6 +28,8 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
 	 @Query("SELECT p.roles FROM Player p WHERE p.username = :username")
 	List<Role> getRolesByPlayerUsername(@Param("username") String username);
 
+	 @Query("SELECT p FROM Player p WHERE p.username <> :username")
+	Page<Player> findAllExpectCurrent(@Param("username") String username, Pageable pageable);
 
 	
 
