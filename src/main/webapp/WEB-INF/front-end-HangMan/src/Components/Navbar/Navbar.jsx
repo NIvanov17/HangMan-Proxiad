@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
 
-    const [token, setToken] = useState('');
-    const [username, setUsername] = useState('');
+    const [token, setToken] = useState(sessionStorage.getItem('token') || '');
+    const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
+    const [roles, setRoles] = useState(sessionStorage.getItem('role')?.split(',') || []);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
 
@@ -14,17 +15,26 @@ const Navbar = () => {
     }
 
     useEffect(() => {
-        const storedUsername = sessionStorage.getItem('username');
-        const storedToken = sessionStorage.getItem('token');
-        if (storedUsername && storedToken) {
+        const updateAuthState = () => {
+            const storedToken = sessionStorage.getItem('token') || '';
+            const storedUsername = sessionStorage.getItem('username') || '';
+            const storedRoles = sessionStorage.getItem('role')?.split(',') || [];
+
             setToken(storedToken);
-            setUsername(storedToken);
-        }
-    }, [username]);
+            setUsername(storedUsername);
+            setRoles(storedRoles);
+        };
+        updateAuthState();
+
+        window.addEventListener('authChange', updateAuthState);
+
+        return () => {
+            window.removeEventListener('authChange', updateAuthState);
+        };
+    }, []);
 
     const handleLogOut = () => {
         const token = sessionStorage.getItem('token');
-        console.log(token);
         fetch('http://localhost:8080/api/v1/players/logout', {
             method: 'POST',
             headers: {
@@ -35,6 +45,7 @@ const Navbar = () => {
             if (res.ok) {
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('username');
+                sessionStorage.removeItem('role');
                 setToken('');
                 setUsername('');
                 navigateHome();
@@ -61,8 +72,10 @@ const Navbar = () => {
                 )}
                 {token && (
                     <>
-                        <Link to="/admin">Admin</Link>
                         <Link to="/history">History</Link>
+                        {roles.includes('ADMIN') &&
+                            (<Link to="/admin">Admin</Link>)
+                        }
                         <button onClick={handleLogOut} className="btn">Log Out</button>
                     </>
                 )}

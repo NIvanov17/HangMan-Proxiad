@@ -15,10 +15,12 @@ import com.example.exception.InavlidPasswordException;
 import com.example.exception.InvalidUsernameException;
 import com.example.model.Player;
 import com.example.model.Role;
+import com.example.model.DTOs.AdminRolesDTO;
 import com.example.model.DTOs.PlayerDTO;
 import com.example.model.DTOs.PlayerRankingDTO;
 import com.example.model.DTOs.PlayersDTO;
 import com.example.model.DTOs.RegisterDTO;
+import com.example.model.DTOs.RoleDTO;
 import com.example.repository.PlayerRepository;
 import com.example.security.ShiroPasswordEncoder;
 
@@ -101,7 +103,7 @@ public class PlayerService {
 		return playerRepository.findByGameId(gameId);
 	}
 
-	public PlayersDTO createPlayersDTO(String guesserUsername,String giverUsername) {
+	public PlayersDTO createPlayersDTO(String guesserUsername, String giverUsername) {
 		Player playerGuesser = getPlayerByUsername(guesserUsername);
 		Player playerGiver = getPlayerByUsername(giverUsername);
 		PlayerDTO dtoGuesser = new PlayerDTO(playerGuesser.getId(), playerGuesser.getUsername());
@@ -111,7 +113,7 @@ public class PlayerService {
 
 	public Page<PlayerRankingDTO> getAllPlayersDTOByWins(Pageable pageable) {
 		return getAllPlayersByWins(pageable)
-				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
+				.map(player -> new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 	}
 
 	public List<PlayerRankingDTO> getTopTenPlayersDTOByWins() {
@@ -119,7 +121,7 @@ public class PlayerService {
 //				.map(player->new PlayerRankingDTO(player.getId(), player.getUsername(), player.getTotalWins()));
 
 		Page<Player> topTenPlayersByWins = getTopTenPlayersByWins();
-		
+
 		List<PlayerRankingDTO> playerRankingDTO = topTenPlayersByWins.stream().map(p -> {
 			PlayerRankingDTO dto = new PlayerRankingDTO();
 			dto.setId(p.getId());
@@ -136,32 +138,74 @@ public class PlayerService {
 	}
 
 	public void registerDTO(RegisterDTO dto) {
-		if(dto.getUsername().length() < 3) {
+		if (dto.getUsername().length() < 3) {
 			throw new InvalidUsernameException("Username should be at least 3 symbols!");
-		}else if(contains(dto.getUsername())) {
+		} else if (contains(dto.getUsername())) {
 			throw new InvalidUsernameException("Username is already taken!");
 		}
-		
-		if(dto.getPassword().length() < 6 || dto.getConfirmPassword().length() < 6) {
+
+		if (dto.getPassword().length() < 6 || dto.getConfirmPassword().length() < 6) {
 			throw new InavlidPasswordException("Password should be at least 6 characters!");
 		}
-		
-		
-		if(!dto.getPassword().equals(dto.getConfirmPassword())) {
+
+		if (!dto.getPassword().equals(dto.getConfirmPassword())) {
 			throw new InavlidPasswordException("Passwords should match!");
 		}
 		Role deafultRole = roleService.getRoleByName(PlayerRole.USER);
 		String password = dto.getPassword();
 		String salt = ShiroPasswordEncoder.generateSalt();
 		String hashPassword = ShiroPasswordEncoder.hashPassword(password, salt);
-		
+
 		Player player = new Player();
 		player.setRoles(List.of(deafultRole));
 		player.setUsername(dto.getUsername());
 		player.setPassword(dto.getPassword());
 		player.setPassword(hashPassword);
 		player.setSalt(salt);
+
+		playerRepository.save(player);
+
+	}
+
+	public List<Role> getPlayerRoles(String username) {
+		return playerRepository.getRolesByPlayerUsername(username);
+	}
+
+	public Page<AdminRolesDTO> getAllUserRolesDTO(String username, Pageable pageable) {
+		Page<Player> allPlayersExpectCurrent = getAllPlayersExpectCurrent(username, pageable);
+	return 	allPlayersExpectCurrent.map(p->{
 		
+			AdminRolesDTO adminRolesDTO = new AdminRolesDTO();
+			adminRolesDTO.setUsername(p.getUsername());
+			List<Role> roles = p.getRoles();
+			
+			List<String> rolesAsStrings = roles.stream()
+					.map(r -> r.getName().name())
+					.collect(Collectors.toList());
+			
+			adminRolesDTO.setRole(rolesAsStrings);
+			return adminRolesDTO;
+		});
+	}
+
+	private Page<Player> getAllPlayersExpectCurrent(String username, Pageable pageable) {
+		return playerRepository.findAllExpectCurrent(username,pageable);
+	}
+
+	public void addRole(RoleDTO dto) {
+		
+		Player player = getPlayerByUsername(dto.getUsername());
+		List<Role> roles = player.getRoles();
+		Role role = roleService.getRoleByName(PlayerRole.valueOf(dto.getRole()));
+		roles.add(role);
+		playerRepository.save(player);
+	}
+
+	public void removeRole(RoleDTO dto) {
+		Player player = getPlayerByUsername(dto.getUsername());
+		List<Role> roles = player.getRoles();
+		Role role = roleService.getRoleByName(PlayerRole.valueOf(dto.getRole()));
+		roles.remove(role);
 		playerRepository.save(player);
 		
 	}

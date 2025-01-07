@@ -22,6 +22,7 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import com.example.security.CustomRealm;
 import com.example.security.JwtAuthenticationFilter;
@@ -45,16 +46,16 @@ public class SecurityConfig {
 		this.jwt = jwt;
 	}
 
-	/*
-	 * The Authenticator is responsible for authenticating users. It determines
-	 * whether the provided credentials (username, password..) are valid.
-	 */
-	@Bean
-	public Authenticator authenticator(Realm customRealm) {
-		ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
-		authenticator.setRealms(List.of(customRealm));
-		return authenticator;
-	}
+//	/*
+//	 * The Authenticator is responsible for authenticating users. It determines
+//	 * whether the provided credentials (username, password..) are valid.
+//	 */
+//	@Bean
+//	public Authenticator authenticator(Realm customRealm) {
+//		ModularRealmAuthenticator authenticator = new ModularRealmAuthenticator();
+//		authenticator.setRealms(List.of(customRealm));
+//		return authenticator;
+//	}
 
 	/*
 	 * It acts as the bridge between Shiro and your user database. It defines how
@@ -75,27 +76,30 @@ public class SecurityConfig {
 	// authentication, authorization, session management, and cryptographic
 	// operations
 	@Bean
-	public SecurityManager securityManager(Authenticator authenticator, Realm customRealm, Authorizer authorizer,
+	public SecurityManager securityManager(
+//			Authenticator authenticator, 
+			Realm customRealm,
+//			Authorizer authorizer,
 			SessionManager sessionManager) {
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		// Responsible for authenticating users and authorizing them by roles and
 		// permissions.
 		// You pass this realm to the SecurityManager so it can delegate tasks to it.
 		List<Realm> realms = Arrays.asList(customRealm(),jwtRealm());
-		securityManager.setAuthenticator(authenticator);
+//		securityManager.setAuthenticator(authenticator);
 		securityManager.setRealms(realms);
-		securityManager.setAuthorizer(authorizer);
+//		securityManager.setAuthorizer(authorizer);
 		securityManager.setSessionManager(sessionManager);
 		SecurityUtils.setSecurityManager(securityManager);
 
 		return securityManager;
 	}
-
-	// whether a user has a specific role or permission.
-	@Bean
-	public Authorizer authorizer() {
-		return new ModularRealmAuthorizer();
-	}
+//
+//	// whether a user has a specific role or permission.
+//	@Bean
+//	public Authorizer authorizer() {
+//		return new ModularRealmAuthorizer();
+//	}
 
 	@Bean
 	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
@@ -121,7 +125,7 @@ public class SecurityConfig {
         definition.addPathDefinition("api/v1/players/registration", "anon, cors");
         definition.addPathDefinition("api/v1/players/logout", "cors, jwt");
         definition.addPathDefinition("api/v1/games/history", "cors, jwt");
-        definition.addPathDefinition("api/v1/admin", "cors, jwt, roles[admin]");
+        definition.addPathDefinition("api/v1/admin/**", "cors, jwt, roles[ADMIN]");
         definition.addPathDefinition("/**", "cors, jwt");
 		return definition;
 	}

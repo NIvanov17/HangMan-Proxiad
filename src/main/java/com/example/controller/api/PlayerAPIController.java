@@ -1,5 +1,7 @@
 package com.example.controller.api;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.enums.ErrorMessages;
 import com.example.model.Player;
+import com.example.model.Role;
 import com.example.model.DTOs.JwtResponse;
 import com.example.model.DTOs.LoginDTO;
 import com.example.model.DTOs.PlayerDTO;
@@ -104,12 +107,14 @@ public class PlayerAPIController {
 	public ResponseEntity<JwtResponse> login(@RequestBody() LoginDTO dto) {
 		Subject currentUser = SecurityUtils.getSubject();
 		UsernamePasswordToken token = new UsernamePasswordToken(dto.getUsername(), dto.getPassword());
+		List<Role> playerRoles = playerService.getPlayerRoles(dto.getUsername());
 		
 		try {
 			currentUser.login(token);
-			String authToken = jwt.generateToken(dto.getUsername());
+			String authToken = jwt.generateToken(dto.getUsername(), playerRoles);
+			List<String> roles = jwt.extractRoles(authToken);
 			
-			return ResponseEntity.ok(new JwtResponse(authToken, dto.getUsername()));
+			return ResponseEntity.ok(new JwtResponse(authToken, dto.getUsername(),roles));
 			
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -122,7 +127,6 @@ public class PlayerAPIController {
 		String token = jwt.getTokenFromRequest(request);
 		String username = jwt.extractUsername(token);
 			Subject currentUser = SecurityUtils.getSubject();
-			System.out.println(username+" token: "+token);
 			
 				currentUser.logout();
 				return ResponseEntity.ok("Logged out successfully!");

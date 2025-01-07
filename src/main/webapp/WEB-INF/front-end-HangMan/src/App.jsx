@@ -18,6 +18,7 @@ import Welcome from './pages/Home/Welcome';
 import JoinCreateGame from './pages/WordToGuess/JoinCreateGame';
 import JoinGame from './pages/WordToGuess/JoinGame';
 import MultiPlayerCode from './pages/Game/MultiPlayerCode';
+import Admin from './pages/Admin/Admin';
 
 function App() {
 
@@ -43,7 +44,7 @@ function App() {
             <Route path='/error' element={<Error />} />
             <Route path='/multi-player' element={<JoinCreateGame />} />
             <Route path='/multi-player/join' element={<JoinGame />} />
-            {/* <Route path='/admin' element={<Admin />} /> */}
+            <Route path='/admin' element={<Admin />} />
             <Route path='/register' element={<Register />} />
           </Routes>
         </div>
