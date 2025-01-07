@@ -1,35 +1,45 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "./JoinGame.css";
 
 const JoinGame = () => {
-
-    const [token, setToken] = useState('');
-    const [validationError, setValidationError] = useState('');
+    const [token, setToken] = useState("");
+    const [validationError, setValidationError] = useState("");
     const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
-        setIsPending(true);
-        e.preventDefault();
-        const gameTokenDTO = {
-            token: token
-        };
+        e.preventDefault(); // Prevent default form submission
+        setIsPending(true); // Set pending state
 
-        fetch(`http://localhost:8080/api/v2/games/game`, {
-            method: 'POST',
+        const gameTokenDTO = { token };
+
+        fetch(`http://localhost:8080/api/v2/games/game/code`, {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
             },
-            body: JSON.stringify(gameTokenDTO)
-        }).then(res => res.json())
-            .then(data => {
-                console.log(data.gameId);
-                navigate('/multi-player/games', { state: { gameId: data.gameId } });
-            }
-            )
-    }
+            body: JSON.stringify(gameTokenDTO),
+        })
+            .then((res) => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    return res.json().then((err) => {
+                        throw new Error(err.message || "Giver and Guesser can't be the same!");
+                    });
+                }
+            })
+            .then((data) => {
+                console.log(data.gameId); // Log gameId
+                navigate("/multi-player/games", { state: { gameId: data.gameId } });
+            })
+            .catch((error) => {
+                setValidationError(error.message || "Error joining the game");
+            })
+            .finally(() => setIsPending(false)); // Reset pending state
+    };
 
     return (
         <div className="join-game">
@@ -44,9 +54,10 @@ const JoinGame = () => {
                 />
                 {validationError && <p id="validation-error">{validationError}</p>}
                 {!isPending && <button>Submit</button>}
+                {isPending && <button disabled>Submitting...</button>}
             </form>
         </div>
     );
-}
+};
 
 export default JoinGame;

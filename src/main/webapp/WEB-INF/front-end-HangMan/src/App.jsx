@@ -19,8 +19,10 @@ import JoinCreateGame from './pages/WordToGuess/JoinCreateGame';
 import JoinGame from './pages/WordToGuess/JoinGame';
 import MultiPlayerCode from './pages/Game/MultiPlayerCode';
 import Admin from './pages/Admin/Admin';
+import { useEffect, useState } from "react";
 
 function App() {
+  const [roles, setRoles] = useState(sessionStorage.getItem('role')?.split(',') || []);
 
   return (
     <Router>
@@ -44,7 +46,9 @@ function App() {
             <Route path='/error' element={<Error />} />
             <Route path='/multi-player' element={<JoinCreateGame />} />
             <Route path='/multi-player/join' element={<JoinGame />} />
-            <Route path='/admin' element={<Admin />} />
+            {roles.includes('ADMIN') &&
+              (<Route path='/admin' element={<Admin />} />)
+            }
             <Route path='/register' element={<Register />} />
           </Routes>
         </div>

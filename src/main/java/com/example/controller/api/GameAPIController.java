@@ -137,7 +137,7 @@ public class GameAPIController {
 
 	}
 
-	@PostMapping("/v2/games/game")
+	@PostMapping("/v2/games/game/code")
 	@Operation(summary = "Get game with code")
 	public ResponseEntity<GameDTO> getGameWithCode(@RequestBody GameTokenDTO dto, HttpServletRequest request) {
 		String token = jwt.getTokenFromRequest(request);

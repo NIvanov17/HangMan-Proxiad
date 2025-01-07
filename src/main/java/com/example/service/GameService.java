@@ -601,13 +601,17 @@ public class GameService {
 
 		Game game = gameRepository.findByToken(dto.getToken()).orElseThrow(() -> new IllegalArgumentException());
 		if (isWordGivver(game, username)) {
-			throw new IllegalArgumentException(String.format(ErrorMessages.INAVLID_GUESSER, username));
+			throw new MultiPlayerModeException(ErrorMessages.SAME_PLAYERS);
 		}
 		if (game.isFinished()) {
 			throw new GameAlreadyFinishedException(String.format(ErrorMessages.GAME_IS_FINSHED, game.getId()));
 		}
 		Player giver = getGameGiver(game);
 		PlayerDTO giverDTO = new PlayerDTO(giver.getUsername());
+		
+//		if(giver.getUsername().equals(username)) {
+//			throw new MultiPlayerModeException(ErrorMessages.SAME_PLAYERS);
+//		}
 
 		Player guesser = playerService.getPlayerByUsername(username);
 		PlayerDTO guesserDTO = new PlayerDTO(guesser.getUsername());
