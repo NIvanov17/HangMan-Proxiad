@@ -34,9 +34,7 @@ const History = () => {
                 Authorization: `Bearer ${sessionStorage.getItem('token')}`,
             },
         })
-            .then((res) => {
-                return validateToken(res, navigate);
-            })
+            .then(res => res.json())
             .then(data => {
                 console.log(data);
                 setIsPending(false);
