@@ -19,37 +19,45 @@ import JoinCreateGame from './pages/WordToGuess/JoinCreateGame';
 import JoinGame from './pages/WordToGuess/JoinGame';
 import MultiPlayerCode from './pages/Game/MultiPlayerCode';
 import Admin from './pages/Admin/Admin';
+import { useEffect, useState } from "react";
+import ProtectedRoutes from './utils/ProtectedRoutes';
+import { AuthProvider } from './utils/AuthContext';
 
 function App() {
+  const [roles, setRoles] = useState(sessionStorage.getItem('role')?.split(',') || []);
 
   return (
     <Router>
-      <div className="App">
-        <Navbar />
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/welcome" element={<Welcome />} />
-            <Route path="/login" element={<Login />} />
-            <Route path='/single-player/games' element={<SinglePlayerGame />} />
-            <Route path="/multi-player/guesser" element={<LoginGuesser />} />
-            <Route path="/multi-player/giver" element={<LoginGiver />} />
-            <Route path='/multi-player/words' element={<WordToGuess />} />
-            <Route path='/multi-player/games' element={<MultiPlayerGame />} />
-            <Route path='/multi-player/code' element={<MultiPlayerCode />} />
-            <Route path='/history' element={<History />} />
-            <Route path='/statistics' element={<MostUsedWords />} />
-            <Route path='/rankings' element={<Ranking />} />
-            <Route path='/rankings/top-ten' element={<TopTenRankings />} />
-            <Route path='/error' element={<Error />} />
-            <Route path='/multi-player' element={<JoinCreateGame />} />
-            <Route path='/multi-player/join' element={<JoinGame />} />
-            <Route path='/admin' element={<Admin />} />
-            <Route path='/register' element={<Register />} />
-          </Routes>
+      <AuthProvider>
+        <div className="App">
+          <Navbar />
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/welcome" element={<Welcome />} />
+              <Route path="/login" element={<Login />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/statistics' element={<MostUsedWords />} />
+              <Route path='/rankings' element={<Ranking />} />
+              <Route path='/rankings/top-ten' element={<TopTenRankings />} />
+              <Route path='/error' element={<Error />} />
+              <Route path='/history' element={<ProtectedRoutes><History /></ProtectedRoutes>} />
+              <Route path='/single-player/games' element={<ProtectedRoutes><SinglePlayerGame /></ProtectedRoutes>} />
+              <Route path="/multi-player/guesser" element={<ProtectedRoutes><LoginGuesser /></ProtectedRoutes>} />
+              <Route path="/multi-player/giver" element={<ProtectedRoutes><LoginGiver /></ProtectedRoutes>} />
+              <Route path='/multi-player/words' element={<ProtectedRoutes><WordToGuess /></ProtectedRoutes>} />
+              <Route path='/multi-player/games' element={<ProtectedRoutes><MultiPlayerGame /></ProtectedRoutes>} />
+              <Route path='/multi-player/code' element={<ProtectedRoutes><MultiPlayerCode /></ProtectedRoutes>} />
+              <Route path='/multi-player' element={<ProtectedRoutes><JoinCreateGame /></ProtectedRoutes>} />
+              <Route path='/multi-player/join' element={<ProtectedRoutes><JoinGame /></ProtectedRoutes>} />
+              {roles.includes('ADMIN') &&
+                (<Route path='/admin' element={<Admin />} />)
+              }
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </AuthProvider>
     </Router>
   );
 }

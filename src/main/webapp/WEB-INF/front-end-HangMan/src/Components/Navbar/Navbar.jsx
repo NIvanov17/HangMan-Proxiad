@@ -1,11 +1,12 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { useEffect, useState } from "react";
+import AuthContext from "../../utils/AuthContext";
+import React, { useContext } from "react";
 
 const Navbar = () => {
 
-    const [token, setToken] = useState(sessionStorage.getItem('token') || '');
-    const [username, setUsername] = useState(sessionStorage.getItem('username') || '');
+    const { isAuthenticated } = useContext(AuthContext);
     const [roles, setRoles] = useState(sessionStorage.getItem('role')?.split(',') || []);
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -13,17 +14,12 @@ const Navbar = () => {
     const navigateHome = () => {
         navigate('/');
     }
+    const updateAuthState = () => {
+        const storedRoles = sessionStorage.getItem('role')?.split(',') || [];
+        setRoles(storedRoles);
+    };
 
     useEffect(() => {
-        const updateAuthState = () => {
-            const storedToken = sessionStorage.getItem('token') || '';
-            const storedUsername = sessionStorage.getItem('username') || '';
-            const storedRoles = sessionStorage.getItem('role')?.split(',') || [];
-
-            setToken(storedToken);
-            setUsername(storedUsername);
-            setRoles(storedRoles);
-        };
         updateAuthState();
 
         window.addEventListener('authChange', updateAuthState);
@@ -46,8 +42,6 @@ const Navbar = () => {
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('username');
                 sessionStorage.removeItem('role');
-                setToken('');
-                setUsername('');
                 navigateHome();
             }
         }).catch(err => {
@@ -64,13 +58,13 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
                 <Link to="/statistics">Statistics</Link>
                 <Link to="/rankings">Rankings</Link>
-                {!token && (
+                {!isAuthenticated && (
                     <>
                         <Link to="/register" className="btn">Register</Link>
                         <Link to="/login" className="btn">Log In</Link>
                     </>
                 )}
-                {token && (
+                {isAuthenticated && (
                     <>
                         <Link to="/history">History</Link>
                         {roles.includes('ADMIN') &&

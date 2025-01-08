@@ -37,9 +37,8 @@ const Game = () => {
                 Authorization: `Bearer ${token}`
             }
         })
-            .then(res => {
-                return validateToken(res, navigate);
-            }).then(data => {
+            .then(res => res.json())
+            .then(data => {
                 setGame(data);
             })
     }
@@ -52,13 +51,7 @@ const Game = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             }
-        }).then((res) => {
-            return validateToken(res, navigate);
-            // if (!res.ok) {
-            //     throw new Error('Failed to resume game');
-            // }
-            // return res;
-        })
+        }).then(res => res.json())
             .then((data) => {
                 sessionStorage.removeItem("gameId");
                 console.log('Game data:', data);
